@@ -1,0 +1,168 @@
+
+import 'bigbluebuttonsdk_platform_interface.dart';
+import 'utils/chatmodel.dart';
+import 'utils/meetingdetails.dart';
+import 'utils/participant.dart';
+export 'provider/audiowebsocket.dart';
+export 'provider/remotescreenshare.dart';
+export 'provider/remotevideowebsocket.dart';
+export 'provider/screensharewebsocket.dart';
+export 'provider/videowebsocket.dart';
+export 'provider/websocket.dart';
+export 'utils/chatmodel.dart';
+export 'utils/meetingdetails.dart';
+export 'utils/participant.dart';
+export 'utils/typingmodel.dart';
+export 'utils/pollanalyseparser.dart';
+export 'utils/beautyFilters.dart';
+export 'package:flutter_webrtc/flutter_webrtc.dart';
+
+class Bigbluebuttonsdk {
+  Future<String?> getPlatformVersion() {
+    return BigbluebuttonsdkPlatform.instance.getPlatformVersion();
+  }
+
+  startroom() {
+    BigbluebuttonsdkPlatform.instance.Startroom();
+  }
+
+  initialize({required String mediawebsocketurl, required String mainwebsocketurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
+    BigbluebuttonsdkPlatform.instance.initialize(mediawebsocketur:mediawebsocketurl, mainwebsocketur: mainwebsocketurl,webrtctoken:webrtctoken, meetingdetails:meetingdetails);
+  }
+
+  typing({required String chatid}) {
+    BigbluebuttonsdkPlatform.instance.typing(chatid:chatid);
+  }
+
+  sendmessage({required String message,required String chatid}) {
+    BigbluebuttonsdkPlatform.instance.sendmessage(chatid:chatid, message:message);
+  }
+
+  sendecinema({required String videourl}) {
+    BigbluebuttonsdkPlatform.instance.sendecinema(videourl:videourl);
+  }
+
+  endecinema() {
+    BigbluebuttonsdkPlatform.instance.endecinema();
+  }
+
+  startpoll({required String question, required List options}) {
+    BigbluebuttonsdkPlatform.instance.startpoll(question:question, options:options);
+  }
+
+  votepoll({required String poll_id, required String selectedOptionId}) {
+    BigbluebuttonsdkPlatform.instance.votepoll(poll_id:poll_id, selectedOptionId:selectedOptionId);
+  }
+
+  muteallusers({required String userid,}) {
+    BigbluebuttonsdkPlatform.instance.muteallusers(userid:userid);
+  }
+
+  createGroupChat({required Participant participant,}) {
+    BigbluebuttonsdkPlatform.instance.createGroupChat(participant:participant);
+  }
+
+
+  uploadpresenter({required String filename,}) {
+    BigbluebuttonsdkPlatform.instance.uploadpresenter(filename:filename);
+  }
+
+  setemojistatus() {
+    BigbluebuttonsdkPlatform.instance.setemojistatus();
+  }
+
+  mutemyself() {
+    BigbluebuttonsdkPlatform.instance.mutemyself();
+  }
+
+  stopcamera() {
+    BigbluebuttonsdkPlatform.instance.stopcamera();
+  }
+
+  startcamera() {
+    BigbluebuttonsdkPlatform.instance.startcamera();
+  }
+
+  stopscreenshare() {
+    BigbluebuttonsdkPlatform.instance.stopscreenshare();
+  }
+
+  startscreenshare() {
+    BigbluebuttonsdkPlatform.instance.startscreenshare();
+  }
+
+  changerole({required String userid, required String role}) {
+    BigbluebuttonsdkPlatform.instance.changerole(userid:userid, role:role);
+  }
+
+  assignpresenter({required String userid}) {
+    BigbluebuttonsdkPlatform.instance.assignpresenter(userid:userid);
+  }
+
+  removeuser({required String userid,required bool notallowagain}) {
+    BigbluebuttonsdkPlatform.instance.removeuser(userid:userid, notallowagain: notallowagain);
+  }
+
+  leaveroom() {
+    BigbluebuttonsdkPlatform.instance.leaveroom();
+  }
+
+  toggleRecording() {
+    BigbluebuttonsdkPlatform.instance.toggleRecording();
+  }
+
+  breakeoutroom() {
+    BigbluebuttonsdkPlatform.instance.breakeoutroom();
+  }
+
+  List<ChatMessage> getchatMessages({required String chatid,}) {
+    return BigbluebuttonsdkPlatform.instance.getchatMessages(chatid:chatid);
+  }
+
+  get participant {
+    return BigbluebuttonsdkPlatform.instance.participant;
+  }
+
+  get mydetails {
+    return BigbluebuttonsdkPlatform.instance.mydetails;
+  }
+
+  get isWebsocketRunning {
+    return BigbluebuttonsdkPlatform.instance.isWebsocketRunning;
+  }
+  get polljson {
+    return BigbluebuttonsdkPlatform.instance.polljson;
+  }
+  get ispolling {
+    return BigbluebuttonsdkPlatform.instance.ispolling;
+  }
+
+  set ispolling (value){
+    return BigbluebuttonsdkPlatform.instance.ispolling = value;
+  }
+
+  get isrecording {
+    return BigbluebuttonsdkPlatform.instance.isrecording;
+  }
+  get pollanalyseparser {
+    return BigbluebuttonsdkPlatform.instance.pollanalyseparser;
+  }
+  get isscreensharing {
+    return BigbluebuttonsdkPlatform.instance.isscreensharing;
+  }
+  get talking {
+    return BigbluebuttonsdkPlatform.instance.talking;
+  }
+  get isvideo {
+    return BigbluebuttonsdkPlatform.instance.isvideo;
+  }
+  get chatMessages {
+    return BigbluebuttonsdkPlatform.instance.chatMessages;
+  }
+  get ishowecinema {
+    return BigbluebuttonsdkPlatform.instance.ishowecinema;
+  }
+  Stream<String> get stream {
+    return BigbluebuttonsdkPlatform.instance.stream;
+  }
+}
