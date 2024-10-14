@@ -5,10 +5,7 @@ import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../utils/meetingdetails.dart';
-import '../../utils/strings.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' as navigator;
-
-import '../bigbluebuttonsdk_method_channel.dart';
+import '../bigbluebuttonsdk.dart';
 
 
 class Audiowebsocket extends GetxController {
@@ -18,13 +15,13 @@ class Audiowebsocket extends GetxController {
 
   WebSocketChannel? channel; // Initialize a WebSocket channel
   var retryLimit = 3;
-  navigator.RTCPeerConnection? _peerConnection;
+  RTCPeerConnection? _peerConnection;
   var edSet;
-  List<navigator.MediaDeviceInfo>? _mediaDevicesList;
+  List<MediaDeviceInfo>? _mediaDevicesList;
   // mediaStream for localPeer
-  navigator.MediaStream? _localStream;
+  MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
-  List<navigator.RTCIceCandidate> rtcIceCadidates = [];
+  List<RTCIceCandidate> rtcIceCadidates = [];
 
   final _webrtctoken = "".obs;
   set webrtctoken(value)=> _webrtctoken.value = value;
@@ -44,9 +41,9 @@ class Audiowebsocket extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    navigator.navigator.mediaDevices.ondevicechange = (event) async {
+    mediaDevices.ondevicechange = (event) async {
       // print('++++++ ondevicechange ++++++');
-      _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+      _mediaDevicesList = await mediaDevices.enumerateDevices();
     };
   }
   @override
@@ -77,7 +74,7 @@ class Audiowebsocket extends GetxController {
   void receiveCandidate(candidate) async {
     // Exchange ICE candidates with the Kurento server
     // print("candidate recieved");
-    await _peerConnection?.addCandidate(navigator.RTCIceCandidate(candidate!,'',0));
+    await _peerConnection?.addCandidate(RTCIceCandidate(candidate!,'',0));
   }
 
   void initiate(
@@ -102,7 +99,7 @@ class Audiowebsocket extends GetxController {
       ],
     };
 
-    _peerConnection = await navigator.createPeerConnection(configuration);
+    _peerConnection = await createPeerConnection(configuration);
 
     // listen for remotePeer mediaTrack event
     _peerConnection?.onTrack = (event) {
@@ -110,12 +107,12 @@ class Audiowebsocket extends GetxController {
 
     };
     // Get audio media stream
-    _localStream = await navigator.navigator.mediaDevices.getUserMedia({
+    _localStream = await mediaDevices.getUserMedia({
       'audio': true,
       'video': false,
     });
 
-    _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    _mediaDevicesList = await mediaDevices.enumerateDevices();
 
     // Add audio track to the peer connection
     _localStream!.getTracks().forEach((track) {
@@ -123,7 +120,7 @@ class Audiowebsocket extends GetxController {
     });
 
     _peerConnection!.onIceCandidate =
-        (navigator.RTCIceCandidate candidate) {
+        (RTCIceCandidate candidate) {
       // print("New ICE Candidate: ${candidate.candidate}");
       rtcIceCadidates.add(candidate);
       sendCandidate(candidate.candidate!);
@@ -199,7 +196,7 @@ class Audiowebsocket extends GetxController {
           // print("setting remote sdp");
           // set SDP offer as remoteDescription for peerConnection
           await _peerConnection!.setRemoteDescription(
-          navigator.RTCSessionDescription(response['sdpAnswer'], "answer"),
+          RTCSessionDescription(response['sdpAnswer'], "answer"),
           );
         }
         break;

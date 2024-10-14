@@ -2,11 +2,9 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' as navigator;
 
 import '../../utils/meetingdetails.dart';
-import '../../utils/strings.dart';
-import 'websocket.dart';
+import '../bigbluebuttonsdk.dart';
 
 
 class Screensharewebsocket extends GetxController {
@@ -21,22 +19,22 @@ class Screensharewebsocket extends GetxController {
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
-  navigator.RTCPeerConnection? peerConnection;
-  List<navigator.MediaDeviceInfo>? _mediaDevicesList;
+  RTCPeerConnection? peerConnection;
+  List<MediaDeviceInfo>? _mediaDevicesList;
 
   // mediaStream for localPeer
-  navigator.MediaStream? _localStream;
+  MediaStream? _localStream;
 
   // list of rtcCandidates to be sent over signaling
-  List<navigator.RTCIceCandidate> rtcIceCandidates = [];
+  List<RTCIceCandidate> rtcIceCandidates = [];
 
   // videoRenderer for localPeer
-  final _localRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
   // videoRenderer for remotePeer
-  final _remoteRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
   set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
   get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
@@ -58,8 +56,8 @@ class Screensharewebsocket extends GetxController {
     localRTCVideoRenderer.initialize();
     remoteRTCVideoRenderer.initialize();
 
-    navigator.navigator.mediaDevices.ondevicechange = (event) async {
-      _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    mediaDevices.ondevicechange = (event) async {
+      _mediaDevicesList = await mediaDevices.enumerateDevices();
     };
 
     super.onInit();
@@ -72,10 +70,10 @@ class Screensharewebsocket extends GetxController {
     this.webrtctoken = webrtctoken;
     this.meetingDetails = meetingDetails;
     this.mediawebsocketurl = mediawebsocketurl;
-    createPeerConnection();
+    createPeerConnections();
   }
 
-  Future<void> createPeerConnection() async {
+  Future<void> createPeerConnections() async {
     final configuration = {
       'iceServers': [
         {
@@ -88,10 +86,10 @@ class Screensharewebsocket extends GetxController {
     };
 
     // Create the peer connection
-    peerConnection = await navigator.createPeerConnection(configuration);
+    peerConnection = await createPeerConnection(configuration);
 
     // Get local media stream (screen sharing)
-    _localStream = await navigator.navigator.mediaDevices.getDisplayMedia({
+    _localStream = await mediaDevices.getDisplayMedia({
       'audio': true,
       'video': {
         'width': 1920,
@@ -101,7 +99,7 @@ class Screensharewebsocket extends GetxController {
     });
 
     // Enumerate media devices
-    _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    _mediaDevicesList = await mediaDevices.enumerateDevices();
 
     // Add local tracks to the peer connection
     _localStream!.getTracks().forEach((track) {
@@ -112,7 +110,7 @@ class Screensharewebsocket extends GetxController {
     localRTCVideoRenderer.srcObject = _localStream;
 
     // Handle ICE candidate generation
-    peerConnection!.onIceCandidate = (navigator.RTCIceCandidate candidate) {
+    peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
       rtcIceCandidates.add(candidate);
       sendCandidate(candidate.toMap());
     };
@@ -135,7 +133,7 @@ class Screensharewebsocket extends GetxController {
   }
 
   void receiveCandidate(String candidate) async {
-    await peerConnection?.addCandidate(navigator.RTCIceCandidate(candidate, '', 0));
+    await peerConnection?.addCandidate(RTCIceCandidate(candidate, '', 0));
   }
 
   void receiveSDP(String answer) async {
@@ -143,7 +141,7 @@ class Screensharewebsocket extends GetxController {
       print("Received SDP answer is null or empty");
       return;
     }
-    await peerConnection?.setRemoteDescription(navigator.RTCSessionDescription(answer, 'answer'));
+    await peerConnection?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
   }
 
   void receiveStart() {

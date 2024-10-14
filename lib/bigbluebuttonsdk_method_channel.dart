@@ -77,7 +77,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   Startroom(){
     var sola2 =Get.put(Audiowebsocket(), permanent: true);
-    websocket.initiate( webrtctoken: webrtctoken, mainwebsocketurl: mainwebsocketurl, meetingdetails: meetingdetails!);
+    websocket.initiate( webrtctoken: webrtctoken, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
     sola2.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
     if(GetPlatform.isAndroid || GetPlatform.isIOS) {
       startForegroundService();

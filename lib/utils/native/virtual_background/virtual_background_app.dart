@@ -1,9 +1,7 @@
 import 'dart:typed_data';
 
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 
-import '../../beautyfilters.dart';
-
+import '../../../bigbluebuttonsdk.dart';
 Future<MediaStream?> startVirtualBackground({
   required Uint8List backgroundImage,
   String? textureId,

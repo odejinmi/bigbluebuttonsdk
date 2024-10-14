@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-import 'package:flutter_webrtc/flutter_webrtc.dart';
+import '../bigbluebuttonsdk.dart';
+
 
 
 Participant participantFromJson(String str) => Participant.fromJson(json.decode(str));

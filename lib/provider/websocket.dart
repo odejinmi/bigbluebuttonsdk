@@ -81,6 +81,10 @@ class Websocket extends GetxController{
   set mainwebsocketurl(value)=> _mainwebsocketurl.value = value;
   get mainwebsocketurl => _mainwebsocketurl.value;
 
+   final _mediawebsocketurl = "".obs;
+   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
+   get mediawebsocketurl => _mediawebsocketurl.value;
+
    final _chatMessages = <ChatMessage>[].obs;
    set chatMessages(value)=> _chatMessages.value = value;
    List<ChatMessage> get chatMessages => _chatMessages.value;
@@ -132,7 +136,6 @@ class Websocket extends GetxController{
    }
 
    void sendPingMessage() {
-     print("Sending ping message");
      var pingPayload = ["{\"msg\":\"pong\"}"];
      websocketsub(pingPayload);  // Send the ping over WebSocket
    }
@@ -152,11 +155,12 @@ class Websocket extends GetxController{
 
   void initiate(
       {required String webrtctoken,
-      required String mainwebsocketurl,
+      required String mainwebsocketurl,required String mediawebsocketurl,
       required Meetingdetails meetingdetails}){
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mainwebsocketurl = mainwebsocketurl;
+    this.mediawebsocketurl = mediawebsocketurl;
     startStream();
   }
 
@@ -194,8 +198,10 @@ class Websocket extends GetxController{
 
 
    void websocketsub(json) {
-     print("i got here");
-     print(json.toString());
+     if(jsonDecode(json[0])["msg"]!="pong") {
+       print("i got here");
+       print(json.toString());
+     }
     channel!.sink.add(jsonEncode(json),);
   }
 

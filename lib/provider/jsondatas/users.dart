@@ -43,7 +43,7 @@ class Users{
      Participant data = participantFromJson(jsonEncode(json));
      if (json["fields"]["breakoutProps"] != null) {
        var list = websocket.participant.where((v) {
-         return v.id == data.id;
+         return v.id == data.id || v.fields!.userId == data.fields!.userId;
        }).toList();
        if (list.isEmpty) {
          websocket.participant.add(data);

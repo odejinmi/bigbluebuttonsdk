@@ -21,6 +21,7 @@ class Websocketresponse{
       var json = jsonDecode(jsonDecode(result));
       // print("general json");
       // print(json);
+      websocket.addEvent(jsonEncode(json));
       if (json["collection"] != null) {
         switch(json["collection"]){
           case "users":
@@ -48,7 +49,6 @@ class Websocketresponse{
           case "external-video-meetings" :
             if (json["fields"] != null) {
               if(json["fields"]["externalVideoUrl"] != null) {
-                websocket.addEvent(jsonEncode({"key": "externalvideourl", "json":json}));
               }else{
                 Get.back();
                 websocket.ishowecinema = false;
@@ -59,7 +59,6 @@ class Websocketresponse{
             if(json["msg"] == "added") {
               websocket.ispolling = true;
               websocket.polljson = json;
-              websocket.addEvent(jsonEncode({"key": "pullquestionandanswer", "json":json}));
             }
           case "current-poll" :
             print(jsonEncode(json));
@@ -67,7 +66,6 @@ class Websocketresponse{
               websocket.ispolling = true;
               websocket.polljson = json;
               websocket.pollanalyseparser = pollanalyseparserFromJson(jsonEncode(json["fields"]));
-              websocket.addEvent(jsonEncode({"key": "pollsresult", "json":json}));
             }else if(json["msg"] == "changed") {
               websocket.pollanalyseparser = Pollanalyseparser.fromJson(websocket.mergeData(json["fields"],websocket.pollanalyseparser.toJson()));
             }else{
@@ -92,7 +90,7 @@ class Websocketresponse{
           case "screenshare" :
             var remotevideowebsocket = Get.find<RemoteScreenShareWebSocket>();
             remotevideowebsocket.initiate(
-                webrtctoken: websocket.webrtctoken,  mediawebsocketurl: MethodChannelBigbluebuttonsdk().mediawebsocketurl, meetingdetails: websocket.meetingdetails,);
+                webrtctoken: websocket.webrtctoken,  mediawebsocketurl: websocket.mediawebsocketurl, meetingdetails: websocket.meetingdetails,);
             break;
           case "presentation-upload-token" :
             if(json["msg"] == "added"){
@@ -117,7 +115,6 @@ class Websocketresponse{
            case "breakouts" :
             if(json["msg"] == "added") {
               websocket.breakoutroom.add(json);
-              websocket.addEvent(jsonEncode({"key": "breakouts", "json":websocket.breakoutroom}));
               // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"breakoutId\":\"65ad68093588dfa5eb0de0b177c6df044143072d-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"42b94a09c8d622ea635fbe02dd7ba106220403c4-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 2)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":2,\"shortName\":\"Room 2\",\"timeRemaining\":0}}"]
               // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"EGWZpi2v44R8KempF\",\"fields\":{\"breakoutId\":\"f24a3b915ad0f42a729728a397851c07cff5431e-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"0982362fd72cbad57966fb5b681c0cf741617f37-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 1)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":1,\"shortName\":\"Room 1\",\"timeRemaining\":0}}"]
             }else if(json["msg"] == "changed") {
@@ -138,11 +135,7 @@ class Websocketresponse{
     print(json);
     if(json["msg"] == "added") {
         var list = websocket.participant.where((v) {
-          if (v.vidieoid == null) {
             return v.fields!.intId == json["fields"]["userId"];
-          } else {
-            return v.vidieoid == json["id"];
-          }
         }).toList();
         if (list.isNotEmpty) {
           list[0].isvidieo = true;
@@ -151,11 +144,19 @@ class Websocketresponse{
 
           var remotevideowebsocket = Get.find<RemoteVideoWebSocket>();
           remotevideowebsocket.initiate(
-              webrtctoken:websocket.webrtctoken, meetingdetails:websocket.meetingdetails, mediawebsocketurl: MethodChannelBigbluebuttonsdk().mediawebsocketurl, cameraId: json["fields"]["stream"]);
+              webrtctoken:websocket.webrtctoken, meetingdetails:websocket.meetingdetails, mediawebsocketurl: websocket.mediawebsocketurl, cameraId: json["fields"]["stream"]);
         }
         // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
     }else if(json["msg"] == "removed"){
       // msg: removed, collection: video-streams, id: auDsWddGP4PkcSkXK}
+      var list = websocket.participant.where((v) {
+          return v.vidieoid == json["id"];
+      }).toList();
+      if (list.isNotEmpty) {
+        list[0].isvidieo = false;
+        list[0].vidieoid = null;
+        list[0].vidieodeviceId = null;
+     }
     }
   }
 }

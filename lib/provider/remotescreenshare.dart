@@ -3,11 +3,9 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' as navigator;
 
 import '../../utils/meetingdetails.dart';
-import '../../utils/strings.dart';
-import '../bigbluebuttonsdk_method_channel.dart';
+import '../bigbluebuttonsdk.dart';
 import 'websocket.dart';
 
 class RemoteScreenShareWebSocket extends GetxController {
@@ -19,18 +17,18 @@ class RemoteScreenShareWebSocket extends GetxController {
   WebSocketChannel? channel;
   var retryLimit = 3;
   var websocket = Get.find<Websocket>();
-  navigator.RTCPeerConnection? peerConnection;
-  List<navigator.MediaDeviceInfo>? _mediaDevicesList;
-  navigator.MediaStream? _localStream;
-  List<navigator.RTCIceCandidate> rtcIceCadidates = [];
+  RTCPeerConnection? peerConnection;
+  List<MediaDeviceInfo>? _mediaDevicesList;
+  MediaStream? _localStream;
+  List<RTCIceCandidate> rtcIceCadidates = [];
   Timer? _pingTimer;
 
   // Video renderers
-  final _localRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
-  final _remoteRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
   set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
   get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
@@ -52,8 +50,8 @@ class RemoteScreenShareWebSocket extends GetxController {
     localRTCVideoRenderer.initialize();
     remoteRTCVideoRenderer.initialize();
 
-    navigator.navigator.mediaDevices.ondevicechange = (event) async {
-      _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    mediaDevices.ondevicechange = (event) async {
+      _mediaDevicesList = await mediaDevices.enumerateDevices();
     };
   }
 
@@ -105,10 +103,10 @@ class RemoteScreenShareWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await navigator.createPeerConnection(config);
+    peerConnection = await createPeerConnection(config);
 
     // Get local media stream
-    _localStream = await navigator.navigator.mediaDevices.getUserMedia({
+    _localStream = await mediaDevices.getUserMedia({
       'audio': false,
       'video': {
         'width': 640,
@@ -132,7 +130,7 @@ class RemoteScreenShareWebSocket extends GetxController {
 
 
     // Set the remote description (answer)
-    await peerConnection!.setRemoteDescription(navigator.RTCSessionDescription(answer, 'offer'));
+    await peerConnection!.setRemoteDescription(RTCSessionDescription(answer, 'offer'));
 
     // Create and set the local SDP answer
     var newAnswer = await peerConnection!.createAnswer(constraints);
@@ -158,7 +156,7 @@ class RemoteScreenShareWebSocket extends GetxController {
     };
 
     // Handle the reception of remote media streams
-    peerConnection!.onTrack = (navigator.RTCTrackEvent event) {
+    peerConnection!.onTrack = (RTCTrackEvent event) {
       print("stream received");
       if (event.streams.isNotEmpty) {
         remoteRTCVideoRenderer.srcObject = event.streams[0];  // Render remote video
@@ -233,7 +231,7 @@ class RemoteScreenShareWebSocket extends GetxController {
 
 
   void receiveCandidate(String candidate) async {
-    var iceCandidate = navigator.RTCIceCandidate(candidate, null, 0);
+    var iceCandidate = RTCIceCandidate(candidate, null, 0);
     await peerConnection?.addCandidate(iceCandidate);
   }
 

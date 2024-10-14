@@ -6,8 +6,9 @@ import 'dart:js_interop';
 import 'dart:typed_data';
 
 import 'package:dart_webrtc/dart_webrtc.dart' as rtc;
-import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'package:web/web.dart' as web;
+
+import '../../../bigbluebuttonsdk.dart';
 
 @JS()
 external JSObject? enableVirtualBackground(

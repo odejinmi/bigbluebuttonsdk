@@ -2,10 +2,9 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' as navigator;
 
 import '../../utils/meetingdetails.dart';
-import '../../utils/strings.dart';
+import '../bigbluebuttonsdk.dart';
 import 'websocket.dart';
 
 
@@ -21,13 +20,13 @@ class Videowebsocket extends GetxController{
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
-  navigator.RTCPeerConnection? peerConnection ;
+  RTCPeerConnection? peerConnection ;
   var edSet;
-  List<navigator.MediaDeviceInfo>? _mediaDevicesList;
+  List<MediaDeviceInfo>? _mediaDevicesList;
   // mediaStream for localPeer
-  navigator.MediaStream? _localStream;
+  MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
-  List<navigator.RTCIceCandidate> rtcIceCadidates = [];
+  List<RTCIceCandidate> rtcIceCadidates = [];
 
 
   var websocket = Get.find<Websocket>();
@@ -46,9 +45,9 @@ class Videowebsocket extends GetxController{
 
   @override
   void onInit() {
-    navigator.navigator.mediaDevices.ondevicechange = (event) async {
+    mediaDevices.ondevicechange = (event) async {
       // print('++++++ ondevicechange ++++++');
-      _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+      _mediaDevicesList = await mediaDevices.enumerateDevices();
     };
     // TODO: implement onInit
     super.onInit();
@@ -81,10 +80,10 @@ class Videowebsocket extends GetxController{
     };
 
     // Create the peer connection
-    peerConnection = await navigator.createPeerConnection(configuration);
+    peerConnection = await createPeerConnection(configuration);
 
     // Get local media stream
-    _localStream = await navigator.navigator.mediaDevices.getUserMedia({
+    _localStream = await mediaDevices.getUserMedia({
       'audio': false,
       'video': {
         'width': 640,
@@ -93,7 +92,7 @@ class Videowebsocket extends GetxController{
     });
 
     // Enumerate media devices
-    _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    _mediaDevicesList = await mediaDevices.enumerateDevices();
 
     // Add local tracks to the peer connection
     _localStream!.getTracks().forEach((track) {
@@ -106,14 +105,14 @@ class Videowebsocket extends GetxController{
     }).toList();
     if (list.isNotEmpty) {
       list[0].mediaStream = _localStream;
-      list[0].rtcVideoRenderer = navigator.RTCVideoRenderer();
+      list[0].rtcVideoRenderer = RTCVideoRenderer();
       await list[0].rtcVideoRenderer!.initialize();
       list[0].rtcVideoRenderer!.srcObject = _localStream;
       // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
     }
 
     peerConnection!.onIceCandidate =
-        (navigator.RTCIceCandidate candidate) => rtcIceCadidates.add(candidate);
+        (RTCIceCandidate candidate) => rtcIceCadidates.add(candidate);
 
     // _peerConnection?.onIceConnectionState = (state) {
     //   print("ICE Connection State: $state");
@@ -158,7 +157,7 @@ class Videowebsocket extends GetxController{
 
   void receiveCandidate(candidate) async {
     // Exchange ICE candidates with the Kurento server
-    await peerConnection?.addCandidate(navigator.RTCIceCandidate(candidate!,'',0));
+    await peerConnection?.addCandidate(RTCIceCandidate(candidate!,'',0));
   }
 
   void receiveSDP(answer) async {
@@ -167,7 +166,7 @@ class Videowebsocket extends GetxController{
       return;
     }
 
-    await peerConnection?.setRemoteDescription(navigator.RTCSessionDescription(answer, 'answer'));
+    await peerConnection?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
   }
 
 
@@ -180,7 +179,7 @@ class Videowebsocket extends GetxController{
   Future<void> getDeviceID(String type) async {
     try {
       // Enumerate media devices
-      var devices = await navigator.mediaDevices.enumerateDevices();
+      var devices = await mediaDevices.enumerateDevices();
 
 
       // Loop through devices to find the requested type
@@ -282,10 +281,10 @@ class Videowebsocket extends GetxController{
   }
 
   Future<void> replaceVideoTrack(
-      navigator.MediaStreamTrack track, {
-        List<navigator.RTCRtpSender>? sendersList,
+      MediaStreamTrack track, {
+        List<RTCRtpSender>? sendersList,
       }) async {
-    final List<navigator.RTCRtpSender> senders =
+    final List<RTCRtpSender> senders =
     (sendersList ?? await peerConnection!.getSenders())
         .where(
           (sender) => sender.track?.kind == 'video',

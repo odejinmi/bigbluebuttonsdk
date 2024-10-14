@@ -11,6 +11,7 @@ export 'provider/videowebsocket.dart';
 export 'provider/websocket.dart';
 export 'utils/chatmodel.dart';
 export 'utils/meetingdetails.dart';
+export 'utils/native/virtual_background/index.dart';
 export 'utils/participant.dart';
 export 'utils/typingmodel.dart';
 export 'utils/pollanalyseparser.dart';

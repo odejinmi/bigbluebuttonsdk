@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_webrtc/flutter_webrtc.dart' as navigator;
 import '../../utils/meetingdetails.dart';
 import '../../utils/strings.dart';
+import '../bigbluebuttonsdk.dart';
 import 'websocket.dart';
 
 class RemoteVideoWebSocket extends GetxController {
@@ -15,18 +15,18 @@ class RemoteVideoWebSocket extends GetxController {
   WebSocketChannel? channel;
   var retryLimit = 3;
   var websocket = Get.find<Websocket>();
-  navigator.RTCPeerConnection? peerConnection;
-  List<navigator.MediaDeviceInfo>? _mediaDevicesList;
-  navigator.MediaStream? _localStream;
-  List<navigator.RTCIceCandidate> rtcIceCandidates = [];
+  RTCPeerConnection? peerConnection;
+  List<MediaDeviceInfo>? _mediaDevicesList;
+  MediaStream? _localStream;
+  List<RTCIceCandidate> rtcIceCandidates = [];
   Timer? _pingTimer;
 
   // Video renderers
-  final _localRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
-  final _remoteRTCVideoRenderer = navigator.RTCVideoRenderer().obs;
+  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
   set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
   get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
@@ -48,8 +48,8 @@ class RemoteVideoWebSocket extends GetxController {
     localRTCVideoRenderer.initialize();
     remoteRTCVideoRenderer.initialize();
 
-    navigator.navigator.mediaDevices.ondevicechange = (event) async {
-      _mediaDevicesList = await navigator.mediaDevices.enumerateDevices();
+    mediaDevices.ondevicechange = (event) async {
+      _mediaDevicesList = await mediaDevices.enumerateDevices();
     };
   }
 
@@ -119,10 +119,10 @@ class RemoteVideoWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await navigator.createPeerConnection(config);
+    peerConnection = await createPeerConnection(config);
 
     // Set remote description with the received answer
-    await peerConnection!.setRemoteDescription(navigator.RTCSessionDescription(answer, 'offer'));
+    await peerConnection!.setRemoteDescription(RTCSessionDescription(answer, 'offer'));
 
     var newAnswer = await peerConnection!.createAnswer(constraints);
     await peerConnection!.setLocalDescription(newAnswer);
@@ -149,7 +149,7 @@ class RemoteVideoWebSocket extends GetxController {
     };
 
     // Properly handle incoming tracks (audio or video)
-    peerConnection!.onTrack = (navigator.RTCTrackEvent event) async {
+    peerConnection!.onTrack = (RTCTrackEvent event) async {
       print("onTrack triggered");
       print(event);
 
@@ -163,7 +163,7 @@ class RemoteVideoWebSocket extends GetxController {
         }).toList();
         if (list.isNotEmpty) {
           list[0].mediaStream = _localStream;
-          list[0].rtcVideoRenderer = navigator.RTCVideoRenderer();
+          list[0].rtcVideoRenderer = RTCVideoRenderer();
           await list[0].rtcVideoRenderer!.initialize();
           list[0].rtcVideoRenderer!.srcObject = _localStream;
           // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
@@ -238,7 +238,7 @@ class RemoteVideoWebSocket extends GetxController {
 
   void receiveCandidate(String candidate) async {
     // Parse and add ICE candidate to PeerConnection
-    var iceCandidate = navigator.RTCIceCandidate(candidate, null, 0);
+    var iceCandidate = RTCIceCandidate(candidate, null, 0);
     await peerConnection?.addCandidate(iceCandidate);
   }
 }
