@@ -21,12 +21,12 @@ class Diorequest {
     try{
       var header = {
         'Content-Type': Headers.jsonContentType,
-        'Authorization': 'Bearer $token'
+        'Authorization': 'Bearer token'
       };
       final options = Options(
           headers: header
       );
-      String url = '$apibaseurl$endpoint';
+      String url = 'apibaseurl$endpoint';
       if(endpoint.contains("https")){
         url = endpoint;
       }
@@ -68,8 +68,11 @@ class Diorequest {
   }
 
   // var enableencryption = false;
-  Future<dynamic> post(String endpoint,Object data) async {
-    String url = '$apibaseurl$endpoint';
+  Future<dynamic> post(String endpoint,var data) async {
+    String url = 'apibaseurl$endpoint';
+    if(endpoint.contains("https")){
+      url = endpoint;
+    }
     String Ivstring = generateRandomString(16);
     // String keystring = dotenv.env['API_KEY'] ?? 'API_KEY not found';
     String keystring = "12345678901234567890123456789012";
@@ -81,13 +84,13 @@ class Diorequest {
     // }
     var header = {
       'Content-Type': Headers.jsonContentType,
-      'Authorization': 'Bearer $token',
+      'Authorization': 'Bearer token',
       'timestamp': Ivstring,
     };
     debugPrint.debugPrint(url);
-    debugPrint.debugPrint("headers: $header");
-    debugPrint.debugPrint(data.toString());
-    debugPrint.debugPrint(payload.toString());
+    // debugPrint.debugPrint("headers: $header");
+    // debugPrint.debugPrint(data.toMap());
+    // debugPrint.debugPrint(payload.toMap());
     // // Interceptor for encrypting request data
     // dio.interceptors.add(InterceptorsWrapper(
     //   onRequest: (options, handler) async {
@@ -112,8 +115,13 @@ class Diorequest {
       response =  await dio.post(url,options: options, data:payload);
       debugPrint.debugPrint(response.statusCode.toString());
       debugPrint.debugPrint(response.toString());
+      debugPrint.debugPrint(response.statusMessage.toString());
       if(response.statusCode == 200) {
-        return checktoken(response);
+      //   if(response is String){
+          return {"success": true,"message":response,"status":response == "upload-success"};
+        // }else {
+        //   return  checktoken(response);
+        // }
       }else if(response.statusCode == 201){
         logout();
         return {"success": false,"message":"Try and login again","status":"false"};

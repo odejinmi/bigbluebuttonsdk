@@ -75,14 +75,34 @@ class Screensharewebsocket extends GetxController {
 
   Future<void> createPeerConnections() async {
     final configuration = {
-      'iceServers': [
-        {
-          'urls': [
-            'stun:stun1.l.google.com:19302',
-            'stun:stun2.l.google.com:19302',
-          ]
-        },
+      // 'iceServers': [
+      //   {
+      //     'urls': [
+      //       'stun:stun1.l.google.com:19302',
+      //       'stun:stun2.l.google.com:19302',
+      //     ]
+      //   },
+      // ],
+      "stunServers": [
+
       ],
+      "turnServers": [
+        {
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
+          "ttl": 86400
+        },
+        {
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turn:meet1.konn3ct.com:3478",
+          "ttl": 86400
+        }
+      ],
+      "remoteIceCandidates": [
+
+      ]
     };
 
     // Create the peer connection

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/provider/Speechtotext.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'bigbluebuttonsdk.dart' as navigator;
 
 import 'bigbluebuttonsdk_platform_interface.dart';
 import 'exceptions.dart';
@@ -27,6 +30,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   String mediawebsocketurl = '';
   String mainwebsocketurl = '';
   String webrtctoken = '';
+  String baseurl = '';
   Meetingdetails? meetingdetails;
   bool _sdkInitialized = false;
 
@@ -38,14 +42,14 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   initialize(
-      {required String mediawebsocketur, required String mainwebsocketur,required String webrtctoken, required Meetingdetails meetingdetails}){
+      {required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}){
     assert(() {
-      if (mediawebsocketur.isEmpty) {
+      if (baseurl.isEmpty) {
         throw DuploException('publicKey cannot be null or empty');
       // } else if (!publicKey.startsWith("pk_")) {
       //   throw DuploException(Utils.getKeyErrorMsg('public'));
-      } else if (mainwebsocketur.isEmpty) {
-        throw DuploException('secretKey cannot be null or empty');
+      // } else if (mainwebsocketur.isEmpty) {
+      //   throw DuploException('secretKey cannot be null or empty');
       // } else if (!secretKey.startsWith("sk_")) {
       //   throw DuploException(Utils.getKeyErrorMsg('secret'));
        } else if (webrtctoken.isEmpty) {
@@ -59,8 +63,9 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
     if (sdkInitialized) return;
 
-    mediawebsocketurl = mediawebsocketur;
-    mainwebsocketurl = mainwebsocketur;
+    mediawebsocketurl = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
+    mainwebsocketurl = "wss://${baseurl}html5client/sockjs/180/uspuwwsd/websocket";
+    this.baseurl = baseurl;
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
 
@@ -69,16 +74,17 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   bool get sdkInitialized => _sdkInitialized;
 
   var websocket =Get.put(Websocket(), permanent: true);
+  var audiowebsocket =Get.put(Audiowebsocket(), permanent: true);
   var videowebsocket =Get.put(Videowebsocket(), permanent: true);
   var screensharewebsocket =Get.put(Screensharewebsocket(), permanent: true);
   var remotevideowebsocket =Get.put(RemoteVideoWebSocket(), permanent: true);
   var remotescreensharewebsocket =Get.put(RemoteScreenShareWebSocket(), permanent: true);
+  var texttospeech =Get.put(Texttospeech(), permanent: true);
 
   @override
   Startroom(){
-    var sola2 =Get.put(Audiowebsocket(), permanent: true);
-    websocket.initiate( webrtctoken: webrtctoken, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
-    sola2.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
+    websocket.initiate( webrtctoken: webrtctoken, baseurl: baseurl, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
+    audiowebsocket.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
     if(GetPlatform.isAndroid || GetPlatform.isIOS) {
       startForegroundService();
     }
@@ -87,6 +93,16 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   typing({required String chatid,}){
     websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"120\",\"method\":\"startUserTyping\",\"params\":[\"${chatid== 'MAIN-PUBLIC-GROUP-CHAT'?'public':chatid}\"]}"]);
+  }
+
+  @override
+  startcaption(){
+    texttospeech.initSpeech();
+  }
+
+  @override
+  stopcaption(){
+    texttospeech.stopListening();
   }
 
   @override
@@ -154,9 +170,26 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  uploadpresenter({required String filename,}){
-    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"867\",\"method\":\"requestPresentationUploadToken\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"$filename\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}"]);
-    websocket.websocketsub(["{\"msg\":\"sub\",\"id\":\"PyItdbzmJUeOFfJyn\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"$filename\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}"]);
+  uploadpresenter({required PlatformFile filename,}) async {
+    websocket.platformFile = filename;
+    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"867\",\"method\":\"requestPresentationUploadToken\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"${filename.name}\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}"]);
+    websocket.websocketsub(["{\"msg\":\"sub\",\"id\":\"PyItdbzmJUeOFfJyn\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"${filename.name}\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}"]);
+  }
+
+  @override
+  removepresentation({required String presentationid}){
+    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"31\",\"method\":\"setPresentation\",\"params\":[\"\",\"DEFAULT_PRESENTATION_POD\"]}"]);
+    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"32\",\"method\":\"removePresentation\",\"params\":[\"$presentationid\",\"DEFAULT_PRESENTATION_POD\"]}"]);
+  }
+
+  @override
+  makepresentationdefault({required var presentation}){
+    websocket.makepresentationdefault(presentation:presentation);
+  }
+
+  @override
+  nextpresentation({required String page}){
+    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"33\",\"method\":\"switchSlide\",\"params\":[$page,\"DEFAULT_PRESENTATION_POD\"]}"]);
   }
 
   @override
@@ -174,7 +207,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   stopcamera(){
     websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.edSet.deviceId)}\"]}"
+      "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.deviceid)}\"]}"
     ]);
     videowebsocket.stopCameraSharing();
   }
@@ -183,6 +216,26 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   startcamera(){
     videowebsocket.initiate(webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!,);
+  }
+  
+  @override
+  switchVideoQuality({required int width, /*int height,*/ required int frameRate}){
+      videowebsocket.switchVideoQuality(width: width, frameRate: frameRate);
+  }
+
+  @override
+  switchcamera({required String deviceid}){
+    videowebsocket.switchcamera(deviceid: deviceid);
+  }
+
+  @override
+  starvirtual({required Uint8List backgroundimage}){
+    videowebsocket.starvirtual(backgroundimage: backgroundimage);
+  }
+
+  @override
+  switchmicrophone({required String deviceid}){
+    audiowebsocket.switchmicrophone(deviceid: deviceid);
   }
 
   @override
@@ -194,6 +247,16 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   startscreenshare(){
     screensharewebsocket.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingDetails: meetingdetails!,);
+  }
+
+  @override
+  Future<List<navigator.MediaDeviceInfo>> getAvailableCameras() async {
+    return videowebsocket.getdevices();
+  }
+
+  @override
+  Future<List<navigator.MediaDeviceInfo>> getAvailableMicrophones (){
+    return audiowebsocket.getdevices();
   }
 
   @override
@@ -232,7 +295,10 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"187\",\"method\":\"toggleRecording\",\"params\":[]}"]);
   }
 
-
+ @override
+ stoptyping(){
+   websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"57\",\"method\":\"stopUserTyping\",\"params\":[]}"]);
+ }
 
   @override
   breakeoutroom(){
@@ -301,6 +367,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   get isvideo {
     return videowebsocket.isvideo;
+  }
+
+  @override
+  get presentationmodel {
+    return websocket.presentationmodel;
   }
 
   @override

@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import '../bigbluebuttonsdk.dart' as navigator;
 
 import '../../utils/chatmodel.dart';
 import '../../utils/meetingdetails.dart';
 import '../../utils/participant.dart';
 import '../../utils/pollanalyseparser.dart';
 import '../../utils/typingmodel.dart';
+import '../utils/presentationmodel.dart';
 import 'jsondatas/websocketresponse.dart';
 
 
@@ -53,6 +56,33 @@ class Websocket extends GetxController{
   set istypingnow(value)=> _istyping.value = value;
   get istypingnow => _istyping.value;
 
+  final _platformFile = PlatformFile(name: '', size: 0).obs;
+  set platformFile(value)=> _platformFile.value = value;
+  get platformFile => _platformFile.value;
+
+  final _presentationmodel = <Presentationmodel>[].obs;
+  set presentationmodel(value)=> _presentationmodel.value = value;
+  get presentationmodel => _presentationmodel.value;
+
+  final _slideposition = [].obs;
+  set slideposition(value)=> _slideposition.value = value;
+  get slideposition => _slideposition.value;
+
+  final _slides = [].obs;
+  set slides(value)=> _slides.value = value;
+  get slides => _slides.value;
+
+   get currentslide {
+     var result = slides.where((v) {
+       return v["fields"]["current"] == true;
+     }).toList();
+     if(result.isNotEmpty){
+       return result.last;
+     }else{
+       return null;
+     }
+   }
+
   final _ispolling = false.obs;
   set ispolling(value)=> _ispolling.value = value;
   get ispolling => _ispolling.value;
@@ -81,6 +111,10 @@ class Websocket extends GetxController{
   set mainwebsocketurl(value)=> _mainwebsocketurl.value = value;
   get mainwebsocketurl => _mainwebsocketurl.value;
 
+   final _baseurl = "".obs;
+  set baseurl(value)=> _baseurl.value = value;
+  get baseurl => _baseurl.value;
+
    final _mediawebsocketurl = "".obs;
    set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
    get mediawebsocketurl => _mediawebsocketurl.value;
@@ -94,7 +128,8 @@ class Websocket extends GetxController{
        return user.chatId == chatid;
      }).toList();
    }
-
+   // for konnect doc
+   // wss://meet1.konn3ct.com/pad/socket.io/?sessionToken=pzmd9ngiscb7jz7y&padId=g.1k96eXNh2r71eXGG$notes&EIO=3&transport=websocket&sid=tiGrtKFCmtp4L-9bAAAA
    var _reason = "You left the session".obs;
    set reason(value)=>_reason.value = value;
    get reason => _reason.value;
@@ -154,10 +189,11 @@ class Websocket extends GetxController{
    }
 
   void initiate(
-      {required String webrtctoken,
+      {required String webrtctoken,required String baseurl,
       required String mainwebsocketurl,required String mediawebsocketurl,
       required Meetingdetails meetingdetails}){
     this.webrtctoken = webrtctoken;
+    this.baseurl = baseurl;
     this.meetingdetails = meetingdetails;
     this.mainwebsocketurl = mainwebsocketurl;
     this.mediawebsocketurl = mediawebsocketurl;
@@ -195,7 +231,6 @@ class Websocket extends GetxController{
     );
     update();
   }
-
 
    void websocketsub(json) {
      if(jsonDecode(json[0])["msg"]!="pong") {
@@ -264,11 +299,6 @@ class Websocket extends GetxController{
     websocketsub(["{\"msg\":\"$type\",\"id\":\"azHBtJorAvXd6FiBq\",\"name\":\"users-persistent-data\",\"params\":[]}"]);
   }
 
-
-  stoptyping(){
-    websocketsub(["{\"msg\":\"method\",\"id\":\"57\",\"method\":\"stopUserTyping\",\"params\":[]}"]);
-  }
-
   raisehand(){
     websocketsub(["{\"msg\":\"method\",\"id\":\"51\",\"method\":\"setEmojiStatus\",\"params\":[\"w_vb2mu96l9r0c\",\"raiseHand\"]}"]);
   }
@@ -281,17 +311,23 @@ class Websocket extends GetxController{
     websocketsub(["{\"msg\":\"method\",\"id\":\"27\",\"method\":\"muteAllExceptPresenter\",\"params\":[\"w_kvz0eh5afurv\"]}"]);
   }
 
+   makepresentationdefault({required var presentation}){
+     websocketsub(["{\"msg\":\"sub\",\"id\":\"VyaqqPosf1nkir9mV\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"undefined\",\"${presentation["id"]}\"]}"]);
+     websocketsub(["{\"msg\":\"method\",\"id\":\"962\",\"method\":\"setUsedToken\",\"params\":[\"${presentation["fields"]["authzToken"]}\"]}"]);
+   }
+
    Map<String, dynamic> mergeData(Map<String, dynamic> incomingData, Map<String, dynamic> existingData) {
      incomingData.forEach((key, value) {
        if (value is Map<String, dynamic> && existingData[key] is Map<String, dynamic>) {
-         // Recursively merge if the value is a nested map
-         mergeData(value, existingData[key]);
+         // Recursively merge if both are maps
+         existingData[key] = mergeData(value, existingData[key]);
        } else {
-         // Otherwise, simply replace the value
+         // Add or replace the value
          existingData[key] = value;
        }
      });
      return existingData;
    }
+
 
 }

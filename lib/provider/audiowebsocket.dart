@@ -17,7 +17,11 @@ class Audiowebsocket extends GetxController {
   var retryLimit = 3;
   RTCPeerConnection? _peerConnection;
   var edSet;
-  List<MediaDeviceInfo>? _mediaDevicesList;
+  
+  var _mediaDevicesList = <MediaDeviceInfo>[].obs;
+  set mediaDevicesList (value) => _mediaDevicesList.value = value;
+  get mediaDevicesList => _mediaDevicesList.value;
+  
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
@@ -35,6 +39,9 @@ class Audiowebsocket extends GetxController {
   set meetingdetails(value) => _meetingdetails.value = value;
   get meetingdetails => _meetingdetails.value;
 
+  var _deviceid = "".obs;
+  set deviceid (value) => _deviceid.value = value;
+  get deviceid => _deviceid.value;
 
   Timer? _pingTimer;  // Timer to manage pings
 
@@ -43,9 +50,95 @@ class Audiowebsocket extends GetxController {
     super.onInit();
     mediaDevices.ondevicechange = (event) async {
       // print('++++++ ondevicechange ++++++');
-      _mediaDevicesList = await mediaDevices.enumerateDevices();
+      getdevices().then((value){
+        mediaDevicesList =value;
+      });
+    };
+    getdevices().then((value){
+      mediaDevicesList =value;
+      deviceid = mediaDevicesList.first.deviceId;
+    });
+  }
+
+  Future<List<MediaDeviceInfo>> getdevices() async {
+    var devices = await mediaDevices.enumerateDevices();
+    return devices.where((device) => device.kind == 'audioinput').toList();
+  }
+  void switchmicrophone({required String deviceid}) async {
+    this.deviceid = deviceid;
+    adjustvideo();
+  }
+
+  void adjustvideo() async {
+    // Step 1: Stop the existing video track if it exists
+    if (_localStream != null) {
+      _localStream?.getTracks().forEach((track) {
+        track.stop();
+      });
+    }
+
+    // Step 2: Create a new video stream with updated quality settings
+    _localStream = await createAudioStream(audioDeviceId: deviceid);
+
+    // Step 4: Replace the video track on the peer connection
+    if (_peerConnection != null && _localStream != null) {
+      // Assuming your local stream has only one video track
+      var newVideoTrack = _localStream!.getAudioTracks().first;
+
+      // Get the existing sender for the video track
+      var senderlist = await _peerConnection!.getSenders();
+      
+      var sender = senderlist.firstWhere(
+              (s) => s.track?.kind == 'audio',
+          orElse: () => throw Exception("Audio sender not found"));
+
+      // Replace the existing track with the new one
+      await sender.replaceTrack(newVideoTrack);
+
+      // Renegotiate the connection if needed
+      await negotiate();
+    }
+  }
+
+  // Example renegotiation function
+  Future<void> negotiate() async {
+    _peerConnection!.onIceCandidate =
+        (RTCIceCandidate candidate) {
+      // print("New ICE Candidate: ${candidate.candidate}");
+      rtcIceCadidates.add(candidate);
+      sendCandidate(candidate.candidate!);
+    };
+
+    // _peerConnection?.onIceConnectionState = (state) {
+    //   print("ICE Connection State: $state");
+    //   if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+    //     receiveStart();
+    //   }
+    // };
+
+    // Create and set local description
+    final offerOptions = {
+      'offerToReceiveAudio': true,
+      'offerToReceiveVideo': false,
+    };
+    // Create and set local description
+    final offer = await _peerConnection?.createOffer(offerOptions);
+    // Check if the offer was created successfully
+    if (offer == null) {
+      throw Exception('Failed to create offer');
+    }
+    await _peerConnection?.setLocalDescription(offer);
+    final sdpOffer = await _peerConnection?.getLocalDescription();
+    sendSDPOffer(sdpOffer!.sdp);
+
+
+    _peerConnection?.onAddStream = (stream) {
+      // print('Stream added: ${stream}');
+      // print('Stream added: ${stream.getAudioTracks()}');
+      // Handle incoming media stream here if needed
     };
   }
+
   @override
   void onClose() {
     stopWebSocketPing();  // Stop the ping timer when the WebSocket is closed
@@ -86,17 +179,50 @@ class Audiowebsocket extends GetxController {
     this.mediawebsocketurl = mediawebsocketurl;
     createPeerConnections();
   }
+
+  Future<MediaStream> createAudioStream({required String audioDeviceId}) async {
+    final Map<String, dynamic> constraints = {
+      'audio': {
+        'deviceId': audioDeviceId ?? '',
+      },
+      'video': false,
+    };
+
+    return await mediaDevices.getUserMedia(constraints);
+  }
+
+
   Future<void> createPeerConnections() async {
     // print('Creating peer connection');
     final configuration = {
-      'iceServers': [
+      // 'iceServers': [
+      //   {
+      //     'urls': [
+      //       'stun:stun1.l.google.com:19302',
+      //       'stun:stun2.l.google.com:19302'
+      //     ]
+      //   }
+      // ],
+      "stunServers": [
+
+      ],
+      "turnServers": [
         {
-          'urls': [
-            'stun:stun1.l.google.com:19302',
-            'stun:stun2.l.google.com:19302'
-          ]
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
+          "ttl": 86400
+        },
+        {
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turn:meet1.konn3ct.com:3478",
+          "ttl": 86400
         }
       ],
+      "remoteIceCandidates": [
+
+      ]
     };
 
     _peerConnection = await createPeerConnection(configuration);
@@ -106,54 +232,16 @@ class Audiowebsocket extends GetxController {
       // print(event.streams);
 
     };
-    // Get audio media stream
-    _localStream = await mediaDevices.getUserMedia({
-      'audio': true,
-      'video': false,
-    });
 
-    _mediaDevicesList = await mediaDevices.enumerateDevices();
+    // Get audio media stream
+    _localStream = await createAudioStream(audioDeviceId: deviceid);
 
     // Add audio track to the peer connection
     _localStream!.getTracks().forEach((track) {
       _peerConnection?.addTrack(track, _localStream!);
     });
 
-    _peerConnection!.onIceCandidate =
-        (RTCIceCandidate candidate) {
-      // print("New ICE Candidate: ${candidate.candidate}");
-      rtcIceCadidates.add(candidate);
-      sendCandidate(candidate.candidate!);
-    };
-
-    // _peerConnection?.onIceConnectionState = (state) {
-    //   print("ICE Connection State: $state");
-    //   if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
-    //     receiveStart();
-    //   }
-    // };
-
-    // Create and set local description
-    final offerOptions = {
-      'offerToReceiveAudio': true,
-      'offerToReceiveVideo': false,
-    };
-    // Create and set local description
-    final offer = await _peerConnection?.createOffer(offerOptions);
-    // Check if the offer was created successfully
-    if (offer == null) {
-      throw Exception('Failed to create offer');
-    }
-    await _peerConnection?.setLocalDescription(offer);
-    final sdpOffer = await _peerConnection?.getLocalDescription();
-    sendSDPOffer(sdpOffer!.sdp);
-
-
-    _peerConnection?.onAddStream = (stream) {
-      // print('Stream added: ${stream}');
-      // print('Stream added: ${stream.getAudioTracks()}');
-      // Handle incoming media stream here if needed
-    };
+    negotiate();
   }
 
   void sendSDPOffer(String? sdp) {

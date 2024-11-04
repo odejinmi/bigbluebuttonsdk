@@ -1,4 +1,8 @@
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'bigbluebuttonsdk.dart';
 
 import 'bigbluebuttonsdk_method_channel.dart';
 import 'utils/chatmodel.dart';
@@ -34,11 +38,19 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  initialize({required String mediawebsocketur, required String mainwebsocketur,required String webrtctoken, required Meetingdetails meetingdetails}) {
+  initialize({required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
   typing({required String chatid,}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  removepresentation({required String presentationid}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  nextpresentation({required String page}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -51,6 +63,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   endecinema(){
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  makepresentationdefault({required var presentation}){
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -70,7 +86,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  uploadpresenter({required String filename,}) {
+  uploadpresenter({required PlatformFile filename,}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -79,6 +95,18 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   mutemyself() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  starvirtual({required Uint8List backgroundimage}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  startcaption(){
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  stopcaption(){
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -102,6 +130,18 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  switchVideoQuality({required int width, /*int height,*/ required int frameRate}) {
+    throw UnimplementedError('switchVideoQuality() has not been implemented.');
+  }
+
+  switchcamera({required String deviceid}) {
+    throw UnimplementedError('switchcamera() has not been implemented.');
+  }
+
+  switchmicrophone({required String deviceid}) {
+    throw UnimplementedError('switchmicrophone() has not been implemented.');
+  }
+
   assignpresenter({required String userid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
@@ -123,6 +163,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   breakeoutroom() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  stoptyping(){
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -164,9 +208,20 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   get chatMessages{
     throw UnimplementedError('initialize() has not been implemented.');
   }
+  get presentationmodel{
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
 
   get ishowecinema{
     throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  Future<List<MediaDeviceInfo>>  getAvailableCameras (){
+    throw UnimplementedError('getAvailableCameras() has not been implemented.');
+  }
+
+  Future<List<MediaDeviceInfo>>  getAvailableMicrophones (){
+    throw UnimplementedError('getAvailableMicrophones() has not been implemented.');
   }
 
   Stream<String> get stream{

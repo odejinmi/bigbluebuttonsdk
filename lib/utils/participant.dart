@@ -16,6 +16,7 @@ class Participant {
   String? msg;
   String? collection;
   String? id;
+  String? presentation;
   bool? isvidieo = false;
   dynamic vidieoid;
   dynamic vidieodeviceId;
@@ -27,6 +28,7 @@ class Participant {
     this.msg,
     this.collection,
     this.isvidieo,
+    this.presentation,
     this.vidieoid,
     this.vidieodeviceId,
     this.mediaStream,
@@ -39,6 +41,7 @@ class Participant {
     msg: json["msg"],
     collection: json["collection"],
     isvidieo: json["isvidieo"],
+    presentation: json["presentation"],
     vidieoid: json["vidieoid"],
     vidieodeviceId: json["vidieodeviceId"],
     mediaStream: json["mediaStream"],
@@ -50,6 +53,7 @@ class Participant {
   Map<String, dynamic> toJson() => {
     "msg": msg,
     "collection": collection,
+    "presentation": presentation,
     "isvidieo": isvidieo,
     "vidieoid": vidieoid,
     "vidieodeviceId": vidieodeviceId,

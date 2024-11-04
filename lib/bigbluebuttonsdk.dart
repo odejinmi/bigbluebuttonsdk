@@ -1,8 +1,15 @@
 
+import 'dart:typed_data';
+
+import 'package:file_picker/file_picker.dart';
+
 import 'bigbluebuttonsdk_platform_interface.dart';
 import 'utils/chatmodel.dart';
 import 'utils/meetingdetails.dart';
 import 'utils/participant.dart';
+import 'package:flutter_webrtc/flutter_webrtc.dart';
+// import 'package:flutter_webrtc_plus/flutter_webrtc_plus.dart';
+
 export 'provider/audiowebsocket.dart';
 export 'provider/remotescreenshare.dart';
 export 'provider/remotevideowebsocket.dart';
@@ -27,8 +34,8 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.Startroom();
   }
 
-  initialize({required String mediawebsocketurl, required String mainwebsocketurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
-    BigbluebuttonsdkPlatform.instance.initialize(mediawebsocketur:mediawebsocketurl, mainwebsocketur: mainwebsocketurl,webrtctoken:webrtctoken, meetingdetails:meetingdetails);
+  initialize({required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
+    BigbluebuttonsdkPlatform.instance.initialize(baseurl:baseurl,webrtctoken:webrtctoken, meetingdetails:meetingdetails);
   }
 
   typing({required String chatid}) {
@@ -64,12 +71,36 @@ class Bigbluebuttonsdk {
   }
 
 
-  uploadpresenter({required String filename,}) {
+  uploadpresenter({required PlatformFile filename,}) {
     BigbluebuttonsdkPlatform.instance.uploadpresenter(filename:filename);
   }
 
   setemojistatus() {
     BigbluebuttonsdkPlatform.instance.setemojistatus();
+  }
+
+  switchVideoQuality({required int width, /*int height,*/ required int frameRate}){
+    BigbluebuttonsdkPlatform.instance.switchVideoQuality(width: width, frameRate: frameRate);
+  }
+
+  switchVideocamera({required String deviceid}){
+    BigbluebuttonsdkPlatform.instance.switchcamera(deviceid:deviceid);
+  }
+
+  switchmicrophone({required String deviceid}){
+    BigbluebuttonsdkPlatform.instance.switchmicrophone(deviceid:deviceid);
+  }
+
+  removepresentation({required String presentationid}){
+    BigbluebuttonsdkPlatform.instance.removepresentation(presentationid:presentationid);
+  }
+
+  nextpresentation({required String page}){
+    BigbluebuttonsdkPlatform.instance.nextpresentation(page:page);
+  }
+
+  makepresentationdefault({required var presentation}){
+    BigbluebuttonsdkPlatform.instance.makepresentationdefault(presentation:presentation);
   }
 
   mutemyself() {
@@ -114,6 +145,22 @@ class Bigbluebuttonsdk {
 
   breakeoutroom() {
     BigbluebuttonsdkPlatform.instance.breakeoutroom();
+  }
+
+  stoptyping(){
+    BigbluebuttonsdkPlatform.instance.stoptyping();
+  }
+
+  stopcaption(){
+    BigbluebuttonsdkPlatform.instance.stopcaption();
+  }
+
+  startcaption(){
+    BigbluebuttonsdkPlatform.instance.startcaption();
+  }
+
+  starvirtual({required Uint8List backgroundimage}){
+    BigbluebuttonsdkPlatform.instance.starvirtual(backgroundimage: backgroundimage);
   }
 
   List<ChatMessage> getchatMessages({required String chatid,}) {
@@ -162,6 +209,15 @@ class Bigbluebuttonsdk {
   }
   get ishowecinema {
     return BigbluebuttonsdkPlatform.instance.ishowecinema;
+  }
+  get presentationmodel {
+    return BigbluebuttonsdkPlatform.instance.presentationmodel;
+  }
+  Future<List<MediaDeviceInfo>> getAvailableCameras() {
+    return BigbluebuttonsdkPlatform.instance.getAvailableCameras();
+  }
+  Future<List<MediaDeviceInfo>> getAvailableMicrophones() {
+    return BigbluebuttonsdkPlatform.instance.getAvailableMicrophones();
   }
   Stream<String> get stream {
     return BigbluebuttonsdkPlatform.instance.stream;

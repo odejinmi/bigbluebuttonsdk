@@ -6,12 +6,6 @@ import 'meetingdetails.dart';
  * GetX Template Generator - fb.com/htngu.99
  * */
 
-String home = 'Home';
-// String baseurl = 'meet.konn3ct.ng/';
-String apibaseurl = '';
-// String entermeetingurl = 'https://${baseurl}bigbluebutton/api/enter?sessionToken=';
-String token = "1075|v7DDQRBn0s5ri6p7KrAP2xBjsoB2UpIlHXnaNtyZ";
-
 void logLongText(String text, {int chunkSize = 1000}) {
   final pattern = RegExp('.{1,$chunkSize}'); // This will split the text into chunks of size `chunkSize`
   pattern.allMatches(text).forEach((match) => print(match.group(0)));

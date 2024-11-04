@@ -16,19 +16,16 @@ class RemoteVideoWebSocket extends GetxController {
   var retryLimit = 3;
   var websocket = Get.find<Websocket>();
   RTCPeerConnection? peerConnection;
-  List<MediaDeviceInfo>? _mediaDevicesList;
-  MediaStream? _localStream;
-  List<RTCIceCandidate> rtcIceCandidates = [];
   Timer? _pingTimer;
+
+  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
+  set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
+  get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
   // Video renderers
   final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
-
-  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
-  set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
-  get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
@@ -45,18 +42,12 @@ class RemoteVideoWebSocket extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    localRTCVideoRenderer.initialize();
     remoteRTCVideoRenderer.initialize();
-
-    mediaDevices.ondevicechange = (event) async {
-      _mediaDevicesList = await mediaDevices.enumerateDevices();
-    };
   }
 
   @override
   void onClose() {
     stopWebSocketPing();
-    _localRTCVideoRenderer.value.dispose();
     _remoteRTCVideoRenderer.value.dispose();
     peerConnection?.close();
     peerConnection = null;
@@ -82,36 +73,28 @@ class RemoteVideoWebSocket extends GetxController {
     websocketsub(pingPayload);
   }
 
-  void initiate(
-      {required String webrtctoken,
-      required String mediawebsocketurl,
-      required Meetingdetails meetingdetails,
-      required String cameraId}) {
+  void initiate({
+    required String webrtctoken,
+    required String mediawebsocketurl,
+    required Meetingdetails meetingdetails,
+    required String cameraId,
+  }) {
     this.webrtctoken = webrtctoken;
-    this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
     initViewerStream(cameraId);
   }
 
-  void receiveViewerSDPAnswer(String answer, String cameraId) async {
+  Future<void> receiveViewerSDPAnswer(String answer, String cameraId) async {
     final config = {
-      'iceServers': [
+      "stunServers": [],
+      "turnServers": [
         {
-          'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']
-        },
-        {
-          "username": "1728397897:w_km0obr3wtifm",
-          "credential": "674xlGmId+zxxySOF12yjq8Kwy4=",
-          "urls": "turns:meet.konn3ct.ng:443?transport=tcp",
-          "ttl": 86400
-        },
-        {
-          "username": "1728397897:w_km0obr3wtifm",
-          "credential": "674xlGmId+zxxySOF12yjq8Kwy4=",
-          "urls": "turn:meet.konn3ct.ng:3478",
+          "username": "example_user",
+          "password": "example_pass",
+          "url": "turn:your.turn.server:3478",
           "ttl": 86400
         }
-      ],
+      ]
     };
 
     final constraints = {
@@ -137,7 +120,6 @@ class RemoteVideoWebSocket extends GetxController {
       "answer": newAnswer.sdp!
     });
 
-    // Handle incoming ICE candidates
     peerConnection!.onIceCandidate = (candidate) {
       websocketsub({
         "id": "onIceCandidate",
@@ -148,6 +130,7 @@ class RemoteVideoWebSocket extends GetxController {
       });
     };
 
+    // Handle the reception of remote media streams
     // Properly handle incoming tracks (audio or video)
     peerConnection!.onTrack = (RTCTrackEvent event) async {
       print("onTrack triggered");
@@ -162,10 +145,10 @@ class RemoteVideoWebSocket extends GetxController {
           return v.vidieodeviceId != null && v.vidieodeviceId! == cameraId;
         }).toList();
         if (list.isNotEmpty) {
-          list[0].mediaStream = _localStream;
+          list[0].mediaStream = event.streams[0];
           list[0].rtcVideoRenderer = RTCVideoRenderer();
           await list[0].rtcVideoRenderer!.initialize();
-          list[0].rtcVideoRenderer!.srcObject = _localStream;
+          list[0].rtcVideoRenderer!.srcObject = event.streams[0];
           // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
         }
       }
@@ -173,13 +156,14 @@ class RemoteVideoWebSocket extends GetxController {
 
     peerConnection!.onIceConnectionState = (state) {
       print("ICE Connection State: $state");
+      if (state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
+        reconnectWebSocket(cameraId);
+      }
     };
   }
 
   void initViewerStream(String cameraId) {
     if (isWebsocketRunning) return;
-
-    // final url = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
     channel = WebSocketChannel.connect(Uri.parse(mediawebsocketurl));
 
     var payload = {
@@ -196,27 +180,20 @@ class RemoteVideoWebSocket extends GetxController {
     channel!.stream.listen(
           (event) async {
         var e = jsonDecode(event);
-        print("New WebSocket event");
-        print(e);
+        print("New WebSocket event: $event");
         switch (e['id']) {
+          case 'startResponse':
+            receiveViewerSDPAnswer(e['sdpAnswer'], e['cameraId']);
+            break;
           case 'playStart':
-          // Handle the start of playback
             var result = await peerConnection!.getSenders();
             result.forEach((sender) {
               print("Track sender: ${sender.track}");
             });
             break;
-
-          case 'startResponse':
-          // Handle the start response and set SDP answer
-            receiveViewerSDPAnswer(e['sdpAnswer'], e['cameraId']);
-            break;
-
           case 'iceCandidate':
-          // Handle incoming ICE candidates
             receiveCandidate(e['candidate']['candidate']);
             break;
-
           default:
             print('Unhandled WebSocket event: $e');
         }
@@ -227,9 +204,21 @@ class RemoteVideoWebSocket extends GetxController {
       onError: (err) {
         print("WebSocket error: $err");
         isWebsocketRunning = false;
-        if (retryLimit > 0) retryLimit--;
+        reconnectWebSocket(cameraId);
       },
     );
+  }
+
+  void reconnectWebSocket(String cameraId) {
+    if (retryLimit > 0) {
+      retryLimit--;
+      print("Reconnecting WebSocket...");
+      Future.delayed(Duration(seconds: 5), () {
+        initViewerStream(cameraId);
+      });
+    } else {
+      print("Reached retry limit. Failed to reconnect WebSocket.");
+    }
   }
 
   void websocketsub(Map<String, dynamic> json) {
@@ -237,7 +226,6 @@ class RemoteVideoWebSocket extends GetxController {
   }
 
   void receiveCandidate(String candidate) async {
-    // Parse and add ICE candidate to PeerConnection
     var iceCandidate = RTCIceCandidate(candidate, null, 0);
     await peerConnection?.addCandidate(iceCandidate);
   }

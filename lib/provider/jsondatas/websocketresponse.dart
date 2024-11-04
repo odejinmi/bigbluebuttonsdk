@@ -2,8 +2,13 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 
+import 'package:dio/dio.dart' as dio;
+
 import '../../../utils/pollanalyseparser.dart';
 import '../../bigbluebuttonsdk_method_channel.dart';
+import '../../utils/diorequest.dart';
+import '../../utils/presentationmodel.dart';
+import '../../utils/strings.dart';
 import '../remotescreenshare.dart';
 import '../remotevideowebsocket.dart';
 import '../websocket.dart';
@@ -11,7 +16,8 @@ import 'chats.dart';
 import 'users.dart';
 
 class Websocketresponse{
-
+  // a["{\"msg\":\"added\",\"collection\":\"presentation-upload-token\",\"id\":\"LCLjzj7Ruv2rYCQ8Q\",\"fields\":{\"meetingId\":\"d54ad009d179ae346683cfc3603979bc99339ef7-1729907981034\",\"podId\":\"DEFAULT_PRESENTATION_POD\",\"userId\":\"w_pknbeovblnp0\",\"filename\":\"Screenshot 2024-09-04 at 4.37.57\u202fPM.png\",\"authzToken\":\"PresUploadToken-en05ju0uDEFAULT_PRESENTATION_POD-w_pknbeovblnp0\",\"temporaryPresentationId\":\"5P4vXvai4sTE9cKHpjAC624\",\"failed\":false,\"used\":false}}"]
+  // a["{\"msg\":\"ready\",\"subs\":[\"J76sMrKavd25c4cN4\"]}"]
   var websocket = Get.find<Websocket>();
   reseponse(event) async {
     var firstsplit = event.toString().split("a[");
@@ -93,23 +99,59 @@ class Websocketresponse{
                 webrtctoken: websocket.webrtctoken,  mediawebsocketurl: websocket.mediawebsocketurl, meetingdetails: websocket.meetingdetails,);
             break;
           case "presentation-upload-token" :
+            // a["{\"msg\":\"changed\",\"collection\":\"presentation-upload-token\",\"id\":\"LCLjzj7Ruv2rYCQ8Q\",\"fields\":{\"used\":true}}"]
             if(json["msg"] == "added"){
-              websocket.websocketsub(["{\"msg\":\"sub\",\"id\":\"vbAwr1EusAkRGhC45\",\"name\":\"presentation-upload-token\",\"params\":[\"${json["field"]["podId"]}\",\"undefined\",\"${json["id"]}\"]}"]);
-              websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"962\",\"method\":\"setUsedToken\",\"params\":[\"${json["fields"]["authzToken"]}\"]}"]);
+              uploadpresentation(json);
+              // websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"962\",\"method\":\"setUsedToken\",\"params\":[\"${json["fields"]["authzToken"]}\"]}"]);
             }else if(json["msg"] == "changed") {
               // a["{\"msg\":\"changed\",\"collection\":\"presentation-upload-token\",\"id\":\"4guHsQNu6mf3ANscz\",\"fields\":{\"used\":true}}"]
             }
             break;
           case "presentations" :
             if(json["msg"] == "added") {
-              // a["{\"msg\":\"added\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"id\":\"babacb799674fc398b451c71afbf1bd7cb9dd645-1727990231301\",\"meetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798\",\"podId\":\"DEFAULT_PRESENTATION_POD\",\"conversion\":{\"done\":false,\"error\":false,\"status\":\"SUPPORTED_DOCUMENT\"},\"name\":\"Screenshot 2024-09-04 at 4.37.01\u202fPM.png\",\"renderedInToast\":false,\"temporaryPresentationId\":\"yMbQ5qmTpKOn834EuPwMtvKj\"}}"]
+              websocket.presentationmodel.add(presentationmodelFromJson(jsonEncode(json)));
             }else if(json["msg"] == "changed") {
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"conversion\":{\"done\":false,\"error\":false,\"status\":\"GENERATING_TEXTFILES\"}}}"]
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"conversion\":{\"done\":false,\"error\":false,\"status\":\"GENERATING_THUMBNAIL\"}}}"]
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"conversion\":{\"done\":false,\"error\":false,\"status\":\"GENERATING_SVGIMAGES\"}}}"]
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"conversion\":{\"done\":false,\"error\":false,\"status\":\"GENERATED_SLIDE\",\"numPages\":1,\"pagesCompleted\":1}}}"]
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"conversion\":{\"done\":true,\"error\":false,\"status\":\"GENERATED_SLIDE\",\"numPages\":1,\"pagesCompleted\":1},\"current\":false,\"downloadable\":false,\"exportation\":{\"status\":null},\"filenameConverted\":\"\",\"isInitialPresentation\":false,\"pages\":[{\"id\":\"babacb799674fc398b451c71afbf1bd7cb9dd645-1727990231301/1\",\"num\":1,\"thumbUri\":\"https://meet.konn3ct.ng/bigbluebutton/presentation/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/babacb799674fc398b451c71afbf1bd7cb9dd645-1727990231301/thumbnail/1\",\"txtUri\":\"https://meet.konn3ct.ng/bigbluebutton/presentation/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/babacb799674fc398b451c71afbf1bd7cb9dd645-1727990231301/textfiles/1\",\"svgUri\":\"https://meet.konn3ct.ng/bigbluebutton/presentation/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/9753e686f0a75399ca60ae03442353b4b7862ee2-1727988992798/babacb799674fc398b451c71afbf1bd7cb9dd645-1727990231301/svg/1\",\"current\":true,\"xOffset\":0,\"yOffset\":0,\"widthRatio\":100,\"heightRatio\":100}],\"removable\":true}}"]
-              // a["{\"msg\":\"changed\",\"collection\":\"presentations\",\"id\":\"SdT6veDxhRdNtQoGX\",\"fields\":{\"downloadableExtension\":\"\"}}"]
+              print(jsonEncode(json));
+              var list = websocket.presentationmodel.where((v) {
+                return v.id == json["id"];
+              }).toList();
+              websocket.mergeData(json, list[0].toJson());
+            }else if(json["msg"] == "removed") {
+              var list = websocket.presentationmodel.where((v) {
+                return v.id == json["id"];
+              }).toList();
+              websocket.presentationmodel.remove(list);
+              // "{\"msg\":\"removed\",\"collection\":\"presentations\",\"id\":\"gQiYcFoascDovEpyu\"}"
+
+            }
+            break;
+           case "slide-position" :
+            if(json["msg"] == "added") {
+              websocket.slideposition.add(json);
+            }else if(json["msg"] == "removed") {
+              var list = websocket.slideposition.where((v) {
+                return v.id == json["id"];
+              }).toList();
+              websocket.slideposition.remove(list);
+            }
+            break;
+           case "slides" :
+             print(jsonEncode(json));
+            if(json["msg"] == "added") {
+              if(websocket.slides.isNotEmpty && json["fields"]["presentationId"] != websocket.slides[0]["fields"]["presentationId"]) {
+                websocket.slides.clear();
+              }
+              websocket.slides.add(json);
+            }else if(json["msg"] == "changed") {
+              var list = websocket.slides.where((v) {
+                  return v["id"] == json["id"];
+              }).toList();
+              websocket.mergeData(json, list[0]);
+            }else if(json["msg"] == "removed") {
+              var list = websocket.slides.where((v) {
+                return v.id == json["id"];
+              }).toList();
+              websocket.slides.remove(list);
             }
             break;
            case "breakouts" :
@@ -157,6 +199,32 @@ class Websocketresponse{
         list[0].vidieoid = null;
         list[0].vidieodeviceId = null;
      }
+    }
+  }
+
+  void uploadpresentation(var token) async {
+    dio.FormData formData = dio.FormData.fromMap({
+      "fileUpload": await dio.MultipartFile.fromFile(
+        websocket.platformFile.path,
+        filename: websocket.platformFile.name,
+      ),
+      "conference": token["fields"]["meetingId"],
+      "room": token["fields"]["meetingId"],
+      "temporaryPresentationId": token["fields"]["temporaryPresentationId"],
+      "pod_id": "DEFAULT_PRESENTATION_POD",
+      "is_downloadable": false
+    });
+    print("presentation upload");
+    var cmddetails = await Diorequest().post("https://${websocket.baseurl}/bigbluebutton/presentation/${token["fields"]["authzToken"]}/upload",
+        formData);
+    print(cmddetails);
+    if (cmddetails["success"]) {
+        websocket.makepresentationdefault(presentation:token);
+      // Get.offNamed(
+      // Routes.POSTJOIN, arguments: {"token": webtoken,"meetingdetails":cmddetails["response"]});
+      // update();
+    }else{
+      print("start the meeting again");
     }
   }
 }

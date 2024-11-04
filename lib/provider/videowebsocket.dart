@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -22,12 +23,27 @@ class Videowebsocket extends GetxController{
   var retryLimit = 3;
   RTCPeerConnection? peerConnection ;
   var edSet;
-  List<MediaDeviceInfo>? _mediaDevicesList;
+
+  var _mediaDevicesList = <MediaDeviceInfo>[].obs;
+  set mediaDevicesList (value) => _mediaDevicesList.value = value;
+  get mediaDevicesList => _mediaDevicesList.value;
+
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
   List<RTCIceCandidate> rtcIceCadidates = [];
 
+  var _deviceid = "".obs;
+  set deviceid (value) => _deviceid.value = value;
+  get deviceid => _deviceid.value;
+
+  var _width = 640.obs;
+  set width (value) => _width.value = value;
+  get width => _width.value;
+
+  var _frameRate = 15.obs;
+  set frameRate (value) => _frameRate.value = value;
+  get frameRate => _frameRate.value;
 
   var websocket = Get.find<Websocket>();
 
@@ -45,23 +61,55 @@ class Videowebsocket extends GetxController{
 
   @override
   void onInit() {
-    mediaDevices.ondevicechange = (event) async {
-      // print('++++++ ondevicechange ++++++');
-      _mediaDevicesList = await mediaDevices.enumerateDevices();
-    };
-    // TODO: implement onInit
     super.onInit();
     // createPeerconnect();
+    mediaDevices.ondevicechange = (event) async {
+      // print('++++++ ondevicechange ++++++');
+      getdevices().then((value){
+        mediaDevicesList =value;
+      });
+    };
+    getdevices().then((value){
+      mediaDevicesList =value;
+      if (mediaDevicesList.length > 1) {
+        deviceid = mediaDevicesList.last.deviceId;
+      }else {
+        deviceid = mediaDevicesList.first.deviceId;
+      }
+    });
   }
+
+  Future<List<MediaDeviceInfo>> getdevices() async {
+    // Enumerate media devices
+    var devices = await mediaDevices.enumerateDevices();
+    return devices.where((device) => device.kind == 'videoinput').toList();
+
+  }
+
   void initiate(
       {required String webrtctoken,
-      required String mediawebsocketurl,
-      required Meetingdetails meetingdetails}){
+        required String mediawebsocketurl,
+        required Meetingdetails meetingdetails}){
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
     createPeerconnect();
   }
+
+  Future<MediaStream> createVideoStream({required int width, required int frameRate,required String videoDeviceId}) async {
+    final Map<String, dynamic> constraints = {
+      'video': {
+        'deviceId': videoDeviceId,
+        'width':  width,
+        // 'height': {'ideal': height},
+        'frameRate': frameRate,
+      },
+      'audio': false, // include audio if needed
+    };
+
+    return await mediaDevices.getUserMedia(constraints);
+  }
+
   Future<void> createPeerconnect() async {
     // print('createPeerConnect');
 
@@ -69,36 +117,132 @@ class Videowebsocket extends GetxController{
     getDeviceID('videoinput');
 
     final configuration = {
-      'iceServers': [
-        {
-          'urls': [
-            'stun:stun1.l.google.com:19302',
-            'stun:stun2.l.google.com:19302'
-          ]
-        },
+      // 'iceServers': [
+      //   {
+      //     'urls': [
+      //       'stun:stun1.l.google.com:19302',
+      //       'stun:stun2.l.google.com:19302'
+      //     ]
+      //   },
+      // ],
+      "stunServers": [
+
       ],
+      "turnServers": [
+        {
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
+          "ttl": 86400
+        },
+        {
+          "username": "1729579216:w_u0dqszvdf5p1",
+          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
+          "url": "turn:meet1.konn3ct.com:3478",
+          "ttl": 86400
+        }
+      ],
+      "remoteIceCandidates": [
+
+      ]
     };
 
     // Create the peer connection
     peerConnection = await createPeerConnection(configuration);
 
-    // Get local media stream
-    _localStream = await mediaDevices.getUserMedia({
-      'audio': false,
-      'video': {
-        'width': 640,
-        'frameRate': 15,  // Corrected 'framerate' to 'frameRate'
-      },
-    });
+    _localStream = await createVideoStream(width: width, frameRate: frameRate, videoDeviceId: deviceid);
 
     // Enumerate media devices
-    _mediaDevicesList = await mediaDevices.enumerateDevices();
+    getdevices().then((value){
+      mediaDevicesList =value;
+      deviceid = mediaDevicesList.first.deviceId;
+    });
 
     // Add local tracks to the peer connection
     _localStream!.getTracks().forEach((track) {
       peerConnection?.addTrack(track, _localStream!);
     });
+    negotiate();
+  }
 
+  void switchVideoQuality({required int width, /*int height,*/ required int frameRate}) async {
+    this.frameRate = frameRate;
+    this.width = width;
+    adjustvideo();
+  }
+
+  void switchcamera({required String deviceid}) async {
+    this.deviceid = deviceid;
+    adjustvideo();
+  }
+
+  void adjustvideo() async {
+    // Step 1: Stop the existing video track if it exists
+    if (_localStream != null) {
+      _localStream?.getTracks().forEach((track) {
+        track.stop();
+      });
+    }
+
+    // Step 2: Create a new video stream with updated quality settings
+    _localStream = await createVideoStream(
+        width: width, /*height: height,*/ frameRate: frameRate, videoDeviceId: deviceid);
+
+    // Step 4: Replace the video track on the peer connection
+    if (peerConnection != null && _localStream != null) {
+      // Assuming your local stream has only one video track
+      var newVideoTrack = _localStream!.getVideoTracks().first;
+
+      // Get the existing sender for the video track
+      var senderlist = await peerConnection!.getSenders();
+
+      var sender = senderlist.firstWhere(
+              (s) => s.track?.kind == 'video',
+          orElse: () => throw Exception("Video sender not found"));
+
+      // Replace the existing track with the new one
+      await sender.replaceTrack(newVideoTrack);
+
+      // Renegotiate the connection if needed
+      await negotiate();
+    }
+  }
+
+  void starvirtual({required Uint8List backgroundimage}) async {
+    // Step 1: Stop the existing video track if it exists
+    if (_localStream != null) {
+      _localStream?.getTracks().forEach((track) {
+        track.stop();
+      });
+    }
+
+    // Step 2: Create a new video stream with updated quality settings
+    _localStream = await startVirtualBackground(
+    backgroundImage: backgroundimage,
+    );
+
+    // Step 4: Replace the video track on the peer connection
+    if (peerConnection != null && _localStream != null) {
+      // Assuming your local stream has only one video track
+      var newVideoTrack = _localStream!.getVideoTracks().first;
+
+      // Get the existing sender for the video track
+      var senderlist = await peerConnection!.getSenders();
+
+      var sender = senderlist.firstWhere(
+              (s) => s.track?.kind == 'video',
+          orElse: () => throw Exception("Video sender not found"));
+
+      // Replace the existing track with the new one
+      await sender.replaceTrack(newVideoTrack);
+
+      // Renegotiate the connection if needed
+      await negotiate();
+    }
+  }
+
+  // Example renegotiation function
+  Future<void> negotiate() async {
     // Render remote video
     var list = websocket.participant.where((v) {
       return v.fields!.userId == websocket.mydetails!.fields!.userId;
@@ -114,7 +258,7 @@ class Videowebsocket extends GetxController{
     peerConnection!.onIceCandidate =
         (RTCIceCandidate candidate) => rtcIceCadidates.add(candidate);
 
-    // _peerConnection?.onIceConnectionState = (state) {
+    // peerConnection?.onIceConnectionState = (state) {
     //   print("ICE Connection State: $state");
     //   if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
     //     receiveStart();
@@ -152,7 +296,6 @@ class Videowebsocket extends GetxController{
       // print('connection state is RTCPeerConnectionStateConnected');
       receiveStart();
     }
-
   }
 
   void receiveCandidate(candidate) async {

@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:bigbluebuttonsdk/utils/meetingdetails.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk_platform_interface.dart';
@@ -19,7 +22,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  initialize({required String mediawebsocketur, required String mainwebsocketur,required String webrtctoken, required Meetingdetails meetingdetails}) {
+  initialize({required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
     // TODO: implement initialize
     throw UnimplementedError();
   }
@@ -178,7 +181,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  uploadpresenter({required String filename}) {
+  uploadpresenter({required PlatformFile filename}) {
     // TODO: implement uploadpresenter
     throw UnimplementedError();
   }
@@ -206,6 +209,82 @@ class MockBigbluebuttonsdkPlatform
   @override
   // TODO: implement stream
   Stream<String> get stream => throw UnimplementedError();
+
+  @override
+  Future<List<MediaDeviceInfo>> getAvailableCameras() {
+    // TODO: implement getAvailableCameras
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<MediaDeviceInfo>> getAvailableMicrophones() {
+    // TODO: implement getAvailableMicrophones
+    throw UnimplementedError();
+  }
+
+  @override
+  stoptyping() {
+    // TODO: implement stoptyping
+    throw UnimplementedError();
+  }
+
+  @override
+  switchVideoQuality({required int width, required int frameRate}) {
+    // TODO: implement switchVideoQuality
+    throw UnimplementedError();
+  }
+
+  @override
+  switchcamera({required String deviceid}) {
+    // TODO: implement switchcamera
+    throw UnimplementedError();
+  }
+
+  @override
+  switchmicrophone({required String deviceid}) {
+    // TODO: implement switchmicrophone
+    throw UnimplementedError();
+  }
+
+  @override
+  nextpresentation({required String page}) {
+    // TODO: implement nextpresentation
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement presentationmodel
+  get presentationmodel => throw UnimplementedError();
+
+  @override
+  removepresentation({required String presentationid}) {
+    // TODO: implement removepresentation
+    throw UnimplementedError();
+  }
+
+  @override
+  makepresentationdefault({required presentation}) {
+    // TODO: implement makepresentationdefault
+    throw UnimplementedError();
+  }
+
+  @override
+  startcaption() {
+    // TODO: implement startcaption
+    throw UnimplementedError();
+  }
+
+  @override
+  starvirtual({required Uint8List backgroundimage}) {
+    // TODO: implement starvirtual
+    throw UnimplementedError();
+  }
+
+  @override
+  stopcaption() {
+    // TODO: implement stopcaption
+    throw UnimplementedError();
+  }
 }
 
 void main() {
