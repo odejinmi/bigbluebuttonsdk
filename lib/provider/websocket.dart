@@ -22,7 +22,7 @@ class Websocket extends GetxController{
    get isWebsocketRunning => _isWebsocketRunning.value;
 
 
-   var audiowebsocket =Get.put(Audiowebsocket(), permanent: true);
+   // var audiowebsocket =Get.put(Audiowebsocket(), permanent: true);
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
@@ -121,28 +121,29 @@ class Websocket extends GetxController{
    set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
    get mediawebsocketurl => _mediawebsocketurl.value;
 
-   final _sturnserver = {
-     "stunServers": [
-
-     ],
-     "turnServers": [
-       {
-         "username": "1731758817:w_zxqy1uynnc4z",
-         "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
-         "url": "turn:meet.konn3ct.ng:3478",
-         "ttl": 86400
-       },
-       {
-         "username": "1731758817:w_zxqy1uynnc4z",
-         "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
-         "url": "turns:meet.konn3ct.ng:443?transport=tcp",
-         "ttl": 86400
-       }
-     ],
-     "remoteIceCandidates": [
-
-     ]
-   }.obs;
+   // final _sturnserver = {
+   //   "stunServers": [
+   //
+   //   ],
+   //   "turnServers": [
+   //     {
+   //       "username": "1731758817:w_zxqy1uynnc4z",
+   //       "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
+   //       "url": "turn:meet.konn3ct.ng:3478",
+   //       "ttl": 86400
+   //     },
+   //     {
+   //       "username": "1731758817:w_zxqy1uynnc4z",
+   //       "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
+   //       "url": "turns:meet.konn3ct.ng:443?transport=tcp",
+   //       "ttl": 86400
+   //     }
+   //   ],
+   //   "remoteIceCandidates": [
+   //
+   //   ]
+   // }.obs;
+   final _sturnserver = {}.obs;
    set sturnserver(value) => _sturnserver.value = value;
    get sturnserver => _sturnserver.value;
 
@@ -241,8 +242,7 @@ class Websocket extends GetxController{
             if (!isWebsocketRunning) {
               isWebsocketRunning = true;
               var cmddetails = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
-
-              audiowebsocket.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
+              Get.find<Audiowebsocket>().initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
             }
             Websocketresponse().reseponse(event);
             update();

@@ -44,7 +44,6 @@ class Audiowebsocket extends GetxController {
   set deviceid (value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
-  var texttospeech = Get.find<Texttospeech>();
 
   Timer? _pingTimer;  // Timer to manage pings
 
@@ -247,7 +246,7 @@ class Audiowebsocket extends GetxController {
     channel!.stream.listen((event) {
       if(!isWebsocketRunning){
         isWebsocketRunning = true;
-        // texttospeech.start( meetingdetails: meetingdetails!);
+        // Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
       }
       var response = jsonDecode(event);
       handleWebSocketResponse(response);
