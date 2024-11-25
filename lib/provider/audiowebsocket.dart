@@ -6,6 +6,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../utils/meetingdetails.dart';
 import '../bigbluebuttonsdk.dart';
+import 'Speechtotext.dart';
 
 
 class Audiowebsocket extends GetxController {
@@ -42,6 +43,8 @@ class Audiowebsocket extends GetxController {
   var _deviceid = "".obs;
   set deviceid (value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
+  var websocket = Get.find<Websocket>();
+  var texttospeech = Get.find<Texttospeech>();
 
   Timer? _pingTimer;  // Timer to manage pings
 
@@ -203,29 +206,9 @@ class Audiowebsocket extends GetxController {
       //     ]
       //   }
       // ],
-      "stunServers": [
-
-      ],
-      "turnServers": [
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
-          "ttl": 86400
-        },
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turn:meet1.konn3ct.com:3478",
-          "ttl": 86400
-        }
-      ],
-      "remoteIceCandidates": [
-
-      ]
     };
 
-    _peerConnection = await createPeerConnection(configuration);
+    _peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // listen for remotePeer mediaTrack event
     _peerConnection?.onTrack = (event) {
@@ -249,7 +232,6 @@ class Audiowebsocket extends GetxController {
 
     // final url = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
     channel = WebSocketChannel.connect(Uri.parse(mediawebsocketurl));
-    isWebsocketRunning = true;
     var payload = {
       "id": "start",
       "type": "audio",
@@ -263,6 +245,10 @@ class Audiowebsocket extends GetxController {
     startWebSocketPing();  // Start pinging when the WebSocket is initialized
 
     channel!.stream.listen((event) {
+      if(!isWebsocketRunning){
+        isWebsocketRunning = true;
+        // texttospeech.start( meetingdetails: meetingdetails!);
+      }
       var response = jsonDecode(event);
       handleWebSocketResponse(response);
     }, onDone: () {

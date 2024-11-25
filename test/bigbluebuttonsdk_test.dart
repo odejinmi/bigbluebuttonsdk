@@ -285,6 +285,12 @@ class MockBigbluebuttonsdkPlatform
     // TODO: implement stopcaption
     throw UnimplementedError();
   }
+
+  @override
+  whiteboard() {
+    // TODO: implement whiteboard
+    throw UnimplementedError();
+  }
 }
 
 void main() {

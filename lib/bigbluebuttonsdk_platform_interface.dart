@@ -54,6 +54,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  whiteboard() {
+    throw UnimplementedError('whiteboard() has not been implemented.');
+  }
+
   sendmessage({required String message,required String chatid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }

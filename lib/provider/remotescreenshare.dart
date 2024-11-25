@@ -28,9 +28,9 @@ class RemoteScreenShareWebSocket extends GetxController {
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
-  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
-  set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
-  get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
+  // final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
+  // set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
+  // get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
@@ -48,7 +48,7 @@ class RemoteScreenShareWebSocket extends GetxController {
   void onInit() {
     super.onInit();
     localRTCVideoRenderer.initialize();
-    remoteRTCVideoRenderer.initialize();
+    websocket.remoteRTCVideoRenderer.initialize();
 
     mediaDevices.ondevicechange = (event) async {
       _mediaDevicesList = await mediaDevices.enumerateDevices();
@@ -96,26 +96,6 @@ class RemoteScreenShareWebSocket extends GetxController {
       // 'iceServers': [
       //   {'urls': ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302']}
       // ],
-      "stunServers": [
-
-      ],
-      "turnServers": [
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
-          "ttl": 86400
-        },
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turn:meet1.konn3ct.com:3478",
-          "ttl": 86400
-        }
-      ],
-      "remoteIceCandidates": [
-
-      ]
     };
 
     final constraints = {
@@ -123,7 +103,7 @@ class RemoteScreenShareWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await createPeerConnection(config);
+    peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // Get local media stream
     _localStream = await mediaDevices.getUserMedia({
@@ -174,12 +154,24 @@ class RemoteScreenShareWebSocket extends GetxController {
         "candidate": candidate.toMap()
       });
     };
+    var result2 = await peerConnection!.getRemoteStreams();
+    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video' ) {
+      websocket.remoteRTCVideoRenderer.srcObject = result2[0];
+        print("Received remote video track.");
+      // var list = websocket.participant.where((v) {
+      //   return v.vidieodeviceId == cameraId;
+      // }).toList();
+      // if (list.isNotEmpty) {
+      //   list[0].mediaStream = stream;
+      //   // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
+      // }
+    }
 
     // Handle the reception of remote media streams
     peerConnection!.onTrack = (RTCTrackEvent event) {
       print("stream received");
       if (event.streams.isNotEmpty) {
-        remoteRTCVideoRenderer.srcObject = event.streams[0];  // Render remote video
+        websocket.remoteRTCVideoRenderer.srcObject = event.streams[0];  // Render remote video
         // var list = websocket.participant.where((v) {
         //   return v.vidieodeviceId == cameraId;
         // }).toList();
@@ -216,7 +208,7 @@ class RemoteScreenShareWebSocket extends GetxController {
     websocketsub(payload);
 
     channel!.stream.listen(
-          (event) {
+          (event) async {
         var e = jsonDecode(event);
         print("new event");
         print(event);
@@ -228,6 +220,10 @@ class RemoteScreenShareWebSocket extends GetxController {
             receiveCandidate(e['candidate']['candidate']);
             break;
           case 'playStart':
+            var result2 = await peerConnection!.getRemoteStreams();
+            result2.forEach((sender) {
+              print("Track remote stream: ${sender!.getTracks().length}");
+            });
             break;
           case 'error':
             print('WebSocket error: $e');
@@ -259,6 +255,39 @@ class RemoteScreenShareWebSocket extends GetxController {
     print("payload");
     print(json);
     channel!.sink.add(jsonEncode(json));
+  }
+
+  void stopCameraSharing() async {
+    if (isWebsocketRunning) {
+      // Send stop signal to server if needed
+    }
+
+    // Close WebSocket connection if open
+    if (channel != null) {
+      await channel?.sink.close();
+      channel = null;
+      isWebsocketRunning = false;
+    }
+
+    // Close peer connection if active
+    if (peerConnection != null) {
+      await peerConnection?.close();
+      peerConnection = null;
+    }
+
+    // Stop local media stream
+    if (_localStream != null) {
+      _localStream!.getTracks().forEach((track) {
+        track.stop();
+      });
+      _localStream = null;
+    }
+
+    // Clear local and remote video renderers
+    localRTCVideoRenderer.srcObject = null;
+    websocket.remoteRTCVideoRenderer.srcObject = null;
+
+    update();
   }
 
 }

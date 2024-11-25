@@ -4,13 +4,9 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../bigbluebuttonsdk.dart' as navigator;
 
-import '../../utils/chatmodel.dart';
-import '../../utils/meetingdetails.dart';
-import '../../utils/participant.dart';
-import '../../utils/pollanalyseparser.dart';
-import '../../utils/typingmodel.dart';
+import '../bigbluebuttonsdk.dart';
+import '../utils/diorequest.dart';
 import '../utils/presentationmodel.dart';
 import 'jsondatas/websocketresponse.dart';
 
@@ -24,6 +20,9 @@ class Websocket extends GetxController{
   var _isWebsocketRunning = false.obs; //status of a websocket
    set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
    get isWebsocketRunning => _isWebsocketRunning.value;
+
+
+   var audiowebsocket =Get.put(Audiowebsocket(), permanent: true);
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
@@ -41,6 +40,9 @@ class Websocket extends GetxController{
   set mydetails(value)=> _mydetails.value = value;
    Participant? get mydetails => _mydetails.value;
 
+   final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
+   set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
+   RTCVideoRenderer get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
   final _breakoutroom = [].obs;
   set breakoutroom(value)=> _breakoutroom.value = value;
@@ -118,6 +120,31 @@ class Websocket extends GetxController{
    final _mediawebsocketurl = "".obs;
    set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
    get mediawebsocketurl => _mediawebsocketurl.value;
+
+   final _sturnserver = {
+     "stunServers": [
+
+     ],
+     "turnServers": [
+       {
+         "username": "1731758817:w_zxqy1uynnc4z",
+         "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
+         "url": "turn:meet.konn3ct.ng:3478",
+         "ttl": 86400
+       },
+       {
+         "username": "1731758817:w_zxqy1uynnc4z",
+         "password": "M9Sxt53uaUzE0GKTv2FAsP/pHgw=",
+         "url": "turns:meet.konn3ct.ng:443?transport=tcp",
+         "ttl": 86400
+       }
+     ],
+     "remoteIceCandidates": [
+
+     ]
+   }.obs;
+   set sturnserver(value) => _sturnserver.value = value;
+   get sturnserver => _sturnserver.value;
 
    final _chatMessages = <ChatMessage>[].obs;
    set chatMessages(value)=> _chatMessages.value = value;
@@ -206,12 +233,17 @@ class Websocket extends GetxController{
     channel = WebSocketChannel.connect(
       Uri.parse(mainwebsocketurl), //connect to a websocket
     );
-    isWebsocketRunning = true;
     participant = <Participant>[];
     sub("sub");
     startWebSocketPing();  // Start pinging when the WebSocket is initialized
     channel!.stream.listen(
           (event) async {
+            if (!isWebsocketRunning) {
+              isWebsocketRunning = true;
+              var cmddetails = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
+
+              audiowebsocket.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
+            }
             Websocketresponse().reseponse(event);
             update();
       },
@@ -309,6 +341,14 @@ class Websocket extends GetxController{
 
   muteallexceptpresenter(){
     websocketsub(["{\"msg\":\"method\",\"id\":\"27\",\"method\":\"muteAllExceptPresenter\",\"params\":[\"w_kvz0eh5afurv\"]}"]);
+  }
+
+  sendcursorposition(){
+    websocketsub(['{"msg":"method","id":"22","method":"stream-cursor-d54ad009d179ae346683cfc3603979bc99339ef7-1730813701243","params":["publish",{"xPercent":1417.2460496613994,"yPercent":581.2821670428893,"whiteboardId":"e77ad8a2f55834ec9396f2c3410fed061ff4c3b2-1730813701246/1"}]}']);
+  }
+
+   sendBulkAnnotations(){
+    websocketsub(["{\"msg\":\"method\",\"id\":\"107\",\"method\":\"sendBulkAnnotations\",\"params\":[[{\"id\":\"c53efdee-bf79-4bd3-31b4-07176e768b12\",\"annotationInfo\":{\"id\":\"c53efdee-bf79-4bd3-31b4-07176e768b12\",\"type\":\"draw\",\"name\":\"Draw\",\"parentId\":\"1\",\"childIndex\":0,\"point\":[204.79,454.54],\"rotation\":0,\"style\":{\"color\":\"black\",\"size\":\"small\",\"isFilled\":false,\"dash\":\"draw\",\"scale\":1,\"textAlign\":\"start\",\"font\":\"script\"},\"points\":[[0,0,0.5],[0,0,0.5],[0,3.25,0.5],[0,6.5,0.5],[3.25,6.5,0.5],[3.25,9.75,0.5],[3.25,16.25,0.5],[6.5,22.75,0.5],[13,35.76,0.5],[16.25,45.51,0.5],[19.5,55.26,0.5],[22.75,68.26,0.5],[29.26,81.26,0.5],[32.51,91.02,0.5],[52.01,133.27,0.5],[55.26,139.77,0.5],[65.01,156.03,0.5],[71.51,169.03,0.5],[81.26,182.03,0.5],[84.51,185.28,0.5],[91.02,191.78,0.5],[104.02,198.28,0.5],[107.27,201.53,0.5],[117.02,204.79,0.5],[117.02,208.04,0.5],[130.02,211.29,0.5],[149.53,214.54,0.5],[152.78,214.54,0.5],[162.53,214.54,0.5],[165.78,214.54,0.5],[175.53,214.54,0.5],[198.28,214.54,0.5],[208.04,214.54,0.5],[221.04,214.54,0.5],[230.79,214.54,0.5],[243.79,211.29,0.5],[256.79,211.29,0.5],[260.05,211.29,0.5],[289.3,204.79,0.5],[302.3,204.79,0.5],[315.3,204.79,0.5],[328.31,201.53,0.5],[334.81,201.53,0.5],[351.06,201.53,0.5],[354.31,198.28,0.5],[360.81,198.28,0.5],[364.06,195.03,0.5],[373.81,195.03,0.5],[383.57,195.03,0.5],[393.32,191.78,0.5],[412.82,185.28,0.5],[435.58,178.78,0.5],[451.83,172.28,0.5],[468.08,165.78,0.5],[484.33,159.28,0.5],[497.34,152.78,0.5],[516.84,146.28,0.5],[529.84,139.77,0.5],[546.09,130.02,0.5],[559.1,123.52,0.5],[572.1,117.02,0.5],[578.6,110.52,0.5],[591.6,104.02,0.5],[594.85,97.52,0.5],[601.35,94.27,0.5],[604.6,91.02,0.5],[607.86,91.02,0.5]],\"isComplete\":true,\"size\":[607.86,214.54],\"userId\":\"w_bajpiy8r8fvd\",\"isModerator\":true},\"wbId\":\"e77ad8a2f55834ec9396f2c3410fed061ff4c3b2-1730813701246/1\",\"userId\":\"w_bajpiy8r8fvd\"}]]}"]);
   }
 
    makepresentationdefault({required var presentation}){

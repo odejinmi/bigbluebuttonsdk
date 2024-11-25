@@ -1,6 +1,9 @@
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:socket_io_client/socket_io_client.dart';
+
+import '../utils/meetingdetails.dart';
 
 class Texttospeech extends GetxController{
   final _speechToText = SpeechToText().obs;
@@ -23,6 +26,13 @@ class Texttospeech extends GetxController{
   set lastWords (value) => _lastWords.value = value;
   get lastWords => _lastWords.value;
 
+  var _socket = Rx<Socket?>(null);
+  set socket(value) => _socket.value = value;
+  Socket? get socket => _socket.value;
+
+  var _meetingdetails =  Rx<Meetingdetails?>(null);
+  set meetingdetails(value) => _meetingdetails.value = value;
+  get meetingdetails => _meetingdetails.value;
 
   @override
   void onInit() {
@@ -30,6 +40,33 @@ class Texttospeech extends GetxController{
     super.onInit();
   }
 
+ void start({required Meetingdetails meetingdetails}){
+   print('text to speech connecting');
+    this.meetingdetails = meetingdetails;
+   // Dart client
+   socket = io('https://k4caption.konn3ct.ng');
+   socket!.onConnect((_) {
+     print('connect');
+     startListening();
+     // socket?.emit('msg', 'test');
+     socket?.emit("join_room", meetingdetails.meetingId);
+   });
+   socket?.on('event', (data) => print(data));
+   socket?.on("receive_captions", (arg)=> print(arg));
+   socket?.onDisconnect((_) => print('disconnect'));
+   socket?.onConnectError((handler){print("sockect io connection error");print(handler);});
+   socket?.on('fromServer', (_) => print(_));
+ }
+
+
+  void sendmessage({required String message}){
+    socket?.emit("send_captions", {
+      "text": message,
+      "user": meetingdetails?.fullname,
+      "meetingID": meetingdetails?.meetingID,
+      "date": DateTime.now().toIso8601String()
+    });
+  }
 
   void initSpeech() async {
     print("Initializing speech-to-text");
@@ -56,13 +93,6 @@ class Texttospeech extends GetxController{
     await speechToText.stop();
   }
 
-  void toggleSpeechRecognition(bool isInCall) {
-    if (isInCall) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
     lastWords = result.recognizedWords;

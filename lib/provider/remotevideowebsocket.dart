@@ -102,7 +102,7 @@ class RemoteVideoWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await createPeerConnection(config);
+    peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // Set remote description with the received answer
     await peerConnection!.setRemoteDescription(RTCSessionDescription(answer, 'offer'));
@@ -154,6 +154,25 @@ class RemoteVideoWebSocket extends GetxController {
       }
     };
 
+// Handle the reception of remote media streams
+    // Properly handle incoming tracks (audio or video)
+    var result2 = await peerConnection!.getRemoteStreams();
+    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video' ) {
+        remoteRTCVideoRenderer.srcObject = result2[0];
+        print("Received remote video track.");
+        // Render remote video
+        var list = websocket.participant.where((v) {
+          return v.vidieodeviceId != null && v.vidieodeviceId! == cameraId;
+        }).toList();
+        if (list.isNotEmpty) {
+          list[0].mediaStream = result2[0];
+          list[0].rtcVideoRenderer = RTCVideoRenderer();
+          await list[0].rtcVideoRenderer!.initialize();
+          list[0].rtcVideoRenderer!.srcObject = result2[0];
+          // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
+        }
+    }
+
     peerConnection!.onIceConnectionState = (state) {
       print("ICE Connection State: $state");
       if (state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
@@ -190,6 +209,10 @@ class RemoteVideoWebSocket extends GetxController {
             result.forEach((sender) {
               print("Track sender: ${sender.track}");
             });
+            var result2 = await peerConnection!.getRemoteStreams();
+            result2.forEach((sender) {
+              print("Track remote stream: ${sender!.getTracks().length}");
+            });
             break;
           case 'iceCandidate':
             receiveCandidate(e['candidate']['candidate']);
@@ -208,6 +231,8 @@ class RemoteVideoWebSocket extends GetxController {
       },
     );
   }
+
+  MediaStream? _localStream;
 
   void reconnectWebSocket(String cameraId) {
     if (retryLimit > 0) {
@@ -228,5 +253,39 @@ class RemoteVideoWebSocket extends GetxController {
   void receiveCandidate(String candidate) async {
     var iceCandidate = RTCIceCandidate(candidate, null, 0);
     await peerConnection?.addCandidate(iceCandidate);
+  }
+
+
+  void stopCameraSharing() async {
+    if (isWebsocketRunning) {
+      // Send stop signal to server if needed
+    }
+
+    // Close WebSocket connection if open
+    if (channel != null) {
+      await channel?.sink.close();
+      channel = null;
+      isWebsocketRunning = false;
+    }
+
+    // Close peer connection if active
+    if (peerConnection != null) {
+      await peerConnection?.close();
+      peerConnection = null;
+    }
+
+    // Stop local media stream
+    if (_localStream != null) {
+      _localStream!.getTracks().forEach((track) {
+        track.stop();
+      });
+      _localStream = null;
+    }
+
+    // Clear local and remote video renderers
+    // localRTCVideoRenderer.srcObject = null;
+    // remoteRTCVideoRenderer.srcObject = null;
+
+    update();
   }
 }

@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:bigbluebuttonsdk/provider/Speechtotext.dart';
+import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
+import 'package:bigbluebuttonsdk/view/whiteboard.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'bigbluebuttonsdk.dart' as navigator;
@@ -80,11 +83,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   var remotevideowebsocket =Get.put(RemoteVideoWebSocket(), permanent: true);
   var remotescreensharewebsocket =Get.put(RemoteScreenShareWebSocket(), permanent: true);
   var texttospeech =Get.put(Texttospeech(), permanent: true);
+  var whiteboardcontrolle =Get.put(Whiteboardcontroller(), permanent: true);
 
   @override
   Startroom(){
     websocket.initiate( webrtctoken: webrtctoken, baseurl: baseurl, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
-    audiowebsocket.initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
     if(GetPlatform.isAndroid || GetPlatform.isIOS) {
       startForegroundService();
     }
@@ -93,6 +96,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   typing({required String chatid,}){
     websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"120\",\"method\":\"startUserTyping\",\"params\":[\"${chatid== 'MAIN-PUBLIC-GROUP-CHAT'?'public':chatid}\"]}"]);
+  }
+
+  @override
+  Widget whiteboard(){
+    return Whiteboard();
   }
 
   @override

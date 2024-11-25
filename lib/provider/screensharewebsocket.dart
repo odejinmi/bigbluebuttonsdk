@@ -16,6 +16,7 @@ class Screensharewebsocket extends GetxController {
   var _isVideo = false.obs; //status of video sharing
   set isVideo(value) => _isVideo.value = value;
   get isVideo => _isVideo.value;
+  var websocket = Get.find<Websocket>();
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
@@ -83,30 +84,10 @@ class Screensharewebsocket extends GetxController {
       //     ]
       //   },
       // ],
-      "stunServers": [
-
-      ],
-      "turnServers": [
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turns:meet1.konn3ct.com:443?transport=tcp",
-          "ttl": 86400
-        },
-        {
-          "username": "1729579216:w_u0dqszvdf5p1",
-          "password": "cD/KKOjw+rHGgn+iAYaJijcpuPM=",
-          "url": "turn:meet1.konn3ct.com:3478",
-          "ttl": 86400
-        }
-      ],
-      "remoteIceCandidates": [
-
-      ]
     };
 
     // Create the peer connection
-    peerConnection = await createPeerConnection(configuration);
+    peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // Get local media stream (screen sharing)
     _localStream = await mediaDevices.getDisplayMedia({
