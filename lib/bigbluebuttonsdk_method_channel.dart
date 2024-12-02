@@ -87,10 +87,10 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Startroom(){
-    websocket.initiate( webrtctoken: webrtctoken, baseurl: baseurl, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
     if(GetPlatform.isAndroid || GetPlatform.isIOS) {
       startForegroundService();
     }
+    websocket.initiate( webrtctoken: webrtctoken, baseurl: baseurl, mainwebsocketurl: mainwebsocketurl, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
   }
 
   @override

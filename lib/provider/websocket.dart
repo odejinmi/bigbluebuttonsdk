@@ -241,7 +241,7 @@ class Websocket extends GetxController{
           (event) async {
             if (!isWebsocketRunning) {
               isWebsocketRunning = true;
-              var cmddetails = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
+              sturnserver = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
               Get.find<Audiowebsocket>().initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
             }
             Websocketresponse().reseponse(event);
