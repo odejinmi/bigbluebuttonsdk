@@ -195,6 +195,7 @@ class Audiowebsocket extends GetxController {
 
 
   Future<void> createPeerConnections() async {
+    print("audio start");
     // print('Creating peer connection');
     final configuration = {
       // 'iceServers': [
@@ -228,6 +229,8 @@ class Audiowebsocket extends GetxController {
 
   void sendSDPOffer(String? sdp) {
     if (sdp == null || isWebsocketRunning) return;
+    print("audio mediawebsocketurl");
+    print(mediawebsocketurl);
 
     // final url = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
     channel = WebSocketChannel.connect(Uri.parse(mediawebsocketurl));
@@ -244,6 +247,8 @@ class Audiowebsocket extends GetxController {
     startWebSocketPing();  // Start pinging when the WebSocket is initialized
 
     channel!.stream.listen((event) {
+      print("audio event");
+      print(event);
       if(!isWebsocketRunning){
         isWebsocketRunning = true;
         // Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
@@ -302,6 +307,8 @@ class Audiowebsocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
+    print("audio json");
+    print(json);
     if (channel != null) {
       channel!.sink.add(jsonEncode(json));
     } else {

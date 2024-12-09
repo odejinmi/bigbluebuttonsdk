@@ -12,22 +12,21 @@ void logLongText(String text, {int chunkSize = 1000}) {
 }
 
 Future<bool> startForegroundService() async {
-  // // Check if the background execution is already enabled
-  // if (FlutterBackground.isBackgroundExecutionEnabled) {
-  //   print("Background service is already running.");
-  //   return true;
-  // }
-  // final androidConfig = FlutterBackgroundAndroidConfig(
-  //   notificationTitle: 'Title of the notification',
-  //   notificationText: 'Text of the notification',
-  //   notificationImportance: AndroidNotificationImportance.normal,
-  //   notificationIcon: AndroidResource(
-  //       name: 'background_icon',
-  //       defType: 'drawable'), // Default is ic_launcher from folder mipmap
-  // );
-  // await FlutterBackground.initialize(androidConfig: androidConfig);
-  // return FlutterBackground.enableBackgroundExecution();
-  return true;
+  // Check if the background execution is already enabled
+  if (FlutterBackground.isBackgroundExecutionEnabled) {
+    print("Background service is already running.");
+    return true;
+  }
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: 'Title of the notification',
+    notificationText: 'Text of the notification',
+    notificationImportance: AndroidNotificationImportance.normal,
+    notificationIcon: AndroidResource(
+        name: 'background_icon',
+        defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
+  await FlutterBackground.initialize(androidConfig: androidConfig);
+  return FlutterBackground.enableBackgroundExecution();
 }
 
 String generateInitials(String fullName) {

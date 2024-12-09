@@ -143,7 +143,7 @@ class Websocket extends GetxController{
    //
    //   ]
    // }.obs;
-   final _sturnserver = {}.obs;
+   final _sturnserver = <String, dynamic>{}.obs;
    set sturnserver(value) => _sturnserver.value = value;
    get sturnserver => _sturnserver.value;
 
@@ -265,6 +265,10 @@ class Websocket extends GetxController{
   }
 
    void websocketsub(json) {
+     // final jsonString = r'${json}';
+     // final decoded = jsonDecode(jsonString);
+     // print(decoded[0]);
+     // print(decoded[0]);
      if(jsonDecode(json[0])["msg"]!="pong") {
        print("i got here");
        print(json.toString());

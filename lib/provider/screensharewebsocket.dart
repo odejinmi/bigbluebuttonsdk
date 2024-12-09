@@ -164,9 +164,9 @@ class Screensharewebsocket extends GetxController {
       "type": "screenshare",
       "role": "send",
       "internalMeetingId": meetingDetails?.internalUserId,
-      "voiceBridge": "14735",
-      "userName": "ODEJINMI TOLULOPE",
-      "callerName": "w_zkymlvzr3jyv",
+      "voiceBridge": meetingDetails.voicebridge,
+      "userName": meetingDetails.fullname,
+      "callerName": meetingDetails.internalUserId,
       "sdpOffer": sdp,
       "hasAudio": false,
       "contentType": "screenshare",
@@ -212,6 +212,8 @@ class Screensharewebsocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
+    print("json");
+    print(json);
     channel!.sink.add(jsonEncode(json));
   }
 

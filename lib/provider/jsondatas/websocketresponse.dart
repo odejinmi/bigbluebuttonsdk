@@ -57,7 +57,7 @@ class Websocketresponse{
             if (json["fields"] != null) {
               if(json["fields"]["externalVideoUrl"] != null) {
               }else{
-                Get.back();
+                // Get.back();
                 websocket.ishowecinema = false;
               }
             }
