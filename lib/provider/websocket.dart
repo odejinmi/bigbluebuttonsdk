@@ -241,7 +241,10 @@ class Websocket extends GetxController{
           (event) async {
             if (!isWebsocketRunning) {
               isWebsocketRunning = true;
-              sturnserver = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
+              var sturnserv = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
+              print("sturnserv");
+              print(sturnserv);
+              sturnserver = formatToIceServers(sturnserv);
               Get.find<Audiowebsocket>().initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
             }
             Websocketresponse().reseponse(event);
@@ -263,6 +266,40 @@ class Websocket extends GetxController{
     );
     update();
   }
+
+   Map<String, dynamic> replacePasswordWithCredential(Map<String, dynamic> data) {
+     // Replace 'password' with 'credential' recursively in the map
+     data = data.map((key, value) {
+       if (value is Map<String, dynamic>) {
+         return MapEntry(key, replacePasswordWithCredential(value));
+       } else if (value is List) {
+         return MapEntry(key, value.map((e) {
+           return e is Map<String, dynamic> ? replacePasswordWithCredential(e) : e;
+         }).toList());
+       }
+       return MapEntry(key == 'password' ? 'credential' : key, value);
+     });
+     return data;
+   }
+
+   Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
+     var maindata = data["turnServers"];
+     return {
+       // "iceServers": (data["turnServers"] as List<dynamic>).map((server) {
+       //   return {
+       //     "urls": server["url"],
+       //     "username": server["username"],
+       //     "credential": server["password"]
+       //   };
+       // }).toList(),
+
+       "iceServers": {
+           "urls": maindata[0]["url"],
+           "username": maindata[0]["username"],
+           "credential": maindata[0]["password"]
+         },
+     };
+   }
 
    void websocketsub(json) {
      if(jsonDecode(json[0])["msg"]!="pong") {

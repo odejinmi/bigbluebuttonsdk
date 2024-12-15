@@ -108,7 +108,7 @@ class Audiowebsocket extends GetxController {
         (RTCIceCandidate candidate) {
       // print("New ICE Candidate: ${candidate.candidate}");
       rtcIceCadidates.add(candidate);
-      sendCandidate(candidate.candidate!);
+      // sendCandidate(candidate.candidate!);
     };
 
     // _peerConnection?.onIceConnectionState = (state) {
@@ -179,6 +179,8 @@ class Audiowebsocket extends GetxController {
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
+    print("audio mediawebsocketurl");
+    print(mediawebsocketurl);
     createPeerConnections();
   }
 
@@ -197,16 +199,16 @@ class Audiowebsocket extends GetxController {
   Future<void> createPeerConnections() async {
     // print('Creating peer connection');
     final configuration = {
-      // 'iceServers': [
-      //   {
-      //     'urls': [
-      //       'stun:stun1.l.google.com:19302',
-      //       'stun:stun2.l.google.com:19302'
-      //     ]
-      //   }
-      // ],
+      "iceServers": [
+        {
+          'url': 'turn:global.turn.twilio.com:3478?transport=tcp',
+          'username': 'Test SID',
+          'credentials': 'Test Auth Token'
+        },
+      ],
     };
-
+      print("websocket.sturnserver");
+      print(websocket.sturnserver);
     _peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // listen for remotePeer mediaTrack event
@@ -262,6 +264,8 @@ class Audiowebsocket extends GetxController {
   }
 
   Future<void> handleWebSocketResponse(Map<String, dynamic> response) async {
+    print("audio response");
+    print(response);
     switch (response['id']) {
       case 'startResponse':
         // receiveSDP(response['sdpAnswer']);
@@ -303,6 +307,8 @@ class Audiowebsocket extends GetxController {
 
   void websocketsub(Map<String, dynamic> json) {
     if (channel != null) {
+      print("audio json");
+      print(json);
       channel!.sink.add(jsonEncode(json));
     } else {
       // print("WebSocket channel is not connected.");
