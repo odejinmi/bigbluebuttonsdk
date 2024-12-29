@@ -369,6 +369,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
+  get reason {
+    return websocket.reason;
+  }
+
+  @override
   get chatMessages {
     return websocket.chatMessages;
   }

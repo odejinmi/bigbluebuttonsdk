@@ -26,9 +26,7 @@ class Users{
    }
 
    currentuser(var json){
-     if(json["msg"] == "removed"){
-       Get.offNamed("/leftsession", arguments:{"webrtctoken":websocket.webrtctoken, "meetingdetails": websocket.meetingdetails, "reason":websocket.reason});
-     }else if(json["msg"] == "added"){
+     if(json["msg"] == "added"){
        websocket.mydetails = Participant.fromJson(json);
      }else if(json["msg"] == "changed"){
        websocket.mydetails = Participant.fromJson(websocket.mergeData(json,websocket.mydetails!.toJson()));
