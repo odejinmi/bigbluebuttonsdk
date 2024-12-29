@@ -185,6 +185,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   get isWebsocketRunning{
     throw UnimplementedError('initialize() has not been implemented.');
   }
+
+  get reason{
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
   get polljson{
     throw UnimplementedError('initialize() has not been implemented.');
   }

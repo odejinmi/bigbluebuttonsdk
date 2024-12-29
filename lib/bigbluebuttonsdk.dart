@@ -212,6 +212,11 @@ class Bigbluebuttonsdk {
   get chatMessages {
     return BigbluebuttonsdkPlatform.instance.chatMessages;
   }
+
+  get reason {
+    return BigbluebuttonsdkPlatform.instance.reason;
+  }
+
   get ishowecinema {
     return BigbluebuttonsdkPlatform.instance.ishowecinema;
   }

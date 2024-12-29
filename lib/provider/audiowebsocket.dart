@@ -106,17 +106,17 @@ class Audiowebsocket extends GetxController {
   Future<void> negotiate() async {
     _peerConnection!.onIceCandidate =
         (RTCIceCandidate candidate) {
-      // print("New ICE Candidate: ${candidate.candidate}");
+      print("New ICE Candidate: ${candidate.candidate}");
       rtcIceCadidates.add(candidate);
-      // sendCandidate(candidate.candidate!);
+      sendCandidate(candidate.candidate!);
     };
 
-    // _peerConnection?.onIceConnectionState = (state) {
-    //   print("ICE Connection State: $state");
-    //   if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
-    //     receiveStart();
-    //   }
-    // };
+    _peerConnection?.onIceConnectionState = (state) {
+      print("ICE Connection State: $state");
+      // if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
+      //   receiveStart();
+      // }
+    };
 
     // Create and set local description
     final offerOptions = {
@@ -199,13 +199,14 @@ class Audiowebsocket extends GetxController {
   Future<void> createPeerConnections() async {
     // print('Creating peer connection');
     final configuration = {
-      "iceServers": [
+      "iceServers":[
         {
-          'url': 'turn:global.turn.twilio.com:3478?transport=tcp',
-          'username': 'Test SID',
-          'credentials': 'Test Auth Token'
-        },
+          "urls": "turn:meet.konn3ct.ng:3478",
+          "username": "1734371473:w_3ljtaffhxtcn",
+          "credential": "h43KnBujHdFH3tGrqxbduv/KAxQ="
+        }
       ],
+      "iceTransportPolicy": "relay"
     };
       print("websocket.sturnserver");
       print(websocket.sturnserver);
@@ -248,7 +249,7 @@ class Audiowebsocket extends GetxController {
     channel!.stream.listen((event) {
       if(!isWebsocketRunning){
         isWebsocketRunning = true;
-        // Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
+        Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
       }
       var response = jsonDecode(event);
       handleWebSocketResponse(response);

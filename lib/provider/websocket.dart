@@ -284,20 +284,28 @@ class Websocket extends GetxController{
 
    Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
      var maindata = data["turnServers"];
+     var list = maindata.where((v) {
+       return !v["url"].toString().contains(":443");
+     }).toList();
      return {
-       // "iceServers": (data["turnServers"] as List<dynamic>).map((server) {
-       //   return {
-       //     "urls": server["url"],
-       //     "username": server["username"],
-       //     "credential": server["password"]
-       //   };
-       // }).toList(),
+       "iceServers": (data["turnServers"] as List<dynamic>).map((server) {
+         return {
+           "urls": server["url"],
+           "username": server["username"],
+           "credential": server["password"]
+         };
+       }).toList(),
 
-       "iceServers": {
-           "urls": maindata[0]["url"],
-           "username": maindata[0]["username"],
-           "credential": maindata[0]["password"]
-         },
+       // "iceServers": [
+       //   {
+       //     'urls': 'stun:stun.l.google.com:19302',
+       //   },
+       //   {
+       //     "urls": list[0]["url"],
+       //     "username": list[0]["username"],
+       //     "credential": list[0]["password"]
+       //   }],
+       "iceTransportPolicy": "relay"
      };
    }
 

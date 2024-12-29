@@ -325,13 +325,19 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   get isWebsocketRunning {
-
     return websocket.isWebsocketRunning;
   }
+
   @override
   get polljson {
     return websocket.polljson;
   }
+
+  @override
+  get reason {
+    return websocket.reason;
+  }
+
   @override
   get ispolling {
     return websocket.ispolling;
