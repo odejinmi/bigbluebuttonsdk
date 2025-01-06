@@ -225,10 +225,6 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get reason{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-
   Future<List<MediaDeviceInfo>>  getAvailableCameras (){
     throw UnimplementedError('getAvailableCameras() has not been implemented.');
   }

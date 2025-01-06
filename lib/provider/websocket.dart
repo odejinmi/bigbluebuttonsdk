@@ -305,7 +305,7 @@ class Websocket extends GetxController{
        //     "username": list[0]["username"],
        //     "credential": list[0]["password"]
        //   }],
-       "iceTransportPolicy": "relay"
+       // "iceTransportPolicy": "relay"
      };
    }
 

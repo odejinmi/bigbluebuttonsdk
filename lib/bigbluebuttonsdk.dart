@@ -223,9 +223,6 @@ class Bigbluebuttonsdk {
   get presentationmodel {
     return BigbluebuttonsdkPlatform.instance.presentationmodel;
   }
-  get reason {
-    return BigbluebuttonsdkPlatform.instance.reason;
-  }
   Future<List<MediaDeviceInfo>> getAvailableCameras() {
     return BigbluebuttonsdkPlatform.instance.getAvailableCameras();
   }
