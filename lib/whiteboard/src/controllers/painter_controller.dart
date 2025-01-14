@@ -432,10 +432,11 @@ class PainterControllerValue {
             selectedObjectDrawable == other.selectedObjectDrawable);
   }
 
-  @override
-  int get hashCode => 1;
+  // @override
   // int get hashCode => hashValues(
   //     hashList(_drawables), background, settings, selectedObjectDrawable);
+  @override
+  int get hashCode => 1;
 }
 
 /// Private class that is used internally to represent no

@@ -94,8 +94,12 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  setemojistatus() {
+  raiseHand() {
     throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  lowerHand() {
+    throw UnimplementedError('lowerHand() has not been implemented.');
   }
 
   mutemyself() {
@@ -167,6 +171,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   breakeoutroom() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  endroom() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
