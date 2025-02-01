@@ -310,14 +310,7 @@ class Websocket extends GetxController{
    }
 
    void websocketsub(json) {
-     // final jsonString = r'${json}';
-     // final decoded = jsonDecode(jsonString);
-     // print(decoded[0]);
-     // print(decoded[0]);
-     if(jsonDecode(json[0])["msg"]!="pong") {
-       print("i got here");
-       print(json.toString());
-     }
+   
     channel!.sink.add(jsonEncode(json),);
   }
 
@@ -330,6 +323,12 @@ class Websocket extends GetxController{
   leaveroom(){
     websocketsub(["{\"msg\":\"method\",\"id\":\"380\",\"method\":\"userLeftMeeting\",\"params\":[]}"]);
     websocketsub(["{\"msg\":\"method\",\"id\":\"380\",\"method\":\"setExitReason\",\"params\":[\"logout\"]}"]);
+    mainsub("unsub");
+  }
+
+   endroom(){
+    websocketsub(["{\"msg\":\"method\",\"id\":\"653\",\"method\":\"endMeeting\",\"params\":[]}"]);
+    websocketsub(["{\"msg\":\"method\",\"id\":\"654\",\"method\":\"setExitReason\",\"params\":[\"meetingEnded\"]}"]);
     mainsub("unsub");
   }
 

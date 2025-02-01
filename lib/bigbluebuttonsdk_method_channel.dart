@@ -201,8 +201,13 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  setemojistatus(){
+  raiseHand(){
     websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"643\",\"method\":\"setEmojiStatus\",\"params\":[\"${websocket.mydetails!.fields!.userId}\",\"raiseHand\"]}"]);
+  }
+
+  @override
+  lowerHand(){
+    websocket.websocketsub(["{\"msg\":\"method\",\"id\":\"659\",\"method\":\"changeRaiseHand\",\"params\":[false]}"]);
   }
 
   @override
@@ -296,6 +301,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   leaveroom(){
     websocket.leaveroom();
+  }
+
+  @override
+  endroom(){
+    websocket.endroom();
   }
 
   @override

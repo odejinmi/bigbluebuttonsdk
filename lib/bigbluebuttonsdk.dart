@@ -80,8 +80,12 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.uploadpresenter(filename:filename);
   }
 
-  setemojistatus() {
-    BigbluebuttonsdkPlatform.instance.setemojistatus();
+  raiseHand() {
+    BigbluebuttonsdkPlatform.instance.raiseHand();
+  }
+
+  lowerHand() {
+    BigbluebuttonsdkPlatform.instance.lowerHand();
   }
 
   switchVideoQuality({required int width, /*int height,*/ required int frameRate}){
@@ -154,6 +158,10 @@ class Bigbluebuttonsdk {
 
   stoptyping(){
     BigbluebuttonsdkPlatform.instance.stoptyping();
+  }
+
+  endroom(){
+    BigbluebuttonsdkPlatform.instance.endroom();
   }
 
   stopcaption(){

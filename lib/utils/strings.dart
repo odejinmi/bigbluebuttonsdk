@@ -52,20 +52,20 @@ String generateInitials(String fullName) {
 
 final List<String> backgrounds = [
   "assets/backgroundimages/background-1.jpg.webp",
-  'assets/backgroundimages/background-2.jpg.webp',
-  'assets/backgroundimages/background-3.jpg.webp',
-  'assets/backgroundimages/background-4.jpg.webp',
-  'assets/backgroundimages/background-5.jpg.webp',
+  'asset/backgroundimages/background-2.jpg.webp',
+  'asset/backgroundimages/background-3.jpg.webp',
+  'asset/backgroundimages/background-4.jpg.webp',
+  'asset/backgroundimages/background-5.jpg.webp',
 ];
 
 final List<String> desktopBackgrounds = [
-  'assets/backgroundimages/desktop-background-1.jpg.webp',
-  'assets/backgroundimages/desktop-background-2.jpg.webp',
-  'assets/backgroundimages/desktop-background-3.jpg.webp',
-  'assets/backgroundimages/desktop-background-4.jpg.webp',
-  'assets/backgroundimages/desktop-background-5.jpg.webp',
-  'assets/backgroundimages/desktop-background-6.jpg.webp',
-  'assets/backgroundimages/desktop-background-7.jpg.webp',
-  'assets/backgroundimages/desktop-background-8.jpg.webp',
-  'assets/backgroundimages/desktop-background-9.jpg.webp',
+  'asset/backgroundimages/desktop-background-1.jpg.webp',
+  'asset/backgroundimages/desktop-background-2.jpg.webp',
+  'asset/backgroundimages/desktop-background-3.jpg.webp',
+  'asset/backgroundimages/desktop-background-4.jpg.webp',
+  'asset/backgroundimages/desktop-background-5.jpg.webp',
+  'asset/backgroundimages/desktop-background-6.jpg.webp',
+  'asset/backgroundimages/desktop-background-7.jpg.webp',
+  'asset/backgroundimages/desktop-background-8.jpg.webp',
+  'asset/backgroundimages/desktop-background-9.jpg.webp',
 ];
