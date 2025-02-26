@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
@@ -85,6 +86,10 @@ class Websocket extends GetxController{
      }
    }
 
+  final _timer = Rx<Timer?>(null);
+  set timer(value)=> _timer.value = value;
+  get timer => _timer.value;
+
   final _ispolling = false.obs;
   set ispolling(value)=> _ispolling.value = value;
   get ispolling => _ispolling.value;
@@ -104,6 +109,20 @@ class Websocket extends GetxController{
   final _isrecording = false.obs;
   set isrecording(value)=> _isrecording.value = value;
   get isrecording => _isrecording.value;
+
+   final _recordingtime = "0".obs;
+  // set recordingtime(value)=> _recordingtime.value = value;
+  String get recordingtime => _recordingtime.value;
+   set recordingtime(seconds) {
+     int hours = (seconds / 3600).floor();
+     int minutes = ((seconds % 3600) / 60).floor();
+     int remainingSeconds = seconds % 60;
+
+     _recordingtime.value = '${_twoDigitString(hours)}:${_twoDigitString(minutes)}:${_twoDigitString(remainingSeconds)}';
+   }
+   String _twoDigitString(int value) {
+     return value.toString().padLeft(2, '0');
+   }
 
   final _webrtctoken = "".obs;
   set webrtctoken(value)=> _webrtctoken.value = value;
@@ -242,8 +261,6 @@ class Websocket extends GetxController{
             if (!isWebsocketRunning) {
               isWebsocketRunning = true;
               var sturnserv = await Diorequest().get("https://${baseurl}/bigbluebutton/api/stuns?sessionToken=$webrtctoken");
-              print("sturnserv");
-              print(sturnserv);
               sturnserver = formatToIceServers(sturnserv);
               Get.find<Audiowebsocket>().initiate( webrtctoken: webrtctoken, mediawebsocketurl: mediawebsocketurl, meetingdetails: meetingdetails!);
             }
@@ -409,7 +426,7 @@ class Websocket extends GetxController{
        if (value is Map<String, dynamic> && existingData[key] is Map<String, dynamic>) {
          // Recursively merge if both are maps
          existingData[key] = mergeData(value, existingData[key]);
-       } else {
+       } else if(key != "id"){
          // Add or replace the value
          existingData[key] = value;
        }

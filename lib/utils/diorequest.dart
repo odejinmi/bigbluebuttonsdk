@@ -30,8 +30,6 @@ class Diorequest {
       if(endpoint.contains("https")){
         url = endpoint;
       }
-      debugPrint.debugPrint(url);
-      debugPrint.debugPrint("headers: $header");
       // // Interceptor for encrypting request data
       // dio.interceptors.add(InterceptorsWrapper(
       //   onRequest: (options, handler) async {
@@ -49,8 +47,6 @@ class Diorequest {
       //   },
       // ));
       Response response =  await dio.get(url, options: options);
-      debugPrint.debugPrint(response.statusCode.toString());
-      debugPrint.debugPrint(response.toString());
       if(response.statusCode == 200) {
         return checktoken(response);
       }else if(response.statusCode == 201){

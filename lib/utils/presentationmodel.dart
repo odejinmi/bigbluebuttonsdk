@@ -34,6 +34,9 @@ class Presentationmodel {
     "id": id,
     "fields": fields?.toJson(),
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Fields {
@@ -106,6 +109,9 @@ class Fields {
     "removable": removable,
     "downloadableExtension": downloadableExtension,
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Conversion {
@@ -138,6 +144,9 @@ class Conversion {
     "numPages": numPages,
     "pagesCompleted": pagesCompleted,
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Exportation {
@@ -154,6 +163,9 @@ class Exportation {
   Map<String, dynamic> toJson() => {
     "status": status,
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Page {
@@ -206,4 +218,7 @@ class Page {
     "widthRatio": widthRatio,
     "heightRatio": heightRatio,
   };
+
+  @override
+  String toString() => toJson().toString();
 }

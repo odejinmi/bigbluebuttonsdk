@@ -34,6 +34,9 @@ class Slidemodel {
     "id": id,
     "fields": fields?.toJson(),
   };
+  
+  @override
+  String toString() => toJson().toString();
 }
 
 class Fields {
@@ -94,4 +97,7 @@ class Fields {
     "thumbUri": thumbUri,
     "txtUri": txtUri,
   };
+
+  @override
+  String toString() => toJson().toString();
 }

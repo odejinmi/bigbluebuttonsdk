@@ -10,8 +10,6 @@ class Users{
 
   var websocket = Get.find<Websocket>();
    jsonresponse(var json){
-     // print("user change");
-     // print(json);
      if (json["msg"] == "added") {
        addparticipant(json);
      } else if (json["msg"] == "removed") {
@@ -38,6 +36,8 @@ class Users{
 
 
    void addparticipant(var json){
+     print("json changes");
+     print(json);
      Participant data = participantFromJson(jsonEncode(json));
      if (json["fields"]["breakoutProps"] != null) {
        var list = websocket.participant.where((v) {
@@ -65,10 +65,16 @@ class Users{
 
 
    ChangeUserProperties(var json){
+     print("json changes");
+     print(json);
      // Find the index of the participant in the original list
-     var index = websocket.participant.indexWhere((v) => v.fields!.userId == json["fields"]["userId"]);
-
+     var index = websocket.participant.indexWhere((v) {
+       print(v.id);
+       return v.fields!.userId == json["fields"]["userId"] || v.id == json["id"];
+     });
+      print(index);
      if (index != -1) {
+       print(websocket.participant[index]);
        websocket.participant[index] = Participant.fromJson(websocket.mergeData(json, websocket.participant[index].toJson()));
      }
    }

@@ -42,6 +42,9 @@ class Typing {
     "role": role,
     "time": time.toJson(),
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Time {
@@ -58,4 +61,7 @@ class Time {
   Map<String, dynamic> toJson() => {
     "\u0024date": date,
   };
+
+  @override
+  String toString() => toJson().toString();
 }

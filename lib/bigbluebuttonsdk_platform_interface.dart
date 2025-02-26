@@ -210,6 +210,9 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   get isrecording{
     throw UnimplementedError('initialize() has not been implemented.');
   }
+  get recordingtime{
+    throw UnimplementedError('recordingtime() has not been implemented.');
+  }
   get pollanalyseparser{
     throw UnimplementedError('initialize() has not been implemented.');
   }

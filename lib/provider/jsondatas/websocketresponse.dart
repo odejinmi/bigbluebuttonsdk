@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:get/get.dart';
 
 import 'package:dio/dio.dart' as dio;
-
+import 'package:flutter/material.dart';
 import '../../../utils/pollanalyseparser.dart';
 import '../../bigbluebuttonsdk_method_channel.dart';
 import '../../utils/diorequest.dart';
@@ -26,8 +27,8 @@ class Websocketresponse{
       var secondsplit = firstsplit[1].split("}\"]");
       var result = "${secondsplit[0]}}\"";
       var json = jsonDecode(jsonDecode(result));
-      // print("general json");
-      // print(json);
+      print("general json");
+      print(json);
       websocket.addEvent(jsonEncode(json));
       if (json["collection"] != null) {
         switch(json["collection"]){
@@ -85,12 +86,15 @@ class Websocketresponse{
           case "record-meetings" :
             if(json["msg"] == "added") {
               if (json["fields"]["recording"] != null) {
-                websocket.isrecording = json["fields"]["record"];
+                websocket.isrecording = json["fields"]["recording"];
               }
             }else if(json["msg"] == "changed") {
               if (json["fields"]["time"] != null) {
-                var recordingtime = json["fields"]["time"];
+                websocket.recordingtime = json["fields"]["time"];
+                starttimer();
                 // print(jsonEncode(json));
+              }else if(json["fields"]["recording"] != null) {
+                websocket.isrecording = json["fields"]["recording"];
               }
             }
             break;
@@ -201,6 +205,24 @@ class Websocketresponse{
     }
   }
 
+  void starttimer(){
+    // Cancel the timer when the widget is disposed
+    if(websocket.timer != null) {
+      websocket.timer!.cancel();
+    }
+    websocket.timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      websocket.recordingtime = convertToSeconds(websocket.recordingtime)+1;
+    });
+  }
+  int convertToSeconds(String time) {
+    List<String> parts = time.split(':'); // Split the string by ":"
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+    int seconds = int.parse(parts[2]);
+
+    // Calculate total seconds
+    return hours * 3600 + minutes * 60 + seconds;
+  }
 
   void controlingvideo(var json){
     print(json);

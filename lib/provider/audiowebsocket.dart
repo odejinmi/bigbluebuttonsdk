@@ -51,7 +51,6 @@ class Audiowebsocket extends GetxController {
   void onInit() {
     super.onInit();
     mediaDevices.ondevicechange = (event) async {
-      // print('++++++ ondevicechange ++++++');
       getdevices().then((value){
         mediaDevicesList =value;
       });
@@ -106,13 +105,11 @@ class Audiowebsocket extends GetxController {
   Future<void> negotiate() async {
     _peerConnection!.onIceCandidate =
         (RTCIceCandidate candidate) {
-      print("New ICE Candidate: ${candidate.candidate}");
       rtcIceCadidates.add(candidate);
       sendCandidate(candidate.candidate!);
     };
 
     _peerConnection?.onIceConnectionState = (state) {
-      print("ICE Connection State: $state");
       // if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
       //   receiveStart();
       // }
@@ -135,8 +132,6 @@ class Audiowebsocket extends GetxController {
 
 
     _peerConnection?.onAddStream = (stream) {
-      // print('Stream added: ${stream}');
-      // print('Stream added: ${stream.getAudioTracks()}');
       // Handle incoming media stream here if needed
     };
   }
@@ -168,7 +163,6 @@ class Audiowebsocket extends GetxController {
   }
   void receiveCandidate(candidate) async {
     // Exchange ICE candidates with the Kurento server
-    // print("candidate recieved");
     await _peerConnection?.addCandidate(RTCIceCandidate(candidate!,'',0));
   }
 
@@ -179,8 +173,6 @@ class Audiowebsocket extends GetxController {
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
-    print("audio mediawebsocketurl");
-    print(mediawebsocketurl);
     createPeerConnections();
   }
 
@@ -197,8 +189,6 @@ class Audiowebsocket extends GetxController {
 
 
   Future<void> createPeerConnections() async {
-    print("audio start");
-    // print('Creating peer connection');
     final configuration = {
       "iceServers":[
         {
@@ -209,13 +199,10 @@ class Audiowebsocket extends GetxController {
       ],
       "iceTransportPolicy": "relay"
     };
-      print("websocket.sturnserver");
-      print(websocket.sturnserver);
     _peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // listen for remotePeer mediaTrack event
     _peerConnection?.onTrack = (event) {
-      // print(event.streams);
 
     };
 
@@ -232,8 +219,6 @@ class Audiowebsocket extends GetxController {
 
   void sendSDPOffer(String? sdp) {
     if (sdp == null || isWebsocketRunning) return;
-    print("audio mediawebsocketurl");
-    print(mediawebsocketurl);
 
     // final url = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
     channel = WebSocketChannel.connect(Uri.parse(mediawebsocketurl));
@@ -250,8 +235,6 @@ class Audiowebsocket extends GetxController {
     startWebSocketPing();  // Start pinging when the WebSocket is initialized
 
     channel!.stream.listen((event) {
-      print("audio event");
-      print(event);
       if(!isWebsocketRunning){
         isWebsocketRunning = true;
         Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
@@ -259,10 +242,8 @@ class Audiowebsocket extends GetxController {
       var response = jsonDecode(event);
       handleWebSocketResponse(response);
     }, onDone: () {
-      // print("WebSocket connection closed");
       isWebsocketRunning = false;
     }, onError: (error) {
-      // print("WebSocket error: $error");
       isWebsocketRunning = false;
     });
 
@@ -270,13 +251,10 @@ class Audiowebsocket extends GetxController {
   }
 
   Future<void> handleWebSocketResponse(Map<String, dynamic> response) async {
-    print("audio response");
-    print(response);
     switch (response['id']) {
       case 'startResponse':
         // receiveSDP(response['sdpAnswer']);
         if(response['response'] == "accepted"){
-          // print("setting remote sdp");
           // set SDP offer as remoteDescription for peerConnection
           await _peerConnection!.setRemoteDescription(
           RTCSessionDescription(response['sdpAnswer'], "answer"),
@@ -293,15 +271,12 @@ class Audiowebsocket extends GetxController {
         stopWebSocketPing();
         break;
       case 'error':
-        // print('Error: ${response['error']}');
         break;
       default:
-        // print('Unhandled response: $response');
     }
   }
 
   void sendCandidate(String candidate) {
-    // print('Sending ICE Candidate: $candidate');
     var payload = {
       "type": "audio",
       "role": "share",
@@ -312,14 +287,9 @@ class Audiowebsocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
-    print("audio json");
-    print(json);
     if (channel != null) {
-      print("audio json");
-      print(json);
       channel!.sink.add(jsonEncode(json));
     } else {
-      // print("WebSocket channel is not connected.");
     }
   }
 }

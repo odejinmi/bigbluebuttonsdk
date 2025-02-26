@@ -364,6 +364,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
+  get recordingtime {
+    return websocket.recordingtime;
+  }
+
+  @override
   get pollanalyseparser {
     return websocket.pollanalyseparser;
   }

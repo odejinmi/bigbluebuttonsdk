@@ -205,6 +205,9 @@ class Bigbluebuttonsdk {
   get isrecording {
     return BigbluebuttonsdkPlatform.instance.isrecording;
   }
+  get recordingtime {
+    return BigbluebuttonsdkPlatform.instance.recordingtime;
+  }
   get pollanalyseparser {
     return BigbluebuttonsdkPlatform.instance.pollanalyseparser;
   }

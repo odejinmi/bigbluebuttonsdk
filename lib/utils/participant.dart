@@ -62,6 +62,9 @@ class Participant {
     "id": id,
     "fields": fields?.toJson(),
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Fields {
@@ -222,6 +225,9 @@ class Fields {
     "sortName": sortName,
     "speechLocale": speechLocale,
   };
+
+  @override
+  toString() => toJson().toString();
 }
 
 class BreakoutProps {
@@ -242,7 +248,8 @@ class BreakoutProps {
     "isBreakoutUser": isBreakoutUser,
     "parentId": parentId,
   };
-
+  
+  @override
   String toString() => toJson().toString();
 }
 

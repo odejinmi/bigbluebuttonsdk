@@ -46,6 +46,9 @@ class Pollanalyseparser {
     "responses": responses == null ? [] : List<dynamic>.from(responses!.map((x) => x.toJson())),
     "users": users == null ? [] : List<dynamic>.from(users!.map((x) => x)),
   };
+  
+  @override
+  String toString() => toJson().toString();
 }
 
 class Answer {
@@ -70,6 +73,9 @@ class Answer {
     "key": key,
     "numVotes": numVotes,
   };
+
+  @override
+  String toString() => toJson().toString();
 }
 
 class Response {
@@ -90,4 +96,7 @@ class Response {
     "userId": userId,
     "answerIds": answerIds == null ? [] : List<dynamic>.from(answerIds!.map((x) => x)),
   };
+
+  @override
+  String toString() => toJson().toString();
 }
