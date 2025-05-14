@@ -4,12 +4,9 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../utils/meetingdetails.dart';
 import '../bigbluebuttonsdk.dart';
-import 'websocket.dart';
 
 class RemoteScreenShareWebSocket extends GetxController {
-
   var _isWebsocketRunning = false.obs;
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
   get isWebsocketRunning => _isWebsocketRunning.value;
@@ -58,6 +55,7 @@ class RemoteScreenShareWebSocket extends GetxController {
   @override
   void onClose() {
     stopWebSocketPing();
+    hangUp();
     super.onClose();
   }
 
@@ -90,7 +88,6 @@ class RemoteScreenShareWebSocket extends GetxController {
     initViewerStream();
   }
 
-
   void receiveViewerSDPAnswer(String answer) async {
     final config = {
       // 'iceServers': [
@@ -110,7 +107,7 @@ class RemoteScreenShareWebSocket extends GetxController {
       'audio': false,
       'video': {
         'width': 640,
-        'frameRate': 15,  // Corrected 'framerate' to 'frameRate'
+        'frameRate': 15, // Corrected 'framerate' to 'frameRate'
       },
     });
 
@@ -128,21 +125,21 @@ class RemoteScreenShareWebSocket extends GetxController {
     //   // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
     // }
 
-
     // Set the remote description (answer)
-    await peerConnection!.setRemoteDescription(RTCSessionDescription(answer, 'offer'));
+    await peerConnection!
+        .setRemoteDescription(RTCSessionDescription(answer, 'offer'));
 
     // Create and set the local SDP answer
     var newAnswer = await peerConnection!.createAnswer(constraints);
     await peerConnection!.setLocalDescription(newAnswer);
 
     websocketsub({
-          "id":"subscriberAnswer",
-          "type":"screenshare",
-        "role":"recv",
-        "voiceBridge":meetingdetails.voicebridge,
-        "callerName":meetingdetails.internalUserId,
-        "answer":newAnswer.sdp!
+      "id": "subscriberAnswer",
+      "type": "screenshare",
+      "role": "recv",
+      "voiceBridge": meetingdetails.voicebridge,
+      "callerName": meetingdetails.internalUserId,
+      "answer": newAnswer.sdp!
     });
 
     peerConnection!.onIceCandidate = (candidate) {
@@ -155,9 +152,9 @@ class RemoteScreenShareWebSocket extends GetxController {
       });
     };
     var result2 = await peerConnection!.getRemoteStreams();
-    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video' ) {
+    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video') {
       websocket.remoteRTCVideoRenderer.srcObject = result2[0];
-        print("Received remote video track.");
+      print("Received remote video track.");
       // var list = websocket.participant.where((v) {
       //   return v.vidieodeviceId == cameraId;
       // }).toList();
@@ -171,7 +168,8 @@ class RemoteScreenShareWebSocket extends GetxController {
     peerConnection!.onTrack = (RTCTrackEvent event) {
       print("stream received");
       if (event.streams.isNotEmpty) {
-        websocket.remoteRTCVideoRenderer.srcObject = event.streams[0];  // Render remote video
+        websocket.remoteRTCVideoRenderer.srcObject =
+            event.streams[0]; // Render remote video
         // var list = websocket.participant.where((v) {
         //   return v.vidieodeviceId == cameraId;
         // }).toList();
@@ -194,21 +192,21 @@ class RemoteScreenShareWebSocket extends GetxController {
     channel = WebSocketChannel.connect(Uri.parse(mediawebsocketurl));
 
     var payload = {
-      "id":"start",
-      "type":"screenshare",
-      "role":"recv",
-      "internalMeetingId":meetingdetails.meetingId,
-      "voiceBridge":meetingdetails.voicebridge,
-      "userName":meetingdetails.fullname,
-      "callerName":meetingdetails.internalUserId,
-      "hasAudio":false,
-      "contentType":"camera"
+      "id": "start",
+      "type": "screenshare",
+      "role": "recv",
+      "internalMeetingId": meetingdetails.meetingId,
+      "voiceBridge": meetingdetails.voicebridge,
+      "userName": meetingdetails.fullname,
+      "callerName": meetingdetails.internalUserId,
+      "hasAudio": false,
+      "contentType": "camera"
     };
 
     websocketsub(payload);
 
     channel!.stream.listen(
-          (event) async {
+      (event) async {
         var e = jsonDecode(event);
         print("new event");
         print(event);
@@ -244,7 +242,6 @@ class RemoteScreenShareWebSocket extends GetxController {
     );
     update();
   }
-
 
   void receiveCandidate(String candidate) async {
     var iceCandidate = RTCIceCandidate(candidate, null, 0);
@@ -290,4 +287,32 @@ class RemoteScreenShareWebSocket extends GetxController {
     update();
   }
 
+  Future<void> hangUp() async {
+    try {
+      if (_localStream != null) {
+        for (var track in _localStream!.getTracks()) {
+          track.stop();
+        }
+        await _localStream!.dispose();
+        _localStream = null;
+      }
+
+      // if (remoteStream != null) {
+      //   for (var track in remoteStream!.getTracks()) {
+      //     track.stop();
+      //   }
+      //   await remoteStream!.dispose();
+      //   remoteStream = null;
+      // }
+
+      await peerConnection?.close();
+      peerConnection = null;
+
+      // Clear local and remote video renderers
+      localRTCVideoRenderer.srcObject = null;
+      websocket.remoteRTCVideoRenderer.srcObject = null;
+    } catch (e) {
+      print("Error during hangup: $e");
+    }
+  }
 }

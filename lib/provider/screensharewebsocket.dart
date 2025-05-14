@@ -3,12 +3,9 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../utils/meetingdetails.dart';
 import '../bigbluebuttonsdk.dart';
 
-
 class Screensharewebsocket extends GetxController {
-
   var _isWebsocketRunning = false.obs; //status of a websocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
   get isWebsocketRunning => _isWebsocketRunning.value;
@@ -142,7 +139,8 @@ class Screensharewebsocket extends GetxController {
       print("Received SDP answer is null or empty");
       return;
     }
-    await peerConnection?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
+    await peerConnection
+        ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
   }
 
   void receiveStart() {
@@ -177,9 +175,9 @@ class Screensharewebsocket extends GetxController {
     isWebsocketRunning = true;
 
     channel!.stream.listen(
-          (event) {
-            print("new event");
-            print(event);
+      (event) {
+        print("new event");
+        print(event);
         var e = jsonDecode(event);
         switch (e['id']) {
           case 'startResponse':
@@ -250,5 +248,43 @@ class Screensharewebsocket extends GetxController {
     // Reset flags
     isVideo = false;
     update();
+  }
+
+  @override
+  void onClose() {
+    hangUp();
+    _remoteRTCVideoRenderer.value.dispose();
+    peerConnection?.close();
+    peerConnection = null;
+    super.onClose();
+  }
+
+  Future<void> hangUp() async {
+    try {
+      if (_localStream != null) {
+        for (var track in _localStream!.getTracks()) {
+          track.stop();
+        }
+        await _localStream!.dispose();
+        _localStream = null;
+      }
+
+      // if (remoteStream != null) {
+      //   for (var track in remoteStream!.getTracks()) {
+      //     track.stop();
+      //   }
+      //   await remoteStream!.dispose();
+      //   remoteStream = null;
+      // }
+
+      await peerConnection?.close();
+      peerConnection = null;
+
+      // Clear local and remote video renderers
+      localRTCVideoRenderer.srcObject = null;
+      websocket.remoteRTCVideoRenderer.srcObject = null;
+    } catch (e) {
+      print("Error during hangup: $e");
+    }
   }
 }

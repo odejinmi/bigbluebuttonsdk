@@ -4,10 +4,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '../../utils/meetingdetails.dart';
 import '../bigbluebuttonsdk.dart';
 import 'Speechtotext.dart';
-
 
 class Audiowebsocket extends GetxController {
   var _isWebsocketRunning = false.obs; // Status of the WebSocket
@@ -18,45 +16,45 @@ class Audiowebsocket extends GetxController {
   var retryLimit = 3;
   RTCPeerConnection? _peerConnection;
   var edSet;
-  
+
   var _mediaDevicesList = <MediaDeviceInfo>[].obs;
-  set mediaDevicesList (value) => _mediaDevicesList.value = value;
+  set mediaDevicesList(value) => _mediaDevicesList.value = value;
   get mediaDevicesList => _mediaDevicesList.value;
-  
+
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
   List<RTCIceCandidate> rtcIceCadidates = [];
 
   final _webrtctoken = "".obs;
-  set webrtctoken(value)=> _webrtctoken.value = value;
+  set webrtctoken(value) => _webrtctoken.value = value;
   get webrtctoken => _webrtctoken.value;
 
   final _mediawebsocketurl = "".obs;
-  set mediawebsocketurl(value)=> _mediawebsocketurl.value = value;
+  set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
   get mediawebsocketurl => _mediawebsocketurl.value;
 
-  var _meetingdetails =  Rx<Meetingdetails?>(null);
+  var _meetingdetails = Rx<Meetingdetails?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
   get meetingdetails => _meetingdetails.value;
 
   var _deviceid = "".obs;
-  set deviceid (value) => _deviceid.value = value;
+  set deviceid(value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
 
-  Timer? _pingTimer;  // Timer to manage pings
+  Timer? _pingTimer; // Timer to manage pings
 
   @override
   void onInit() {
     super.onInit();
     mediaDevices.ondevicechange = (event) async {
-      getdevices().then((value){
-        mediaDevicesList =value;
+      getdevices().then((value) {
+        mediaDevicesList = value;
       });
     };
-    getdevices().then((value){
-      mediaDevicesList =value;
+    getdevices().then((value) {
+      mediaDevicesList = value;
       deviceid = mediaDevicesList.first.deviceId;
     });
   }
@@ -65,6 +63,7 @@ class Audiowebsocket extends GetxController {
     var devices = await mediaDevices.enumerateDevices();
     return devices.where((device) => device.kind == 'audioinput').toList();
   }
+
   void switchmicrophone({required String deviceid}) async {
     this.deviceid = deviceid;
     adjustvideo();
@@ -88,9 +87,8 @@ class Audiowebsocket extends GetxController {
 
       // Get the existing sender for the video track
       var senderlist = await _peerConnection!.getSenders();
-      
-      var sender = senderlist.firstWhere(
-              (s) => s.track?.kind == 'audio',
+
+      var sender = senderlist.firstWhere((s) => s.track?.kind == 'audio',
           orElse: () => throw Exception("Audio sender not found"));
 
       // Replace the existing track with the new one
@@ -103,8 +101,7 @@ class Audiowebsocket extends GetxController {
 
   // Example renegotiation function
   Future<void> negotiate() async {
-    _peerConnection!.onIceCandidate =
-        (RTCIceCandidate candidate) {
+    _peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
       rtcIceCadidates.add(candidate);
       sendCandidate(candidate.candidate!);
     };
@@ -130,7 +127,6 @@ class Audiowebsocket extends GetxController {
     final sdpOffer = await _peerConnection?.getLocalDescription();
     sendSDPOffer(sdpOffer!.sdp);
 
-
     _peerConnection?.onAddStream = (stream) {
       // Handle incoming media stream here if needed
     };
@@ -138,8 +134,34 @@ class Audiowebsocket extends GetxController {
 
   @override
   void onClose() {
-    stopWebSocketPing();  // Stop the ping timer when the WebSocket is closed
+    stopWebSocketPing(); // Stop the ping timer when the WebSocket is closed
+    hangUp();
     super.onClose();
+  }
+
+  Future<void> hangUp() async {
+    try {
+      if (_localStream != null) {
+        for (var track in _localStream!.getTracks()) {
+          track.stop();
+        }
+        await _localStream!.dispose();
+        _localStream = null;
+      }
+
+      // if (remoteStream != null) {
+      //   for (var track in remoteStream!.getTracks()) {
+      //     track.stop();
+      //   }
+      //   await remoteStream!.dispose();
+      //   remoteStream = null;
+      // }
+
+      await _peerConnection?.close();
+      _peerConnection = null;
+    } catch (e) {
+      print("Error during hangup: $e");
+    }
   }
 
   void startWebSocketPing() {
@@ -148,28 +170,29 @@ class Audiowebsocket extends GetxController {
       if (channel != null && isWebsocketRunning) {
         sendPingMessage();
       } else {
-        stopWebSocketPing();  // Stop the ping if WebSocket is not connected
+        stopWebSocketPing(); // Stop the ping if WebSocket is not connected
       }
     });
   }
 
   void stopWebSocketPing() {
-    _pingTimer?.cancel();  // Cancel the timer
+    _pingTimer?.cancel(); // Cancel the timer
   }
 
   void sendPingMessage() {
-    var pingPayload = {"id":"ping"};
-    websocketsub(pingPayload);  // Send the ping over WebSocket
+    var pingPayload = {"id": "ping"};
+    websocketsub(pingPayload); // Send the ping over WebSocket
   }
+
   void receiveCandidate(candidate) async {
     // Exchange ICE candidates with the Kurento server
-    await _peerConnection?.addCandidate(RTCIceCandidate(candidate!,'',0));
+    await _peerConnection?.addCandidate(RTCIceCandidate(candidate!, '', 0));
   }
 
   void initiate(
       {required String webrtctoken,
       required String mediawebsocketurl,
-      required Meetingdetails meetingdetails}){
+      required Meetingdetails meetingdetails}) {
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
@@ -187,10 +210,9 @@ class Audiowebsocket extends GetxController {
     return await mediaDevices.getUserMedia(constraints);
   }
 
-
   Future<void> createPeerConnections() async {
     final configuration = {
-      "iceServers":[
+      "iceServers": [
         {
           "urls": "turn:meet.konn3ct.ng:3478",
           "username": "1734371473:w_3ljtaffhxtcn",
@@ -202,9 +224,7 @@ class Audiowebsocket extends GetxController {
     _peerConnection = await createPeerConnection(websocket.sturnserver);
 
     // listen for remotePeer mediaTrack event
-    _peerConnection?.onTrack = (event) {
-
-    };
+    _peerConnection?.onTrack = (event) {};
 
     // Get audio media stream
     _localStream = await createAudioStream(audioDeviceId: deviceid);
@@ -232,12 +252,12 @@ class Audiowebsocket extends GetxController {
       "transparentListenOnly": false
     };
     websocketsub(payload);
-    startWebSocketPing();  // Start pinging when the WebSocket is initialized
+    startWebSocketPing(); // Start pinging when the WebSocket is initialized
 
     channel!.stream.listen((event) {
-      if(!isWebsocketRunning){
+      if (!isWebsocketRunning) {
         isWebsocketRunning = true;
-        Get.find<Texttospeech>().start( meetingdetails: meetingdetails!);
+        Get.find<Texttospeech>().start(meetingdetails: meetingdetails!);
       }
       var response = jsonDecode(event);
       handleWebSocketResponse(response);
@@ -254,10 +274,10 @@ class Audiowebsocket extends GetxController {
     switch (response['id']) {
       case 'startResponse':
         // receiveSDP(response['sdpAnswer']);
-        if(response['response'] == "accepted"){
+        if (response['response'] == "accepted") {
           // set SDP offer as remoteDescription for peerConnection
           await _peerConnection!.setRemoteDescription(
-          RTCSessionDescription(response['sdpAnswer'], "answer"),
+            RTCSessionDescription(response['sdpAnswer'], "answer"),
           );
         }
         break;
@@ -289,7 +309,6 @@ class Audiowebsocket extends GetxController {
   void websocketsub(Map<String, dynamic> json) {
     if (channel != null) {
       channel!.sink.add(jsonEncode(json));
-    } else {
-    }
+    } else {}
   }
 }
