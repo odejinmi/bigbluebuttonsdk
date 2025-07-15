@@ -17,10 +17,6 @@ class Audiowebsocket extends GetxController {
   RTCPeerConnection? _peerConnection;
   var edSet;
 
-  var _mediaDevicesList = <MediaDeviceInfo>[].obs;
-  set mediaDevicesList(value) => _mediaDevicesList.value = value;
-  get mediaDevicesList => _mediaDevicesList.value;
-
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
@@ -50,12 +46,18 @@ class Audiowebsocket extends GetxController {
     super.onInit();
     mediaDevices.ondevicechange = (event) async {
       getdevices().then((value) {
-        mediaDevicesList = value;
+        // mediaDevicesList = value;
       });
     };
     getdevices().then((value) {
-      mediaDevicesList = value;
-      deviceid = mediaDevicesList.first.deviceId;
+      // mediaDevicesList = value;
+      deviceid = value.first.deviceId;
+    });
+    getaudiospeakerdevices().then((devices) {
+      print('Available speakers:');
+      devices.forEach((device) {
+        print('${device.label} - ${device.deviceId}');
+      });
     });
   }
 
@@ -64,9 +66,20 @@ class Audiowebsocket extends GetxController {
     return devices.where((device) => device.kind == 'audioinput').toList();
   }
 
+  Future<List<MediaDeviceInfo>> getaudiospeakerdevices() async {
+    var devices = await mediaDevices.enumerateDevices();
+    return devices.where((device) => device.kind == 'audiooutput').toList();
+  }
+
   void switchmicrophone({required String deviceid}) async {
     this.deviceid = deviceid;
     adjustvideo();
+  }
+
+  void switchspeaker({required String deviceid}) async {
+    // Switch to speaker
+    Helper.selectAudioOutput(
+        deviceid); // 1 = speaker, 0 = earpiece (Android only)
   }
 
   void adjustvideo() async {

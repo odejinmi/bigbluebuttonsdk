@@ -1,13 +1,12 @@
 import 'package:flutter_background/flutter_background.dart';
 
-import 'meetingdetails.dart';
-
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */
 
 void logLongText(String text, {int chunkSize = 1000}) {
-  final pattern = RegExp('.{1,$chunkSize}'); // This will split the text into chunks of size `chunkSize`
+  final pattern = RegExp(
+      '.{1,$chunkSize}'); // This will split the text into chunks of size `chunkSize`
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 

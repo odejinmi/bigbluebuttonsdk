@@ -55,6 +55,10 @@ class Websocket extends GetxController {
   set istypingnow(value) => _istyping.value = value;
   get istypingnow => _istyping.value;
 
+  final _ismesharing = false.obs;
+  set ismesharing(value) => _ismesharing.value = value;
+  get ismesharing => _ismesharing.value;
+
   final _platformFile = PlatformFile(name: '', size: 0).obs;
   set platformFile(value) => _platformFile.value = value;
   get platformFile => _platformFile.value;
@@ -278,8 +282,8 @@ class Websocket extends GetxController {
       },
       onDone: () {
         print("ondone");
-        startStream();
         isWebsocketRunning = false;
+        // startStream();
       },
       onError: (err) {
         isWebsocketRunning = false;

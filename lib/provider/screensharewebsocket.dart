@@ -1,24 +1,20 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
 
 class Screensharewebsocket extends GetxController {
-  var _isWebsocketRunning = false.obs; //status of a websocket
+  final _isWebsocketRunning = false.obs; //status of a websocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
   get isWebsocketRunning => _isWebsocketRunning.value;
-
-  var _isVideo = false.obs; //status of video sharing
-  set isVideo(value) => _isVideo.value = value;
-  get isVideo => _isVideo.value;
   var websocket = Get.find<Websocket>();
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
   RTCPeerConnection? peerConnection;
-  List<MediaDeviceInfo>? _mediaDevicesList;
 
   // mediaStream for localPeer
   MediaStream? _localStream;
@@ -30,11 +26,6 @@ class Screensharewebsocket extends GetxController {
   final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
   get localRTCVideoRenderer => _localRTCVideoRenderer.value;
-
-  // videoRenderer for remotePeer
-  final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
-  set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
-  get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
@@ -52,11 +43,6 @@ class Screensharewebsocket extends GetxController {
   void onInit() {
     // initializing renderers
     localRTCVideoRenderer.initialize();
-    remoteRTCVideoRenderer.initialize();
-
-    mediaDevices.ondevicechange = (event) async {
-      _mediaDevicesList = await mediaDevices.enumerateDevices();
-    };
 
     super.onInit();
   }
@@ -64,25 +50,15 @@ class Screensharewebsocket extends GetxController {
   void initiate(
       {required String webrtctoken,
       required String mediawebsocketurl,
-      required Meetingdetails meetingDetails}) {
+      required Meetingdetails meetingDetails,
+      required bool audio}) {
     this.webrtctoken = webrtctoken;
     this.meetingDetails = meetingDetails;
     this.mediawebsocketurl = mediawebsocketurl;
-    createPeerConnections();
+    createPeerConnections(audio);
   }
 
-  Future<void> createPeerConnections() async {
-    final configuration = {
-      // 'iceServers': [
-      //   {
-      //     'urls': [
-      //       'stun:stun1.l.google.com:19302',
-      //       'stun:stun2.l.google.com:19302',
-      //     ]
-      //   },
-      // ],
-    };
-
+  Future<void> createPeerConnections(bool audio) async {
     // Create the peer connection
     peerConnection = await createPeerConnection(websocket.sturnserver);
 
@@ -95,9 +71,6 @@ class Screensharewebsocket extends GetxController {
         'frameRate': 30,
       },
     });
-
-    // Enumerate media devices
-    _mediaDevicesList = await mediaDevices.enumerateDevices();
 
     // Add local tracks to the peer connection
     _localStream!.getTracks().forEach((track) {
@@ -115,12 +88,12 @@ class Screensharewebsocket extends GetxController {
 
     // Create and set local SDP offer
     final offer = await peerConnection?.createOffer({
-      'offerToReceiveAudio': false,
+      'offerToReceiveAudio': audio,
       'offerToReceiveVideo': true,
     });
 
     if (offer == null) {
-      print("Failed to create SDP offer");
+      debugPrint("Failed to create SDP offer");
       return;
     }
 
@@ -136,16 +109,14 @@ class Screensharewebsocket extends GetxController {
 
   void receiveSDP(String answer) async {
     if (answer.isEmpty) {
-      print("Received SDP answer is null or empty");
+      debugPrint("Received SDP answer is null or empty");
       return;
     }
     await peerConnection
         ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
   }
 
-  void receiveStart() {
-    isVideo = true;
-  }
+  void receiveStart() {}
 
   void sendCandidate(Map<String, dynamic> candidate) {
     // Implement your signaling logic to send candidate to server
@@ -176,8 +147,6 @@ class Screensharewebsocket extends GetxController {
 
     channel!.stream.listen(
       (event) {
-        print("new event");
-        print(event);
         var e = jsonDecode(event);
         switch (e['id']) {
           case 'startResponse':
@@ -187,6 +156,7 @@ class Screensharewebsocket extends GetxController {
             receiveCandidate(e['candidate']['candidate']);
             break;
           case 'playStart':
+            websocket.ismesharing = true;
             receiveStart();
             break;
           case 'error':
@@ -210,12 +180,12 @@ class Screensharewebsocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
-    print("json");
-    print(json);
+    debugPrint("json");
+    debugPrint(json.toString());
     channel!.sink.add(jsonEncode(json));
   }
 
-  void stopCameraSharing() async {
+  void stopScreenSharing() async {
     if (isWebsocketRunning) {
       // Send stop signal to server if needed
     }
@@ -243,17 +213,12 @@ class Screensharewebsocket extends GetxController {
 
     // Clear local and remote video renderers
     localRTCVideoRenderer.srcObject = null;
-    remoteRTCVideoRenderer.srcObject = null;
-
-    // Reset flags
-    isVideo = false;
     update();
   }
 
   @override
   void onClose() {
     hangUp();
-    _remoteRTCVideoRenderer.value.dispose();
     peerConnection?.close();
     peerConnection = null;
     super.onClose();
@@ -282,9 +247,8 @@ class Screensharewebsocket extends GetxController {
 
       // Clear local and remote video renderers
       localRTCVideoRenderer.srcObject = null;
-      websocket.remoteRTCVideoRenderer.srcObject = null;
     } catch (e) {
-      print("Error during hangup: $e");
+      debugPrint("Error during hangup: $e");
     }
   }
 }

@@ -102,29 +102,6 @@ class RemoteScreenShareWebSocket extends GetxController {
 
     peerConnection = await createPeerConnection(websocket.sturnserver);
 
-    // Get local media stream
-    _localStream = await mediaDevices.getUserMedia({
-      'audio': false,
-      'video': {
-        'width': 640,
-        'frameRate': 15, // Corrected 'framerate' to 'frameRate'
-      },
-    });
-
-    // Add local tracks to the peer connection
-    _localStream!.getTracks().forEach((track) {
-      peerConnection?.addTrack(track, _localStream!);
-    });
-
-    // // Render remote video
-    // var list = websocket.participant.where((v) {
-    //   return v.userId == websocket.mydetails.userId;
-    // }).toList();
-    // if (list.isNotEmpty) {
-    //   list[0].mediaStream = _localStream;
-    //   // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
-    // }
-
     // Set the remote description (answer)
     await peerConnection!
         .setRemoteDescription(RTCSessionDescription(answer, 'offer'));
@@ -151,17 +128,10 @@ class RemoteScreenShareWebSocket extends GetxController {
         "candidate": candidate.toMap()
       });
     };
-    var result2 = await peerConnection!.getRemoteStreams();
+    var result2 = peerConnection!.getRemoteStreams();
     if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video') {
       websocket.remoteRTCVideoRenderer.srcObject = result2[0];
       print("Received remote video track.");
-      // var list = websocket.participant.where((v) {
-      //   return v.vidieodeviceId == cameraId;
-      // }).toList();
-      // if (list.isNotEmpty) {
-      //   list[0].mediaStream = stream;
-      //   // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
-      // }
     }
 
     // Handle the reception of remote media streams
@@ -170,13 +140,6 @@ class RemoteScreenShareWebSocket extends GetxController {
       if (event.streams.isNotEmpty) {
         websocket.remoteRTCVideoRenderer.srcObject =
             event.streams[0]; // Render remote video
-        // var list = websocket.participant.where((v) {
-        //   return v.vidieodeviceId == cameraId;
-        // }).toList();
-        // if (list.isNotEmpty) {
-        //   list[0].mediaStream = stream;
-        //   // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
-        // }
       }
     };
     peerConnection!.onAddStream = (stream) {
@@ -283,6 +246,7 @@ class RemoteScreenShareWebSocket extends GetxController {
     // Clear local and remote video renderers
     localRTCVideoRenderer.srcObject = null;
     websocket.remoteRTCVideoRenderer.srcObject = null;
+    websocket.ismesharing = false;
 
     update();
   }

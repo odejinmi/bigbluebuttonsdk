@@ -96,6 +96,8 @@ class Users {
   }
 
   void controlingvoice(var json) {
+    print("controlingvoice");
+    print(json);
     if (json["msg"] == "added") {
       var list = websocket.participant.where((v) {
         if (v.fields!.voiceid == null) {

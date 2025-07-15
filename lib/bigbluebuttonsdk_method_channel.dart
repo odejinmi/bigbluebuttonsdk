@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:bigbluebuttonsdk/provider/Speechtotext.dart';
+import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
+import 'package:bigbluebuttonsdk/utils/strings.dart';
 import 'package:bigbluebuttonsdk/view/whiteboard.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -21,7 +23,6 @@ import 'provider/websocket.dart';
 import 'utils/chatmodel.dart';
 import 'utils/meetingdetails.dart';
 import 'utils/participant.dart';
-import 'utils/strings.dart';
 
 /// An implementation of [BigbluebuttonsdkPlatform] that uses method channels.
 class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
@@ -41,6 +42,22 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     final version =
         await methodChannel.invokeMethod<String>('getPlatformVersion');
     return version;
+  }
+
+  Future<void> switchToEarpiece() async {
+    await methodChannel.invokeMethod('earpiece');
+  }
+
+  Future<void> switchToSpeaker() async {
+    await methodChannel.invokeMethod('speaker');
+  }
+
+  Future<void> switchToBluetooth() async {
+    await methodChannel.invokeMethod('bluetooth');
+  }
+
+  Future<void> switchToWiredHeadset() async {
+    await methodChannel.invokeMethod('headset');
   }
 
   @override
@@ -100,6 +117,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     whiteboardcontrolle = Get.put(Whiteboardcontroller());
     if (GetPlatform.isAndroid || GetPlatform.isIOS) {
       startForegroundService();
+      // initializeService();
     }
     websocket.initiate(
         webrtctoken: webrtctoken,
@@ -189,9 +207,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   createGroupChat({
     required Participant participant,
   }) {
-    websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"900\",\"method\":\"createGroupChat\",\"params\":[${jsonEncode(participant.toJson())}]}"
-    ]);
+    Chats().createGroupChat(participant: participant);
   }
 
   @override
@@ -253,7 +269,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   stopcamera() {
     websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.deviceid)}\"]}"
+      "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.edSet.deviceId)}\"]}"
     ]);
     videowebsocket.stopCameraSharing();
   }
@@ -290,16 +306,19 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   stopscreenshare() {
-    screensharewebsocket.stopCameraSharing();
+    screensharewebsocket.stopScreenSharing();
   }
 
   @override
-  startscreenshare() {
-    screensharewebsocket.initiate(
-      webrtctoken: webrtctoken,
-      mediawebsocketurl: mediawebsocketurl,
-      meetingDetails: meetingdetails!,
-    );
+  startscreenshare(bool audio) async {
+    var result = await startForegroundService();
+    if (result) {
+      screensharewebsocket.initiate(
+          webrtctoken: webrtctoken,
+          mediawebsocketurl: mediawebsocketurl,
+          meetingDetails: meetingdetails!,
+          audio: audio);
+    }
   }
 
   @override
@@ -310,6 +329,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   Future<List<navigator.MediaDeviceInfo>> getAvailableMicrophones() {
     return audiowebsocket.getdevices();
+  }
+
+  @override
+  Future<List<navigator.MediaDeviceInfo>> getAvailableSpeakers() {
+    return audiowebsocket.getaudiospeakerdevices();
   }
 
   @override
@@ -421,11 +445,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   get pollanalyseparser {
     return websocket.pollanalyseparser;
-  }
-
-  @override
-  get isscreensharing {
-    return screensharewebsocket.isVideo;
   }
 
   @override

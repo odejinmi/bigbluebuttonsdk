@@ -2,12 +2,9 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'bigbluebuttonsdk.dart';
 
+import 'bigbluebuttonsdk.dart';
 import 'bigbluebuttonsdk_method_channel.dart';
-import 'utils/chatmodel.dart';
-import 'utils/meetingdetails.dart';
-import 'utils/participant.dart';
 
 abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   /// Constructs a BigbluebuttonsdkPlatform.
@@ -38,11 +35,16 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  initialize({required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
+  initialize(
+      {required String baseurl,
+      required String webrtctoken,
+      required Meetingdetails meetingdetails}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  typing({required String chatid,}) {
+  typing({
+    required String chatid,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -58,39 +60,45 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('whiteboard() has not been implemented.');
   }
 
-  sendmessage({required String message,required String chatid}) {
+  sendmessage({required String message, required String chatid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  sendecinema({required String videourl}){
+  sendecinema({required String videourl}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  endecinema(){
+  endecinema() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  makepresentationdefault({required var presentation}){
+  makepresentationdefault({required var presentation}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startpoll({required String question, required List options}){
+  startpoll({required String question, required List options}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  votepoll({required String poll_id, required String selectedOptionId}){
+  votepoll({required String poll_id, required String selectedOptionId}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  muteallusers({required String userid,}){
+  muteallusers({
+    required String userid,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  createGroupChat({required Participant participant,}) {
+  createGroupChat({
+    required Participant participant,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  uploadpresenter({required PlatformFile filename,}) {
+  uploadpresenter({
+    required PlatformFile filename,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -110,11 +118,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startcaption(){
+  startcaption() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  stopcaption(){
+  stopcaption() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -130,7 +138,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startscreenshare() {
+  startscreenshare(bool audio) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -138,7 +146,8 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  switchVideoQuality({required int width, /*int height,*/ required int frameRate}) {
+  switchVideoQuality(
+      {required int width, /*int height,*/ required int frameRate}) {
     throw UnimplementedError('switchVideoQuality() has not been implemented.');
   }
 
@@ -158,11 +167,13 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  removeuser({required String userid,required bool notallowagain}) {
+  removeuser({required String userid, required bool notallowagain}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  List<ChatMessage> getchatMessages({required String chatid,}) {
+  List<ChatMessage> getchatMessages({
+    required String chatid,
+  }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -178,73 +189,85 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  stoptyping(){
+  stoptyping() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get participant{
+  get participant {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get mydetails{
+  get mydetails {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get isWebsocketRunning{
+  get isWebsocketRunning {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get reason{
+  get reason {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get polljson{
+  get polljson {
     throw UnimplementedError('initialize() has not been implemented.');
   }
-  get ispolling{
+
+  get ispolling {
     throw UnimplementedError('initialize() has not been implemented.');
   }
-  set ispolling (value){
+
+  set ispolling(value) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
-  get isrecording{
+
+  get isrecording {
     throw UnimplementedError('initialize() has not been implemented.');
   }
-  get recordingtime{
+
+  get recordingtime {
     throw UnimplementedError('recordingtime() has not been implemented.');
   }
-  get pollanalyseparser{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-  get isscreensharing{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-  get talking{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-  get isvideo{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-  get chatMessages{
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-  get presentationmodel{
+
+  get pollanalyseparser {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get ishowecinema{
+  get talking {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  Future<List<MediaDeviceInfo>>  getAvailableCameras (){
+  get isvideo {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  get chatMessages {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  get presentationmodel {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  get ishowecinema {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  Future<List<MediaDeviceInfo>> getAvailableCameras() {
     throw UnimplementedError('getAvailableCameras() has not been implemented.');
   }
 
-  Future<List<MediaDeviceInfo>>  getAvailableMicrophones (){
-    throw UnimplementedError('getAvailableMicrophones() has not been implemented.');
+  Future<List<MediaDeviceInfo>> getAvailableMicrophones() {
+    throw UnimplementedError(
+        'getAvailableMicrophones() has not been implemented.');
   }
 
-  Stream<String> get stream{
+  Future<List<MediaDeviceInfo>> getAvailableSpeakers() {
+    throw UnimplementedError(
+        'getAvailableMicrophones() has not been implemented.');
+  }
+
+  Stream<String> get stream {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 }

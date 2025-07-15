@@ -8,10 +8,13 @@
 
 #include <bigbluebuttonsdk/bigbluebuttonsdk_plugin_c_api.h>
 #include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
+#include <permission_handler_windows/permission_handler_windows_plugin.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   BigbluebuttonsdkPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("BigbluebuttonsdkPluginCApi"));
   FlutterWebRTCPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterWebRTCPlugin"));
+  PermissionHandlerWindowsPluginRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
 }

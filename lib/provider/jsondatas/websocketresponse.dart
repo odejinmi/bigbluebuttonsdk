@@ -24,8 +24,8 @@ class Websocketresponse {
       var secondsplit = firstsplit[1].split("}\"]");
       var result = "${secondsplit[0]}}\"";
       var json = jsonDecode(jsonDecode(result));
-      print("general json");
-      print(json);
+      // print("general json");
+      // print(json);
       websocket.addEvent(jsonEncode(json));
       if (json["collection"] != null) {
         switch (json["collection"]) {
@@ -44,7 +44,8 @@ class Websocketresponse {
             Chats().addmessages(json);
             break;
           case "group-chat":
-            if (json["fields"] != null) {
+            if (json["fields"] != null &&
+                json["fields"]["chatId"] != "MAIN-PUBLIC-GROUP-CHAT") {
               Chats().updateParticipantsChatId(json, websocket.participant);
             }
             break;

@@ -1,17 +1,15 @@
 import 'dart:typed_data';
 
-import 'package:bigbluebuttonsdk/utils/meetingdetails.dart';
+import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
+import 'package:bigbluebuttonsdk/bigbluebuttonsdk_method_channel.dart';
+import 'package:bigbluebuttonsdk/bigbluebuttonsdk_platform_interface.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
-import 'package:bigbluebuttonsdk/bigbluebuttonsdk_platform_interface.dart';
-import 'package:bigbluebuttonsdk/bigbluebuttonsdk_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 class MockBigbluebuttonsdkPlatform
     with MockPlatformInterfaceMixin
     implements BigbluebuttonsdkPlatform {
-
   @override
   Future<String?> getPlatformVersion() => Future.value('42');
 
@@ -22,7 +20,10 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  initialize({required String baseurl,required String webrtctoken, required Meetingdetails meetingdetails}) {
+  initialize(
+      {required String baseurl,
+      required String webrtctoken,
+      required Meetingdetails meetingdetails}) {
     // TODO: implement initialize
     throw UnimplementedError();
   }
@@ -153,7 +154,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  startscreenshare() {
+  startscreenshare(bool audio) {
     // TODO: implement startscreenshare
     throw UnimplementedError();
   }
@@ -291,10 +292,37 @@ class MockBigbluebuttonsdkPlatform
     // TODO: implement whiteboard
     throw UnimplementedError();
   }
+
+  @override
+  endroom() {
+    // TODO: implement endroom
+    throw UnimplementedError();
+  }
+
+  @override
+  lowerHand() {
+    // TODO: implement lowerHand
+    throw UnimplementedError();
+  }
+
+  @override
+  raiseHand() {
+    // TODO: implement raiseHand
+    throw UnimplementedError();
+  }
+
+  @override
+  // TODO: implement reason
+  get reason => throw UnimplementedError();
+
+  @override
+  // TODO: implement recordingtime
+  get recordingtime => throw UnimplementedError();
 }
 
 void main() {
-  final BigbluebuttonsdkPlatform initialPlatform = BigbluebuttonsdkPlatform.instance;
+  final BigbluebuttonsdkPlatform initialPlatform =
+      BigbluebuttonsdkPlatform.instance;
 
   test('$MethodChannelBigbluebuttonsdk is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelBigbluebuttonsdk>());

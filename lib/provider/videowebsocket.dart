@@ -7,31 +7,27 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../bigbluebuttonsdk.dart';
 
 class Videowebsocket extends GetxController {
-  var _isWebsocketRunning = false.obs; //status of a websocket
+  final _isWebsocketRunning = false.obs; //status of a websocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
   get isWebsocketRunning => _isWebsocketRunning.value;
 
-  var _isvideo = false.obs; //status of a websocket
+  final _isvideo = false.obs; //status of a websocket
   set isvideo(value) => _isvideo.value = value;
   get isvideo => _isvideo.value;
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
   RTCPeerConnection? peerConnection;
-  var edSet;
 
-  var _mediaDevicesList = <MediaDeviceInfo>[].obs;
-  set mediaDevicesList(value) => _mediaDevicesList.value = value;
-  get mediaDevicesList => _mediaDevicesList.value;
+  final _edSet =
+      MediaDeviceInfo(label: '', deviceId: '1').obs; //status of a websocket
+  set edSet(value) => _edSet.value = value;
+  get edSet => _edSet.value;
 
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
   List<RTCIceCandidate> rtcIceCadidates = [];
-
-  var _deviceid = "".obs;
-  set deviceid(value) => _deviceid.value = value;
-  get deviceid => _deviceid.value;
 
   var _width = 640.obs;
   set width(value) => _width.value = value;
@@ -59,20 +55,15 @@ class Videowebsocket extends GetxController {
   void onInit() {
     super.onInit();
     // createPeerconnect();
-    mediaDevices.ondevicechange = (event) async {
-      // print('++++++ ondevicechange ++++++');
-      getdevices().then((value) {
-        mediaDevicesList = value;
-      });
-    };
-    getdevices().then((value) {
-      mediaDevicesList = value;
-      if (mediaDevicesList.length > 1) {
-        deviceid = mediaDevicesList.last.deviceId;
-      } else {
-        deviceid = mediaDevicesList.first.deviceId;
-      }
-    });
+    // getdevices().then((value) {
+    //   edSet = value.first;
+    // });
+    getedSet();
+  }
+
+  getedSet() async {
+    var value = await getdevices();
+    edSet = value.first;
   }
 
   Future<List<MediaDeviceInfo>> getdevices() async {
@@ -109,33 +100,11 @@ class Videowebsocket extends GetxController {
   }
 
   Future<void> createPeerconnect() async {
-    // print('createPeerConnect');
-
-    // Fetch device ID (ensure this function works as intended)
-    getDeviceID('videoinput');
-
-    final configuration = {
-      // 'iceServers': [
-      //   {
-      //     'urls': [
-      //       'stun:stun1.l.google.com:19302',
-      //       'stun:stun2.l.google.com:19302'
-      //     ]
-      //   },
-      // ],
-    };
-
     // Create the peer connection
     peerConnection = await createPeerConnection(websocket.sturnserver);
 
     _localStream = await createVideoStream(
-        width: width, frameRate: frameRate, videoDeviceId: deviceid);
-
-    // Enumerate media devices
-    getdevices().then((value) {
-      mediaDevicesList = value;
-      deviceid = mediaDevicesList.first.deviceId;
-    });
+        width: width, frameRate: frameRate, videoDeviceId: edSet.deviceId);
 
     // Add local tracks to the peer connection
     _localStream!.getTracks().forEach((track) {
@@ -152,8 +121,17 @@ class Videowebsocket extends GetxController {
   }
 
   void switchcamera({required String deviceid}) async {
-    this.deviceid = deviceid;
-    adjustvideo();
+    edSet = MediaDeviceInfo(
+      deviceId: deviceid,
+      label: 'new camera',
+    );
+    var list = websocket.participant.where((v) {
+      return v.fields!.userId == websocket.mydetails!.fields!.userId;
+    }).toList();
+    if (list.isNotEmpty && list.first.rtcVideoRenderer != null) {
+      adjustvideo();
+      // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
+    }
   }
 
   void adjustvideo() async {
@@ -168,7 +146,7 @@ class Videowebsocket extends GetxController {
     _localStream = await createVideoStream(
         width: width,
         /*height: height,*/ frameRate: frameRate,
-        videoDeviceId: deviceid);
+        videoDeviceId: edSet.deviceId);
 
     // Step 4: Replace the video track on the peer connection
     if (peerConnection != null && _localStream != null) {
@@ -299,38 +277,6 @@ class Videowebsocket extends GetxController {
     isvideo = true;
   }
 
-  Future<void> getDeviceID(String type) async {
-    try {
-      // Enumerate media devices
-      var devices = await mediaDevices.enumerateDevices();
-
-      // Loop through devices to find the requested type
-      for (var device in devices) {
-        if (device.kind == type) {
-          // print('Label: ${device.label}');
-          // print('Kind: ${device.kind}');
-          // print('Device ID: ${device.deviceId}');
-          // print("======");
-          edSet = device; // Store the found device
-        }
-      }
-
-      // Check if a device was found
-      if (edSet != null) {
-        // print("Selected Device:");
-        // print(edSet.deviceId);
-
-        var mc = {
-          'audio': {'deviceId': edSet.deviceId}
-        };
-      } else {
-        // print('No device found of type $type.');
-      }
-    } catch (e) {
-      // print('Error retrieving devices: $e');
-    }
-  }
-
   void sendCandidate(candidate) {
     // print('sending candidate out');
     var payload = {
@@ -368,7 +314,6 @@ class Videowebsocket extends GetxController {
     channel!.stream.listen(
       (event) {
         var e = jsonDecode(event);
-
         switch (e['id']) {
           case 'startResponse':
             receiveSDP(e['sdpAnswer']);
@@ -508,8 +453,6 @@ class Videowebsocket extends GetxController {
 
       await peerConnection?.close();
       peerConnection = null;
-
-      websocket.remoteRTCVideoRenderer.srcObject = null;
     } catch (e) {
       print("Error during hangup: $e");
     }
