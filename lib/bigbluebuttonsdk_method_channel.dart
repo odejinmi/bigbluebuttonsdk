@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:bigbluebuttonsdk/provider/Speechtotext.dart';
 import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
+import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
+import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/utils/strings.dart';
 import 'package:bigbluebuttonsdk/view/whiteboard.dart';
 import 'package:file_picker/file_picker.dart';
@@ -44,12 +47,38 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     return version;
   }
 
+  bool _isCallActive = false;
+  String _callStatus = 'Tap to return to the call';
+  late Timer _notificationWatcher;
+
   Future<void> switchToEarpiece() async {
     await methodChannel.invokeMethod('earpiece');
   }
 
   Future<void> switchToSpeaker() async {
     await methodChannel.invokeMethod('speaker');
+  }
+
+  Future<void> startScreenCapture() async {
+    try {
+      final result = await methodChannel.invokeMethod('requestMediaProjection');
+      if (result == 'success') {
+        // Screen capture started successfully
+        print('Screen capture started successfully');
+      } else {
+        print('Failed to start screen capture: $result');
+      }
+    } catch (e) {
+      print('Error starting screen capture: $e');
+    }
+  }
+
+  Future<void> stopScreenCapture() async {
+    try {
+      await methodChannel.invokeMethod('stopScreenCapture');
+    } catch (e) {
+      print('Error stopping screen capture: $e');
+    }
   }
 
   Future<void> switchToBluetooth() async {
@@ -97,6 +126,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   bool get sdkInitialized => _sdkInitialized;
 
   var websocket = Get.put(Websocket());
+  var texttospeech1 = Get.put(SpeechToTextProvider());
   var audiowebsocket = Get.put(Audiowebsocket());
   var videowebsocket = Get.put(Videowebsocket());
   var screensharewebsocket = Get.put(Screensharewebsocket());
@@ -116,7 +146,32 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     texttospeech = Get.put(Texttospeech());
     whiteboardcontrolle = Get.put(Whiteboardcontroller());
     if (GetPlatform.isAndroid || GetPlatform.isIOS) {
-      startForegroundService();
+      // Initialize the SDK instance for CallNotificationService
+      CallNotificationService.initializeSdkInstance(this);
+
+      CallNotificationService.initialize();
+
+      // Watch for notification dismissal and recreate if needed
+      _notificationWatcher = Timer.periodic(Duration(seconds: 2), (timer) {
+        if (_isCallActive && CallNotificationService.isNotificationActive) {
+          CallNotificationService.ensureNotificationExists(
+            title: websocket.meetingdetails!.confname,
+            status: "Tap to return to the call",
+          );
+        }
+      });
+
+      // setState(() {
+      _isCallActive = true;
+      _callStatus = 'Connected';
+      // });
+
+      CallNotificationService.showCallNotification(
+        title: meetingdetails!.confname,
+        status: 'Tap to return to the call',
+      );
+
+      // await startForegroundService();
       // initializeService();
     }
     websocket.initiate(
@@ -368,11 +423,13 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   leaveroom() {
+    CallNotificationService.dismissCallNotification();
     websocket.leaveroom();
   }
 
   @override
   endroom() {
+    CallNotificationService.dismissCallNotification();
     websocket.endroom();
   }
 

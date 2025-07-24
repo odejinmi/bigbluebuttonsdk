@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -38,6 +39,7 @@ class Audiowebsocket extends GetxController {
   set deviceid(value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
+  var speechtotext = Get.find<SpeechToTextProvider>();
 
   Timer? _pingTimer; // Timer to manage pings
 
@@ -284,6 +286,8 @@ class Audiowebsocket extends GetxController {
   }
 
   Future<void> handleWebSocketResponse(Map<String, dynamic> response) async {
+    print("audio web socket response");
+    print(response);
     switch (response['id']) {
       case 'startResponse':
         // receiveSDP(response['sdpAnswer']);
@@ -298,10 +302,13 @@ class Audiowebsocket extends GetxController {
         receiveCandidate(response['candidate']);
         break;
       case 'playStart':
+        print("playstart");
+        speechtotext.startListening();
         // receiveStart();
         break;
       case 'webRTCAudioSuccess':
         stopWebSocketPing();
+        speechtotext.startListening();
         break;
       case 'error':
         break;

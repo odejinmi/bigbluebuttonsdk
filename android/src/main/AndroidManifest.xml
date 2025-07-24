@@ -2,39 +2,30 @@
   package="com.bigbluebutton.bigbluebuttonsdk">
 
 
-    <!-- Existing permissions -->
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-    <!-- Add these new permissions for media projection -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
     <uses-permission android:name="android.permission.CAPTURE_VIDEO_OUTPUT" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!-- For API 34+ (Android 14+) -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
-
-    <!-- Optional: if you need microphone access in foreground service -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application>
 
         <!-- Foreground service declaration with appropriate type -->
 
                 <service
                     android:name="de.julianassmann.flutter_background.IsolateHolderService"
-                    android:foregroundServiceType="mediaProjection|camera|microphone"
                     android:enabled="true"
-                    android:exported="false" />
+                    android:exported="false"
+                    android:foregroundServiceType="mediaProjection" />
+<!--        ERROR: C:\Users\DELL\StudioProjects\onegov\example\build\bigbluebuttonsdk\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:33:9-37:72: AAPT: error: 'mediaProjection|manifest' is incompatible with attribute foregroundServiceType (attr) flags [camera=64, connectedDevice=16, dataSync=1, health=256, location=8, mediaPlayback=2, mediaProcessing=8192, mediaProjection=32, microphone=128, phoneCall=4, remoteMessaging=512, shortService=2048, specialUse=1073741824, systemExempted=1024].-->
     </application>
 </manifest>

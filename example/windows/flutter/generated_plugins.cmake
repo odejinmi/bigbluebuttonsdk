@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   bigbluebuttonsdk
   flutter_webrtc
   permission_handler_windows
+  screen_capturer_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

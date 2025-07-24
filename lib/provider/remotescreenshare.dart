@@ -118,7 +118,7 @@ class RemoteScreenShareWebSocket extends GetxController {
       "callerName": meetingdetails.internalUserId,
       "answer": newAnswer.sdp!
     });
-
+    // print("Answer: ${newAnswer.sdp}");
     peerConnection!.onIceCandidate = (candidate) {
       // {"type":"video","role":"share","id":"onIceCandidate","candidate":{"candidate":"candidate:2 2 TCP 2105524478 192.168.127.27 9 typ host tcptype active","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"2124c5f8"},"cameraId":"w_8mbuxp9jzxuidf4mngvcgm0x1"}
       websocketsub({
@@ -129,14 +129,15 @@ class RemoteScreenShareWebSocket extends GetxController {
       });
     };
     var result2 = peerConnection!.getRemoteStreams();
+    // print("result2: $result2");
     if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video') {
       websocket.remoteRTCVideoRenderer.srcObject = result2[0];
-      print("Received remote video track.");
+      // print("Received remote video track.");
     }
 
     // Handle the reception of remote media streams
     peerConnection!.onTrack = (RTCTrackEvent event) {
-      print("stream received");
+      // print("stream received");
       if (event.streams.isNotEmpty) {
         websocket.remoteRTCVideoRenderer.srcObject =
             event.streams[0]; // Render remote video
@@ -144,7 +145,7 @@ class RemoteScreenShareWebSocket extends GetxController {
     };
     peerConnection!.onAddStream = (stream) {
       // Handle incoming media stream
-      print('stream from pConnect');
+      // print('stream from pConnect');
     };
   }
 
@@ -171,8 +172,8 @@ class RemoteScreenShareWebSocket extends GetxController {
     channel!.stream.listen(
       (event) async {
         var e = jsonDecode(event);
-        print("new event");
-        print(event);
+        // print("new event");
+        // print(event);
         switch (e['id']) {
           case 'startResponse':
             receiveViewerSDPAnswer(e['sdpAnswer']);
@@ -182,23 +183,27 @@ class RemoteScreenShareWebSocket extends GetxController {
             break;
           case 'playStart':
             var result2 = await peerConnection!.getRemoteStreams();
-            result2.forEach((sender) {
-              print("Track remote stream: ${sender!.getTracks().length}");
-            });
+            websocket.remoteRTCVideoRenderer.srcObject = result2[0];
+            // result2.forEach((sender) {
+            //   print("Track remote stream: ${sender!.getTracks().length}");
+            //   print("Track remote id: ${sender.id}");
+            //   // print("Track remote active: ${sender.active}");
+            //   print("Track remote ownertag: ${sender.ownerTag}");
+            // });
             break;
           case 'error':
-            print('WebSocket error: $e');
+            // print('WebSocket error: $e');
             break;
           default:
-            print('Unhandled WebSocket event: $e');
+          // print('Unhandled WebSocket event: $e');
         }
       },
       onDone: () {
-        print("WebSocket connection closed.");
+        // print("WebSocket connection closed.");
         isWebsocketRunning = false;
       },
       onError: (err) {
-        print("WebSocket error: $err");
+        // print("WebSocket error: $err");
         isWebsocketRunning = false;
         if (retryLimit > 0) retryLimit--;
       },
@@ -212,8 +217,8 @@ class RemoteScreenShareWebSocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
-    print("payload");
-    print(json);
+    // print("payload");
+    // print(json);
     channel!.sink.add(jsonEncode(json));
   }
 
@@ -276,7 +281,7 @@ class RemoteScreenShareWebSocket extends GetxController {
       localRTCVideoRenderer.srcObject = null;
       websocket.remoteRTCVideoRenderer.srcObject = null;
     } catch (e) {
-      print("Error during hangup: $e");
+      // print("Error during hangup: $e");
     }
   }
 }
