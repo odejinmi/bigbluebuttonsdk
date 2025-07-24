@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
+// import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
-import 'Speechtotext.dart';
+// import 'Speechtotext.dart';
 
 class Audiowebsocket extends GetxController {
   var _isWebsocketRunning = false.obs; // Status of the WebSocket
@@ -39,7 +39,7 @@ class Audiowebsocket extends GetxController {
   set deviceid(value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
-  var speechtotext = Get.find<SpeechToTextProvider>();
+  // var speechtotext = Get.find<SpeechToTextProvider>();
 
   Timer? _pingTimer; // Timer to manage pings
 
@@ -272,7 +272,7 @@ class Audiowebsocket extends GetxController {
     channel!.stream.listen((event) {
       if (!isWebsocketRunning) {
         isWebsocketRunning = true;
-        Get.find<Texttospeech>().start(meetingdetails: meetingdetails!);
+        // Get.find<Texttospeech>().start(meetingdetails: meetingdetails!);
       }
       var response = jsonDecode(event);
       handleWebSocketResponse(response);
@@ -303,12 +303,12 @@ class Audiowebsocket extends GetxController {
         break;
       case 'playStart':
         print("playstart");
-        speechtotext.startListening();
+        // speechtotext.startListening();
         // receiveStart();
         break;
       case 'webRTCAudioSuccess':
         stopWebSocketPing();
-        speechtotext.startListening();
+        // speechtotext.startListening();
         break;
       case 'error':
         break;
