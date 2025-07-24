@@ -1,22 +1,22 @@
 import 'package:get/get.dart';
-import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:speech_to_text/speech_to_text.dart';
+// import 'package:speech_to_text/speech_recognition_result.dart';
+// import 'package:speech_to_text/speech_to_text.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
 import '../utils/meetingdetails.dart';
 
 class Texttospeech extends GetxController{
-  final _speechToText = SpeechToText().obs;
-  set speechToText (value) => _speechToText.value = value;
-  SpeechToText get speechToText => _speechToText.value;
-
-  var _locales = <LocaleName>[].obs;
-  set locales (value) => _locales.value = value;
-  List<LocaleName> get locales => _locales.value;
-
-  final _selectedLocale = LocaleName("","").obs;
-  set selectedLocale (value) => _selectedLocale.value = value;
-  LocaleName get selectedLocale => _selectedLocale.value;
+  // final _speechToText = SpeechToText().obs;
+  // set speechToText (value) => _speechToText.value = value;
+  // SpeechToText get speechToText => _speechToText.value;
+  //
+  // var _locales = <LocaleName>[].obs;
+  // set locales (value) => _locales.value = value;
+  // List<LocaleName> get locales => _locales.value;
+  //
+  // final _selectedLocale = LocaleName("","").obs;
+  // set selectedLocale (value) => _selectedLocale.value = value;
+  // LocaleName get selectedLocale => _selectedLocale.value;
 
   var _speechEnabled = false.obs;
   set speechEnabled (value) => _speechEnabled.value = value;
@@ -70,33 +70,33 @@ class Texttospeech extends GetxController{
 
   void initSpeech() async {
     print("Initializing speech-to-text");
-    speechEnabled = await speechToText.initialize(
-      onError: (error) => print("Speech recognition error: $error"),
-    );
-    if (speechEnabled) {
-      locales = await speechToText.locales();
-      selectedLocale = locales[0];
-    }
+    // speechEnabled = await speechToText.initialize(
+    //   onError: (error) => print("Speech recognition error: $error"),
+    // );
+    // if (speechEnabled) {
+    //   locales = await speechToText.locales();
+    //   selectedLocale = locales[0];
+    // }
   }
 
   void startListening() async {
     if (!speechEnabled) return;
     print("Starting speech recognition");
-    await speechToText.listen(
-      onResult: _onSpeechResult,
-      localeId: selectedLocale.localeId,
-    );
+    // await speechToText.listen(
+    //   onResult: _onSpeechResult,
+    //   localeId: selectedLocale.localeId,
+    // );
   }
 
   void stopListening() async {
-    print("Stopping speech recognition");
-    await speechToText.stop();
+    // print("Stopping speech recognition");
+    // await speechToText.stop();
   }
 
 
-  void _onSpeechResult(SpeechRecognitionResult result) {
-    lastWords = result.recognizedWords;
-    print("Recognized words: $lastWords");
-  }
+  // void _onSpeechResult(SpeechRecognitionResult result) {
+  //   lastWords = result.recognizedWords;
+  //   print("Recognized words: $lastWords");
+  // }
 
 }
