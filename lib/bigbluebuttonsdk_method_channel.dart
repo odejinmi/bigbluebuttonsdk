@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bigbluebuttonsdk/provider/Speechtotext.dart';
 import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
-import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/utils/strings.dart';
@@ -126,13 +124,13 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   bool get sdkInitialized => _sdkInitialized;
 
   var websocket = Get.put(Websocket());
-  var texttospeech1 = Get.put(SpeechToTextProvider());
+  // var texttospeech1 = Get.put(SpeechToTextProvider());
   var audiowebsocket = Get.put(Audiowebsocket());
   var videowebsocket = Get.put(Videowebsocket());
   var screensharewebsocket = Get.put(Screensharewebsocket());
   var remotevideowebsocket = Get.put(RemoteVideoWebSocket());
   var remotescreensharewebsocket = Get.put(RemoteScreenShareWebSocket());
-  var texttospeech = Get.put(Texttospeech());
+  // var texttospeech = Get.put(Texttospeech());
   var whiteboardcontrolle = Get.put(Whiteboardcontroller());
 
   @override
@@ -143,7 +141,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     screensharewebsocket = Get.put(Screensharewebsocket());
     remotevideowebsocket = Get.put(RemoteVideoWebSocket());
     remotescreensharewebsocket = Get.put(RemoteScreenShareWebSocket());
-    texttospeech = Get.put(Texttospeech());
+    // texttospeech = Get.put(Texttospeech());
     whiteboardcontrolle = Get.put(Whiteboardcontroller());
     if (GetPlatform.isAndroid || GetPlatform.isIOS) {
       // Initialize the SDK instance for CallNotificationService
@@ -198,12 +196,12 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   startcaption() {
-    texttospeech.initSpeech();
+    // texttospeech.initSpeech();
   }
 
   @override
   stopcaption() {
-    texttospeech.stopListening();
+    // texttospeech.stopListening();
   }
 
   @override
