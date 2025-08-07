@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/chatmodel.dart';
@@ -25,6 +26,10 @@ class Chats {
     print('messages');
     print(json);
     var message = json["fields"];
+    // MotionToast.success(
+    //   title: Text("Public Message from ${message["senderName"]}"),
+    //   description: Text("Meeting Link copied"),
+    // ).show(Get.context!);
     message["istyping"] = false;
     // a["{\"msg\":\"added\",\"collection\":\"group-chat-msg\",\"id\":\"qaBHzXdkh5DrsrCCe\",\"fields\":{\"id\":\"1728639206961-r0x38gph\",\"timestamp\":1728639206961,\"correlationId\":\"w_nidxlpogyafr-1728639206402\",\"chatEmphasizedText\":true,\"message\":\"Donation created|help the needy|2|10000000|7\",\"sender\":\"w_nidxlpogyafr\",\"senderName\":\"dfghjklhgtuyioupibpuiovugyfdtgfx\",\"senderRole\":\"VIEWER\",\"meetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728638792140\",\"chatId\":\"MAIN-PUBLIC-GROUP-CHAT\"}}"]
 

@@ -320,11 +320,52 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
+  allowPendingUsers(List<dynamic> participant, String policy) {
+    // "{\"msg\":\"method\",\"id\":\"499\",\"method\":\"allowPendingUsers\",\"params\":[[{\"name\":\"ODEJINMI TOLULOPE\",\"intId\":\"w_usontnyslc26\",\"role\":\"VIEWER\",\"avatar\":\"https://konn3ct.com/assets/images/konn3ctIcon.png\",\"guest\":false,\"authenticated\":true,\"_id\":\"y7tgajM35toQgB74Q\"}],\"ALLOW\"]}"
+    List<dynamic> participants = [];
+    participant.forEach((element) {
+      participants.add(
+          "{\"name\":\"${element["fields"]["name"]}\",\"intId\":\"${element["fields"]["intId"]}\",\"role\":\"${element["fields"]["role"]}\",\"avatar\":\"${element["fields"]["avatar"]}\",\"guest\":${element["fields"]["guest"]},\"authenticated\":${element["fields"]["authenticated"]},\"_id\":\"${element["id"]}\"}");
+    });
+    var result =
+        "{\"msg\":\"method\",\"id\":\"499\",\"method\":\"allowPendingUsers\",\"params\":[$participants,\"$policy\"]}";
+    print(result);
+    //ALLOW, DENY
+    websocket.websocketsub([result]);
+  }
+
+  @override
+  changeGuestPolicy(String policy) {
+    websocket.websocketsub([
+      //ASK_MODERATOR, ALWAYS_ACCEPT
+      "{\"msg\":\"method\",\"id\":\"540\",\"method\":\"changeGuestPolicy\",\"params\":[\"$policy\"]}"
+    ]);
+  }
+
+  @override
   stopcamera() {
     websocket.websocketsub([
       "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.edSet.deviceId)}\"]}"
     ]);
     videowebsocket.stopCameraSharing();
+  }
+
+  locksettings({
+    required bool disableCam,
+    required bool disableMic,
+    required bool disableNotes,
+    required bool disablePrivateChat,
+    required bool disablePublicChat,
+    required bool hideUserList,
+    required bool hideViewersAnnotation,
+    required bool hideViewersCursor,
+    required bool lockOnJoinConfigurable,
+    required bool lockOnJoin,
+  }) {
+    print("disableCam call $disableCam");
+    websocket.websocketsub([
+      "{\"msg\":\"method\",\"id\":\"101\",\"method\":\"toggleLockSettings\",\"params\":[{\"disableCam\":${disableCam},\"disableMic\":${disableMic},\"disableNotes\":${disableNotes},\"disablePrivateChat\":${disablePrivateChat},\"disablePublicChat\":${disablePublicChat},\"hideUserList\":${hideUserList},\"hideViewersAnnotation\":${hideViewersAnnotation},\"hideViewersCursor\":${hideViewersCursor},\"lockOnJoin\":${lockOnJoin},\"lockOnJoinConfigurable\":${lockOnJoinConfigurable},\"setBy\":\"${websocket.mydetails!.fields!.userId}\"}]}"
+    ]);
   }
 
   @override
@@ -421,13 +462,17 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   leaveroom() {
-    CallNotificationService.dismissCallNotification();
+    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+      CallNotificationService.dismissCallNotification();
+    }
     websocket.leaveroom();
   }
 
   @override
   endroom() {
-    CallNotificationService.dismissCallNotification();
+    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+      CallNotificationService.dismissCallNotification();
+    }
     websocket.endroom();
   }
 

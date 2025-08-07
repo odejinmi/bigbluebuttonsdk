@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -28,6 +29,14 @@ class Websocket extends GetxController {
   final _participant = <Participant>[].obs;
   set participant(value) => _participant.value = value;
   List<Participant> get participant => _participant.value;
+
+  final _meetingResponse = Rx<MeetingResponse?>(null);
+  set meetingResponse(value) => _meetingResponse.value = value;
+  MeetingResponse? get meetingResponse => _meetingResponse.value;
+
+  final _waitingparticipant = [].obs;
+  set waitingparticipant(value) => _waitingparticipant.value = value;
+  List get waitingparticipant => _waitingparticipant.value;
 
   final _talking = <Participant>[].obs;
   set talking(value) => _talking.value = value;

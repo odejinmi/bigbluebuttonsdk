@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 
@@ -54,11 +55,27 @@ class Websocketresponse {
               Chats().addtypingmessages(json["fields"]);
             }
             break;
+          case "guestUsers":
+            print(json);
+            if (json["msg"] == "added") {
+              websocket.waitingparticipant.add(json);
+            } else if (json["msg"] == "removed") {
+              // websocket.waitingparticipant.remove(json);
+            } else if (json["msg"] == "changed") {
+              // {msg: changed, collection: guestUsers, id: oxRy2Zcrc9r85qBkR, fields: {approved: true, approvedBy: w_kuk2ilmd4xni}}
+              websocket.waitingparticipant.remove(
+                websocket.waitingparticipant
+                    .where((item) => item["id"] == json["id"])
+                    .first,
+              );
+            }
+            // "{\"msg\":\"added\",\"collection\":\"guestUsers\",\"id\":\"y7tgajM35toQgB74Q\",\"fields\":{\"approved\":false,\"denied\":false,\"intId\":\"w_usontnyslc26\",\"name\":\"ODEJINMI TOLULOPE\",\"role\":\"VIEWER\",\"guest\":false,\"avatar\":\"https://konn3ct.com/assets/images/konn3ctIcon.png\",\"color\":\"#283593\",\"authenticated\":true,\"registeredOn\":1754392978055,\"meetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1754392222131\",\"loginTime\":1754392978055,\"privateGuestLobbyMessage\":\"\"}}"
+            break;
           case "external-video-meetings":
             if (json["fields"] != null) {
               if (json["fields"]["externalVideoUrl"] != null) {
               } else {
-                // Get.back();
+                // Navigator.pop(context);
                 websocket.ishowecinema = false;
               }
             }
@@ -73,12 +90,16 @@ class Websocketresponse {
             if (json["msg"] == "added") {
               websocket.ispolling = true;
               websocket.polljson = json;
-              websocket.pollanalyseparser =
-                  pollanalyseparserFromJson(jsonEncode(json["fields"]));
+              websocket.pollanalyseparser = pollanalyseparserFromJson(
+                jsonEncode(json["fields"]),
+              );
             } else if (json["msg"] == "changed") {
               websocket.pollanalyseparser = Pollanalyseparser.fromJson(
-                  websocket.mergeData(
-                      json["fields"], websocket.pollanalyseparser.toJson()));
+                websocket.mergeData(
+                  json["fields"],
+                  websocket.pollanalyseparser.toJson(),
+                ),
+              );
             } else {
               // a["{\"msg\":\"changed\",\"collection\":\"current-poll\",\"id\":\"9bEfYoy9xQ2uDyHWe\",\"fields\":{\"answers\":[{\"id\":0,\"key\":\"ljiuyiopi\",\"numVotes\":1},{\"id\":1,\"key\":\"p9786589op\",\"numVotes\":1}],\"numResponders\":2}}"]
             }
@@ -105,9 +126,10 @@ class Websocketresponse {
             if (json["msg"] == "added") {
               var remotevideowebsocket = Get.find<RemoteScreenShareWebSocket>();
               remotevideowebsocket.initiate(
-                  webrtctoken: websocket.webrtctoken,
-                  mediawebsocketurl: websocket.mediawebsocketurl,
-                  meetingdetails: websocket.meetingdetails);
+                webrtctoken: websocket.webrtctoken,
+                mediawebsocketurl: websocket.mediawebsocketurl,
+                meetingdetails: websocket.meetingdetails,
+              );
             } else if (json["msg"] == "removed") {
               var remotevideowebsocket = Get.find<RemoteScreenShareWebSocket>();
               remotevideowebsocket.stopCameraSharing();
@@ -124,8 +146,9 @@ class Websocketresponse {
             break;
           case "presentations":
             if (json["msg"] == "added") {
-              websocket.presentationmodel
-                  .add(presentationmodelFromJson(jsonEncode(json)));
+              websocket.presentationmodel.add(
+                presentationmodelFromJson(jsonEncode(json)),
+              );
             } else if (json["msg"] == "changed") {
               print(jsonEncode(json));
               var list = websocket.presentationmodel.where((v) {
@@ -195,6 +218,20 @@ class Websocketresponse {
               // a["{\"msg\":\"changed\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"timeRemaining\":890}}"]
             }
             break;
+          case "meetings":
+            print("meetings response");
+            print(json);
+            if (json["msg"] == "changed") {
+              websocket.meetingResponse = meetingResponseFromJson(jsonEncode(
+                  websocket.mergeData(
+                      json, websocket.meetingResponse!.toJson())));
+              // a["{\"msg\":\"changed\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+            } else if (json["msg"] == "added") {
+              websocket.meetingResponse =
+                  meetingResponseFromJson(jsonEncode(json));
+              // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+            }
+            break;
           default:
             // print("default response");
             // print(json);
@@ -243,10 +280,11 @@ class Websocketresponse {
 
         var remotevideowebsocket = Get.find<RemoteVideoWebSocket>();
         remotevideowebsocket.initiate(
-            webrtctoken: websocket.webrtctoken,
-            meetingdetails: websocket.meetingdetails,
-            mediawebsocketurl: websocket.mediawebsocketurl,
-            cameraId: json["fields"]["stream"]);
+          webrtctoken: websocket.webrtctoken,
+          meetingdetails: websocket.meetingdetails,
+          mediawebsocketurl: websocket.mediawebsocketurl,
+          cameraId: json["fields"]["stream"],
+        );
       }
       // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
     } else if (json["msg"] == "removed") {
@@ -275,12 +313,13 @@ class Websocketresponse {
       "room": token["fields"]["meetingId"],
       "temporaryPresentationId": token["fields"]["temporaryPresentationId"],
       "pod_id": "DEFAULT_PRESENTATION_POD",
-      "is_downloadable": false
+      "is_downloadable": false,
     });
     print("presentation upload");
     var cmddetails = await Diorequest().post(
-        "https://${websocket.baseurl}/bigbluebutton/presentation/${token["fields"]["authzToken"]}/upload",
-        formData);
+      "https://${websocket.baseurl}/bigbluebutton/presentation/${token["fields"]["authzToken"]}/upload",
+      formData,
+    );
     print(cmddetails);
     if (cmddetails["success"]) {
       websocket.makepresentationdefault(presentation: token);

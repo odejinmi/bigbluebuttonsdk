@@ -52,6 +52,29 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  allowPendingUsers(List<dynamic> participant, String policy) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  locksettings({
+    required bool disableCam,
+    required bool disableMic,
+    required bool disableNotes,
+    required bool disablePrivateChat,
+    required bool disablePublicChat,
+    required bool hideUserList,
+    required bool hideViewersAnnotation,
+    required bool hideViewersCursor,
+    required bool lockOnJoinConfigurable,
+    required bool lockOnJoin,
+  }) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  changeGuestPolicy(String policy) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
   nextpresentation({required String page}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }

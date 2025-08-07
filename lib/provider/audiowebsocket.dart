@@ -286,8 +286,8 @@ class Audiowebsocket extends GetxController {
   }
 
   Future<void> handleWebSocketResponse(Map<String, dynamic> response) async {
-    print("audio web socket response");
-    print(response);
+    // print("audio web socket response");
+    // print(response);
     switch (response['id']) {
       case 'startResponse':
         // receiveSDP(response['sdpAnswer']);
@@ -302,7 +302,7 @@ class Audiowebsocket extends GetxController {
         receiveCandidate(response['candidate']);
         break;
       case 'playStart':
-        print("playstart");
+        // print("playstart");
         // speechtotext.startListening();
         // receiveStart();
         break;

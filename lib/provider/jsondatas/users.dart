@@ -96,8 +96,8 @@ class Users {
   }
 
   void controlingvoice(var json) {
-    print("controlingvoice");
-    print(json);
+    // print("controlingvoice");
+    // print(json);
     if (json["msg"] == "added") {
       var list = websocket.participant.where((v) {
         if (v.fields!.voiceid == null) {
@@ -114,28 +114,39 @@ class Users {
         websocket.talking.add(list[0]);
       }
     } else {
-      var index = websocket.participant
-          .indexWhere((v) => v.fields!.voiceid == json["id"]);
+      // Find the participant by voiceid
+      final index = websocket.participant.indexWhere(
+        (v) => v.fields?.voiceid == json["id"],
+      );
 
       if (index != -1) {
-        websocket.participant[index] = Participant.fromJson(
-            websocket.mergeData(json, websocket.participant[index].toJson()));
+        // Update the found participant with merged data
+        final updated = Participant.fromJson(
+          websocket.mergeData(json, websocket.participant[index].toJson()),
+        );
+        websocket.participant[index] = updated;
 
-        if (websocket.mydetails?.fields?.userId ==
-            websocket.participant[index].fields?.userId) {
+        // If this is the current user, update mydetails as well
+        final myDetails = websocket.mydetails;
+        if (myDetails?.fields?.userId == updated.fields?.userId) {
           websocket.mydetails = Participant.fromJson(
-              websocket.mergeData(json, websocket.mydetails!.toJson()));
+            websocket.mergeData(json, myDetails!.toJson()),
+          );
         }
       } else {
-        var list = websocket.participant.where((v) {
-          return v.fields!.voiceid == null;
-        }).toList();
-        list[0].fields!.voiceid = json["id"];
+        // Assign voiceid to the first participant without a voiceid
+        final unassignedList = websocket.participant
+            .where((v) => v.fields?.voiceid == null)
+            .toList();
+        if (unassignedList.isNotEmpty) {
+          unassignedList[0].fields?.voiceid = json["id"];
+        }
       }
-      var list = websocket.participant.where((v) {
-        return v.fields!.talking == null || v.fields!.talking!;
-      }).toList();
-      websocket.talking = list;
+
+// Update the talking list
+      websocket.talking = websocket.participant
+          .where((v) => v.fields?.talking != false)
+          .toList();
     }
   }
 }

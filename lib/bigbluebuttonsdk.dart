@@ -46,6 +46,31 @@ class Bigbluebuttonsdk {
         meetingdetails: meetingdetails);
   }
 
+  locksettings({
+    bool disableCam = false,
+    bool disableMic = false,
+    bool disableNotes = false,
+    bool disablePrivateChat = false,
+    bool disablePublicChat = false,
+    bool hideUserList = false,
+    bool hideViewersAnnotation = false,
+    bool hideViewersCursor = false,
+    bool lockOnJoinConfigurable = false,
+    bool lockOnJoin = false,
+  }) {
+    return BigbluebuttonsdkPlatform.instance.locksettings(
+        disableCam: disableCam,
+        disableMic: disableMic,
+        disableNotes: disableNotes,
+        disablePrivateChat: disablePrivateChat,
+        disablePublicChat: disablePublicChat,
+        hideUserList: hideUserList,
+        hideViewersAnnotation: hideViewersAnnotation,
+        hideViewersCursor: hideViewersCursor,
+        lockOnJoinConfigurable: lockOnJoinConfigurable,
+        lockOnJoin: lockOnJoin);
+  }
+
   typing({required String chatid}) {
     BigbluebuttonsdkPlatform.instance.typing(chatid: chatid);
   }
@@ -57,6 +82,14 @@ class Bigbluebuttonsdk {
 
   sendecinema({required String videourl}) {
     BigbluebuttonsdkPlatform.instance.sendecinema(videourl: videourl);
+  }
+
+  allowPendingUsers(List<dynamic> participant, String policy) {
+    BigbluebuttonsdkPlatform.instance.allowPendingUsers(participant, policy);
+  }
+
+  changeGuestPolicy(String policy) {
+    BigbluebuttonsdkPlatform.instance.changeGuestPolicy(policy);
   }
 
   Widget whiteboard() {
