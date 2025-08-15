@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
+// import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/utils/strings.dart';
 import 'package:bigbluebuttonsdk/view/whiteboard.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:toast/toast.dart';
 
 import 'bigbluebuttonsdk.dart' as navigator;
 import 'bigbluebuttonsdk_platform_interface.dart';
@@ -136,6 +140,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   Startroom() {
     websocket = Get.put(Websocket());
+    // texttospeech1 = Get.put(SpeechToTextProvider());
     audiowebsocket = Get.put(Audiowebsocket());
     videowebsocket = Get.put(Videowebsocket());
     screensharewebsocket = Get.put(Screensharewebsocket());
@@ -405,14 +410,31 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   startscreenshare(bool audio) async {
-    var result = await startForegroundService();
-    if (result) {
-      screensharewebsocket.initiate(
-          webrtctoken: webrtctoken,
-          mediawebsocketurl: mediawebsocketurl,
-          meetingDetails: meetingdetails!,
-          audio: audio);
+    if (await isAndroidBelow13()) {
+      var result = await startForegroundService();
+      if (result) {
+        screensharewebsocket.initiate(
+            webrtctoken: webrtctoken,
+            mediawebsocketurl: mediawebsocketurl,
+            meetingDetails: meetingdetails!,
+            audio: audio);
+      }
+    } else {
+      Toast.show(
+        "Android 13 or above screen sharing is coming soon",
+        duration: Toast.lengthShort,
+        gravity: Toast.bottom,
+      );
     }
+  }
+
+  Future<bool> isAndroidBelow13() async {
+    final deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      return androidInfo.version.sdkInt < 33; // 33 is Android 13
+    }
+    return false; // Not Android
   }
 
   @override

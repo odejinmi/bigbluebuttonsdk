@@ -67,9 +67,17 @@ class Videowebsocket extends GetxController {
   }
 
   Future<List<MediaDeviceInfo>> getdevices() async {
-    // Enumerate media devices
-    var devices = await mediaDevices.enumerateDevices();
-    return devices.where((device) => device.kind == 'videoinput').toList();
+    try {
+      // Enumerate media devices
+      var devices = await mediaDevices.enumerateDevices();
+      print('Available media devices:');
+      devices.forEach((device) => print(
+          'Device: ${device.label}, Kind: ${device.kind}, ID: ${device.deviceId}'));
+      return devices.where((device) => device.kind == 'videoinput').toList();
+    } catch (e) {
+      print('Error enumerating devices: ${e}');
+      rethrow;
+    }
   }
 
   void initiate(
@@ -82,35 +90,52 @@ class Videowebsocket extends GetxController {
     createPeerconnect();
   }
 
-  Future<MediaStream> createVideoStream(
-      {required int width,
-      required int frameRate,
-      required String videoDeviceId}) async {
+  Future<MediaStream> createVideoStream({
+    required int width,
+    required int frameRate,
+    required String videoDeviceId,
+  }) async {
     final Map<String, dynamic> constraints = {
       'video': {
         'deviceId': videoDeviceId,
         'width': width,
-        // 'height': {'ideal': height},
         'frameRate': frameRate,
       },
-      'audio': false, // include audio if needed
+      'audio': false,
     };
-
-    return await mediaDevices.getUserMedia(constraints);
+    try {
+      final stream = await mediaDevices.getUserMedia(constraints);
+      print('Local video stream created: ${stream.id}');
+      return stream;
+    } catch (e) {
+      print('Error creating local video stream: ${e}');
+      rethrow;
+    }
   }
 
   Future<void> createPeerconnect() async {
-    // Create the peer connection
-    peerConnection = await createPeerConnection(websocket.sturnserver);
+    try {
+      // Create the peer connection
+      peerConnection = await createPeerConnection(websocket.sturnserver);
+      print('PeerConnection created: ${peerConnection != null}');
 
-    _localStream = await createVideoStream(
-        width: width, frameRate: frameRate, videoDeviceId: edSet.deviceId);
+      _localStream = await createVideoStream(
+        width: width,
+        frameRate: frameRate,
+        videoDeviceId: edSet.deviceId,
+      );
+      print('_localStream: ${_localStream != null}');
 
-    // Add local tracks to the peer connection
-    _localStream!.getTracks().forEach((track) {
-      peerConnection?.addTrack(track, _localStream!);
-    });
-    negotiate();
+      // Add local tracks to the peer connection
+      _localStream!.getTracks().forEach((track) {
+        print('Adding track: ${track.kind}');
+        peerConnection?.addTrack(track, _localStream!);
+      });
+      negotiate();
+    } catch (e) {
+      print('Error in createPeerconnect: ${e}');
+      rethrow;
+    }
   }
 
   void switchVideoQuality(
@@ -135,35 +160,50 @@ class Videowebsocket extends GetxController {
   }
 
   void adjustvideo() async {
-    // Step 1: Stop the existing video track if it exists
-    if (_localStream != null) {
-      _localStream?.getTracks().forEach((track) {
-        track.stop();
-      });
-    }
+    try {
+      // Step 1: Stop the existing video track if it exists
+      if (_localStream != null) {
+        _localStream?.getTracks().forEach((track) {
+          print('Stopping track: ${track.kind}');
+          track.stop();
+        });
+      }
 
-    // Step 2: Create a new video stream with updated quality settings
-    _localStream = await createVideoStream(
+      // Step 2: Create a new video stream with updated quality settings
+      _localStream = await createVideoStream(
         width: width,
-        /*height: height,*/ frameRate: frameRate,
-        videoDeviceId: edSet.deviceId);
+        frameRate: frameRate,
+        videoDeviceId: edSet.deviceId,
+      );
+      print('New _localStream created: ${_localStream != null}');
 
-    // Step 4: Replace the video track on the peer connection
-    if (peerConnection != null && _localStream != null) {
-      // Assuming your local stream has only one video track
-      var newVideoTrack = _localStream!.getVideoTracks().first;
+      // Step 4: Replace the video track on the peer connection
+      if (peerConnection != null && _localStream != null) {
+        // Assuming your local stream has only one video track
+        var newVideoTrack = _localStream!.getVideoTracks().first;
+        print('New video track: ${newVideoTrack.id}');
 
-      // Get the existing sender for the video track
-      var senderlist = await peerConnection!.getSenders();
+        // Get the existing sender for the video track
+        var senderlist = await peerConnection!.getSenders();
+        print('Sender list length: ${senderlist.length}');
 
-      var sender = senderlist.firstWhere((s) => s.track?.kind == 'video',
-          orElse: () => throw Exception("Video sender not found"));
+        var sender = senderlist.firstWhere(
+          (s) => s.track?.kind == 'video',
+          orElse: () {
+            print('Video sender not found');
+            throw Exception('Video sender not found');
+          },
+        );
 
-      // Replace the existing track with the new one
-      await sender.replaceTrack(newVideoTrack);
+        // Replace the existing track with the new one
+        await sender.replaceTrack(newVideoTrack);
+        print('Replaced video track');
 
-      // Renegotiate the connection if needed
-      await negotiate();
+        // Renegotiate the connection if needed
+        await negotiate();
+      }
+    } catch (e) {
+      print('Error adjusting video: ${e}');
     }
   }
 
@@ -199,74 +239,80 @@ class Videowebsocket extends GetxController {
     }
   }
 
-  // Example renegotiation function
   Future<void> negotiate() async {
-    // Render remote video
-    var list = websocket.participant.where((v) {
-      return v.fields!.userId == websocket.mydetails!.fields!.userId;
-    }).toList();
-    if (list.isNotEmpty) {
-      list[0].mediaStream = _localStream;
-      list[0].rtcVideoRenderer = RTCVideoRenderer();
-      await list[0].rtcVideoRenderer!.initialize();
-      list[0].rtcVideoRenderer!.srcObject = _localStream;
-      // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
-    }
+    try {
+      // Render remote video
+      var list = websocket.participant.where((v) {
+        return v.fields!.userId == websocket.mydetails!.fields!.userId;
+      }).toList();
+      if (list.isNotEmpty) {
+        list[0].mediaStream = _localStream;
+        list[0].rtcVideoRenderer = RTCVideoRenderer();
+        await list[0].rtcVideoRenderer!.initialize();
+        list[0].rtcVideoRenderer!.srcObject = _localStream;
+        print('RTCVideoRenderer initialized and srcObject set');
+      }
 
-    peerConnection!.onIceCandidate =
-        (RTCIceCandidate candidate) => rtcIceCadidates.add(candidate);
+      peerConnection!.onIceCandidate =
+          (RTCIceCandidate candidate) => rtcIceCadidates.add(candidate);
 
-    // peerConnection?.onIceConnectionState = (state) {
-    //   print("ICE Connection State: $state");
-    //   if (state == RTCPeerConnectionState.RTCPeerConnectionStateConnected) {
-    //     receiveStart();
-    //   }
-    // };
-    // Create and set local description
-    final offerOptions = {
-      'offerToReceiveAudio': false,
-      'offerToReceiveVideo': true,
-    };
-    final offer = await peerConnection?.createOffer(offerOptions);
-    if (offer == null) {
-      print("Failed to create SDP offer");
-      return;
-    }
+      final offerOptions = {
+        'offerToReceiveAudio': false,
+        'offerToReceiveVideo': true,
+      };
+      final offer = await peerConnection?.createOffer(offerOptions);
+      if (offer == null) {
+        print('Failed to create SDP offer');
+        return;
+      }
 
-    await peerConnection?.setLocalDescription(offer);
+      await peerConnection?.setLocalDescription(offer);
+      print('Set local description');
 
-// Send the offer via WebSocket or your signaling method
-    videoStream(offer.sdp);
+      // Send the offer via WebSocket or your signaling method
+      videoStream(offer.sdp);
 
-    peerConnection?.onIceCandidate = (candidate) {
-      sendCandidate(candidate.toMap());
-      // Handle ICE candidate
-    };
+      peerConnection?.onIceCandidate = (candidate) {
+        print('ICE candidate: ${candidate.toMap()}');
+        sendCandidate(candidate.toMap());
+      };
 
-    peerConnection?.onAddStream = (stream) {
-      // Handle incoming media stream
-      // print('stream from pConnect');
-    };
+      peerConnection?.onAddStream = (stream) {
+        print('Remote stream added: ${stream.id}');
+      };
 
-    if (peerConnection?.connectionState == "RTCPeerConnectionStateConnected") {
-      // print('connection state is RTCPeerConnectionStateConnected');
-      receiveStart();
+      if (peerConnection?.connectionState ==
+          "RTCPeerConnectionStateConnected") {
+        print('Connection state: RTCPeerConnectionStateConnected');
+        receiveStart();
+      }
+    } catch (e) {
+      print('Error in negotiate: ${e}');
     }
   }
 
   void receiveCandidate(candidate) async {
-    // Exchange ICE candidates with the Kurento server
-    await peerConnection?.addCandidate(RTCIceCandidate(candidate!, '', 0));
+    try {
+      // Exchange ICE candidates with the Kurento server
+      await peerConnection?.addCandidate(RTCIceCandidate(candidate!, '', 0));
+      print('Received and added ICE candidate: ${candidate}');
+    } catch (e) {
+      print('Error in receiveCandidate: ${e}');
+    }
   }
 
   void receiveSDP(answer) async {
-    if (answer == null || answer.isEmpty) {
-      print("Received SDP answer is null or empty");
-      return;
+    try {
+      if (answer == null || answer.isEmpty) {
+        print('Received SDP answer is null or empty');
+        return;
+      }
+      await peerConnection
+          ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
+      print('Set remote description');
+    } catch (e) {
+      print('Error in receiveSDP: ${e}');
     }
-
-    await peerConnection
-        ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
   }
 
   void receiveStart() async {
@@ -292,84 +338,68 @@ class Videowebsocket extends GetxController {
 
   void videoStream(sdp) {
     if (isWebsocketRunning) return; //chaech if its already running
-    // print("This is the SDP: $sdp");
-    // final url = 'wss://${baseurl}bbb-webrtc-sfu?sessionToken=${webrtctoken}';
-    // print("video websocket url $url");
-    channel = WebSocketChannel.connect(
-      Uri.parse(mediawebsocketurl), //connect to a websocket
-    );
-    //stop video stream;
-    // {"id":"stop","type":"video","cameraId":"w_2er3ojb6o4yv_9eb30d720bf574674bce5c0adeb4b88b78ef6b1b4862e6129d22aaeb38c33adf","role":"share"}
-    var payload = {
-      "id": "start",
-      "type": "video",
-      "cameraId": streamID(edSet.deviceId),
-      "role": "share",
-      "sdpOffer": sdp,
-      "bitrate": 200,
-      "record": true
-    };
-    websocketsub(payload);
-    isWebsocketRunning = true;
-    channel!.stream.listen(
-      (event) {
-        var e = jsonDecode(event);
-        switch (e['id']) {
-          case 'startResponse':
-            receiveSDP(e['sdpAnswer']);
-            break;
-          case 'iceCandidate':
-            receiveCandidate(e['candidate']['candidate']);
-            break;
-          case 'playStart':
-            receiveStart();
-            break;
-          case 'error':
-            if (e['message'] == "MEDIA_SERVER_GENERIC_ERROR") {
-              // websocketsub(payload);
-            }
-            // print(e);
-            break;
-          default:
-          // print('no handler yet');
-        }
-      },
-      onDone: () {
-        // print("kurento ws ondone");
-        isWebsocketRunning = false;
-      },
-      onError: (err) {
-        // print("kurento ws error");
-        // print(err);
-        isWebsocketRunning = false;
-        if (retryLimit > 0) {
-          retryLimit--;
-          // startStream();
-        }
-      },
-    );
-    update();
+    try {
+      channel = WebSocketChannel.connect(
+        Uri.parse(mediawebsocketurl), //connect to a websocket
+      );
+      print('WebSocketChannel connected to: ${mediawebsocketurl}');
+      var payload = {
+        "id": "start",
+        "type": "video",
+        "cameraId": streamID(edSet.deviceId),
+        "role": "share",
+        "sdpOffer": sdp,
+        "bitrate": 200,
+        "record": true
+      };
+      websocketsub(payload);
+      isWebsocketRunning = true;
+      channel!.stream.listen(
+        (event) {
+          print('WebSocket event: ${event}');
+          var e = jsonDecode(event);
+          switch (e['id']) {
+            case 'startResponse':
+              receiveSDP(e['sdpAnswer']);
+              break;
+            case 'iceCandidate':
+              receiveCandidate(e['candidate']['candidate']);
+              break;
+            case 'playStart':
+              receiveStart();
+              break;
+            case 'error':
+              print('WebSocket error: ${e['message']}');
+              if (e['message'] == "MEDIA_SERVER_GENERIC_ERROR") {
+                // websocketsub(payload);
+              }
+              break;
+            default:
+              print('WebSocket event not handled: ${e}');
+          }
+        },
+        onDone: () {
+          print('WebSocket onDone');
+          isWebsocketRunning = false;
+        },
+        onError: (err) {
+          print('WebSocket onError: ${err}');
+          isWebsocketRunning = false;
+          if (retryLimit > 0) {
+            retryLimit--;
+          }
+        },
+      );
+      update();
+    } catch (e) {
+      print('Error in videoStream: ${e}');
+    }
   }
 
-  Future<void> replaceVideoTrack(
-    MediaStreamTrack track, {
-    List<RTCRtpSender>? sendersList,
-  }) async {
-    final List<RTCRtpSender> senders =
-        (sendersList ?? await peerConnection!.getSenders())
-            .where(
-              (sender) => sender.track?.kind == 'video',
-            )
-            .toList();
-
-    if (senders.isEmpty) return;
-
-    final sender = senders.first;
-
-    sender.replaceTrack(track);
-
-    // await _enableEncryption(_callSetting.e2eeEnabled);
-  }
+  // --- UI WIDGET HINT ---
+  // Ensure you are rendering the video like this in your widget tree:
+  // RTCVideoView(list[0].rtcVideoRenderer!)
+  // where list[0] is the local participant.
 
   void websocketsub(json) {
     channel!.sink.add(

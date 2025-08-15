@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
@@ -151,6 +152,31 @@ class Websocket extends GetxController {
   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
   get mediawebsocketurl => _mediawebsocketurl.value;
 
+  logoutjson() {
+    isleave = true;
+    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+      CallNotificationService.dismissCallNotification();
+    }
+    return {
+      "msg": "changed",
+      "collection": "current-user",
+      "id": userid,
+      "fields": {"loggedOut": true}
+    };
+  }
+
+  retryconnection() {
+    isWebsocketRunning = false;
+    if (!isleave) {
+      if (retryLimit > 0) {
+        retryLimit--;
+        startStream();
+      } else {
+        Websocketresponse().reseponse(logoutjson());
+      }
+    }
+  }
+
   // final _sturnserver = {
   //   "stunServers": [
   //
@@ -200,6 +226,14 @@ class Websocket extends GetxController {
 
   // Expose the stream
   Stream<String> get stream => controller.stream;
+
+  var _isleave = false.obs;
+  set isleave(value) => _isleave.value = value;
+  get isleave => _isleave.value;
+
+  var _userid = "".obs;
+  set userid(value) => _userid.value = value;
+  get userid => _userid.value;
 
   // Function to add data to the stream
   void addEvent(String event) {
@@ -286,20 +320,31 @@ class Websocket extends GetxController {
               mediawebsocketurl: mediawebsocketurl,
               meetingdetails: meetingdetails!);
         }
-        Websocketresponse().reseponse(event);
+        var firstsplit = event.toString().split("a[");
+        if (firstsplit.length > 1) {
+          var secondsplit = firstsplit[1].split("}\"]");
+          var result = "${secondsplit[0]}}\"";
+          var json = jsonDecode(jsonDecode(result));
+          if (json["collection"] == "current-user") {
+            userid = json["id"];
+            if (json["fields"].containsKey("loggedOut")) {
+              if (json["fields"]["loggedOut"] == true) {
+                isleave = true;
+              }
+            }
+          }
+          Websocketresponse().reseponse(json);
+        }
         update();
       },
       onDone: () {
         print("ondone");
-        isWebsocketRunning = false;
+        retryconnection();
         // startStream();
       },
       onError: (err) {
-        isWebsocketRunning = false;
-        if (retryLimit > 0) {
-          retryLimit--;
-          // startStream();
-        }
+        print("error");
+        retryconnection();
       },
     );
     update();

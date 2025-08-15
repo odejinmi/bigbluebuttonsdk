@@ -302,13 +302,17 @@ class Audiowebsocket extends GetxController {
         receiveCandidate(response['candidate']);
         break;
       case 'playStart':
-        // print("playstart");
-        // speechtotext.startListening();
+        // print("aplaystart");
+        // if (speechtotext.hasSpeech) {
+        //   speechtotext.startListening();
+        // }
         // receiveStart();
         break;
       case 'webRTCAudioSuccess':
         stopWebSocketPing();
-        // speechtotext.startListening();
+        // if (speechtotext.hasSpeech) {
+        //   speechtotext.startListening();
+        // }
         break;
       case 'error':
         break;
