@@ -1,4 +1,4 @@
-import 'package:flutter_background/flutter_background.dart';
+// import 'package:flutter_background/flutter_background.dart';
 
 /**
  * GetX Template Generator - fb.com/htngu.99
@@ -10,26 +10,26 @@ void logLongText(String text, {int chunkSize = 1000}) {
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-Future<bool> startForegroundService() async {
-  // Check if the background execution is already enabled
-  if (FlutterBackground.isBackgroundExecutionEnabled) {
-    print("Background service is already running.");
-    return true;
-  }
-  final androidConfig = FlutterBackgroundAndroidConfig(
-    notificationTitle: 'Title of the notification',
-    notificationText: 'Text of the notification',
-    notificationImportance: AndroidNotificationImportance.normal,
-    notificationIcon: AndroidResource(
-        name: 'background_icon',
-        defType: 'drawable'), // Default is ic_launcher from folder mipmap
-  );
-  var result = await FlutterBackground.initialize(androidConfig: androidConfig);
-  print("result");
-  print(result);
-
-  return FlutterBackground.enableBackgroundExecution();
-}
+// Future<bool> startForegroundService() async {
+//   // Check if the background execution is already enabled
+//   if (FlutterBackground.isBackgroundExecutionEnabled) {
+//     print("Background service is already running.");
+//     return true;
+//   }
+//   final androidConfig = FlutterBackgroundAndroidConfig(
+//     notificationTitle: 'Title of the notification',
+//     notificationText: 'Text of the notification',
+//     notificationImportance: AndroidNotificationImportance.normal,
+//     notificationIcon: AndroidResource(
+//         name: 'background_icon',
+//         defType: 'drawable'), // Default is ic_launcher from folder mipmap
+//   );
+//   var result = await FlutterBackground.initialize(androidConfig: androidConfig);
+//   print("result");
+//   print(result);
+//
+//   return FlutterBackground.enableBackgroundExecution();
+// }
 
 String generateInitials(String fullName) {
   // Trim and check if the fullName is empty

@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-// import 'package:bigbluebuttonsdk/provider/speech_to_text_provider.dart';
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
+import 'DirectSocketIOStreamer.dart';
 // import 'Speechtotext.dart';
 
 class Audiowebsocket extends GetxController {
@@ -39,7 +39,7 @@ class Audiowebsocket extends GetxController {
   set deviceid(value) => _deviceid.value = value;
   get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
-  // var speechtotext = Get.find<SpeechToTextProvider>();
+  var speechtotext = Get.find<DirectSocketIOStreamer>();
 
   Timer? _pingTimer; // Timer to manage pings
 
@@ -81,7 +81,8 @@ class Audiowebsocket extends GetxController {
   void switchspeaker({required String deviceid}) async {
     // Switch to speaker
     Helper.selectAudioOutput(
-        deviceid); // 1 = speaker, 0 = earpiece (Android only)
+      deviceid,
+    ); // 1 = speaker, 0 = earpiece (Android only)
   }
 
   void adjustvideo() async {
@@ -103,8 +104,10 @@ class Audiowebsocket extends GetxController {
       // Get the existing sender for the video track
       var senderlist = await _peerConnection!.getSenders();
 
-      var sender = senderlist.firstWhere((s) => s.track?.kind == 'audio',
-          orElse: () => throw Exception("Audio sender not found"));
+      var sender = senderlist.firstWhere(
+        (s) => s.track?.kind == 'audio',
+        orElse: () => throw Exception("Audio sender not found"),
+      );
 
       // Replace the existing track with the new one
       await sender.replaceTrack(newVideoTrack);
@@ -204,10 +207,11 @@ class Audiowebsocket extends GetxController {
     await _peerConnection?.addCandidate(RTCIceCandidate(candidate!, '', 0));
   }
 
-  void initiate(
-      {required String webrtctoken,
-      required String mediawebsocketurl,
-      required Meetingdetails meetingdetails}) {
+  void initiate({
+    required String webrtctoken,
+    required String mediawebsocketurl,
+    required Meetingdetails meetingdetails,
+  }) {
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
     this.mediawebsocketurl = mediawebsocketurl;
@@ -216,9 +220,7 @@ class Audiowebsocket extends GetxController {
 
   Future<MediaStream> createAudioStream({required String audioDeviceId}) async {
     final Map<String, dynamic> constraints = {
-      'audio': {
-        'deviceId': audioDeviceId ?? '',
-      },
+      'audio': {'deviceId': audioDeviceId ?? ''},
       'video': false,
     };
 
@@ -231,10 +233,10 @@ class Audiowebsocket extends GetxController {
         {
           "urls": "turn:meet.konn3ct.ng:3478",
           "username": "1734371473:w_3ljtaffhxtcn",
-          "credential": "h43KnBujHdFH3tGrqxbduv/KAxQ="
-        }
+          "credential": "h43KnBujHdFH3tGrqxbduv/KAxQ=",
+        },
       ],
-      "iceTransportPolicy": "relay"
+      "iceTransportPolicy": "relay",
     };
     _peerConnection = await createPeerConnection(websocket.sturnserver);
 
@@ -264,23 +266,27 @@ class Audiowebsocket extends GetxController {
       "clientSessionNumber": 2,
       "sdpOffer": sdp,
       "extension": null,
-      "transparentListenOnly": false
+      "transparentListenOnly": false,
     };
     websocketsub(payload);
     startWebSocketPing(); // Start pinging when the WebSocket is initialized
 
-    channel!.stream.listen((event) {
-      if (!isWebsocketRunning) {
-        isWebsocketRunning = true;
-        // Get.find<Texttospeech>().start(meetingdetails: meetingdetails!);
-      }
-      var response = jsonDecode(event);
-      handleWebSocketResponse(response);
-    }, onDone: () {
-      isWebsocketRunning = false;
-    }, onError: (error) {
-      isWebsocketRunning = false;
-    });
+    channel!.stream.listen(
+      (event) {
+        if (!isWebsocketRunning) {
+          isWebsocketRunning = true;
+          // Get.find<Texttospeech>().start(meetingdetails: meetingdetails!);
+        }
+        var response = jsonDecode(event);
+        handleWebSocketResponse(response);
+      },
+      onDone: () {
+        isWebsocketRunning = false;
+      },
+      onError: (error) {
+        isWebsocketRunning = false;
+      },
+    );
 
     isWebsocketRunning = true;
   }
@@ -310,9 +316,10 @@ class Audiowebsocket extends GetxController {
         break;
       case 'webRTCAudioSuccess':
         stopWebSocketPing();
-        // if (speechtotext.hasSpeech) {
-        //   speechtotext.startListening();
-        // }
+        print("webRTCAudioSuccess");
+        print(response);
+        print("speech to text has been initialized");
+        speechtotext.connectToServer();
         break;
       case 'error':
         break;

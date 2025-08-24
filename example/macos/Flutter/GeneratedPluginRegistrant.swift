@@ -11,8 +11,8 @@ import file_picker
 import flutter_local_notifications
 import flutter_webrtc
 import path_provider_foundation
+import record_macos
 import screen_capturer_macos
-import speech_to_text
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   BigbluebuttonsdkPlugin.register(with: registry.registrar(forPlugin: "BigbluebuttonsdkPlugin"))
@@ -21,6 +21,6 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FlutterLocalNotificationsPlugin.register(with: registry.registrar(forPlugin: "FlutterLocalNotificationsPlugin"))
   FlutterWebRTCPlugin.register(with: registry.registrar(forPlugin: "FlutterWebRTCPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  RecordMacOsPlugin.register(with: registry.registrar(forPlugin: "RecordMacOsPlugin"))
   ScreenCapturerMacosPlugin.register(with: registry.registrar(forPlugin: "ScreenCapturerMacosPlugin"))
-  SpeechToTextPlugin.register(with: registry.registrar(forPlugin: "SpeechToTextPlugin"))
 }

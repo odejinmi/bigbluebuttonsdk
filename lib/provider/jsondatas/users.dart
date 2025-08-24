@@ -1,9 +1,10 @@
 import 'dart:convert';
 
+import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/participant.dart';
-import '../Speechtotext.dart';
+import '../DirectSocketIOStreamer.dart';
 import '../audiowebsocket.dart';
 import '../remotescreenshare.dart';
 import '../remotevideowebsocket.dart';
@@ -46,9 +47,19 @@ class Users {
         Get.delete<Screensharewebsocket>();
         Get.delete<RemoteVideoWebSocket>();
         Get.delete<RemoteScreenShareWebSocket>();
-        Get.delete<Texttospeech>();
         Get.delete<Whiteboardcontroller>();
+        Get.delete<DirectSocketIOStreamer>();
       }
+    } else {
+      websocket.stopwebsocket();
+      Get.delete<Websocket>();
+      Get.delete<Audiowebsocket>();
+      Get.delete<Videowebsocket>();
+      Get.delete<Screensharewebsocket>();
+      Get.delete<RemoteVideoWebSocket>();
+      Get.delete<RemoteScreenShareWebSocket>();
+      Get.delete<Whiteboardcontroller>();
+      Get.delete<DirectSocketIOStreamer>();
     }
   }
 
@@ -65,6 +76,9 @@ class Users {
         websocket.participant.add(data);
       }
     }
+    Chats().createGroupChat(
+      participant: data,
+    );
   }
 
   void removeparticipant(var json) {

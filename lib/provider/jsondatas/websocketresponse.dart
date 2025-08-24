@@ -184,7 +184,7 @@ class Websocketresponse {
             websocket.mergeData(json, list[0]);
           } else if (json["msg"] == "removed") {
             var list = websocket.slides.where((v) {
-              return v.id == json["id"];
+              return v["id"] == json["id"];
             }).toList();
             websocket.slides.remove(list);
           }
@@ -214,8 +214,6 @@ class Websocketresponse {
           }
           break;
         case "meetings":
-          print("meetings response");
-          print(json);
           if (json["msg"] == "changed") {
             websocket.meetingResponse = meetingResponseFromJson(jsonEncode(
                 websocket.mergeData(

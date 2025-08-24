@@ -11,6 +11,7 @@ import 'utils/participant.dart';
 
 export 'package:flutter_webrtc/flutter_webrtc.dart';
 
+export 'provider/DirectSocketIOStreamer.dart';
 // import 'package:flutter_webrtc_plus/flutter_webrtc_plus.dart';
 
 export 'provider/audiowebsocket.dart';

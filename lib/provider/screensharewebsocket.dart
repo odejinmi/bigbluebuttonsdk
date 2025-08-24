@@ -47,11 +47,12 @@ class Screensharewebsocket extends GetxController {
     super.onInit();
   }
 
-  void initiate(
-      {required String webrtctoken,
-      required String mediawebsocketurl,
-      required Meetingdetails meetingDetails,
-      required bool audio}) {
+  void initiate({
+    required String webrtctoken,
+    required String mediawebsocketurl,
+    required Meetingdetails meetingDetails,
+    required bool audio,
+  }) {
     this.webrtctoken = webrtctoken;
     this.meetingDetails = meetingDetails;
     this.mediawebsocketurl = mediawebsocketurl;
@@ -65,11 +66,7 @@ class Screensharewebsocket extends GetxController {
     // Get local media stream (screen sharing)
     _localStream = await mediaDevices.getDisplayMedia({
       'audio': true,
-      'video': {
-        'width': 1920,
-        'height': 1080,
-        'frameRate': 30,
-      },
+      'video': {'width': 1920, 'height': 1080, 'frameRate': 30},
     });
 
     // Add local tracks to the peer connection
@@ -112,8 +109,9 @@ class Screensharewebsocket extends GetxController {
       debugPrint("Received SDP answer is null or empty");
       return;
     }
-    await peerConnection
-        ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
+    await peerConnection?.setRemoteDescription(
+      RTCSessionDescription(answer, 'answer'),
+    );
   }
 
   void receiveStart() {}
@@ -139,7 +137,7 @@ class Screensharewebsocket extends GetxController {
       "sdpOffer": sdp,
       "hasAudio": false,
       "contentType": "screenshare",
-      "bitrate": 1500
+      "bitrate": 1500,
     };
 
     websocketsub(payload);
@@ -148,6 +146,8 @@ class Screensharewebsocket extends GetxController {
     channel!.stream.listen(
       (event) {
         var e = jsonDecode(event);
+        print('screen share event');
+        print(e);
         switch (e['id']) {
           case 'startResponse':
             receiveSDP(e['sdpAnswer']);

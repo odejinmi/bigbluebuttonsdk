@@ -9,8 +9,8 @@
 #include <bigbluebuttonsdk/bigbluebuttonsdk_plugin_c_api.h>
 #include <flutter_webrtc/flutter_web_r_t_c_plugin.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
+#include <record_windows/record_windows_plugin_c_api.h>
 #include <screen_capturer_windows/screen_capturer_windows_plugin_c_api.h>
-#include <speech_to_text_windows/speech_to_text_windows.h>
 
 void RegisterPlugins(flutter::PluginRegistry* registry) {
   BigbluebuttonsdkPluginCApiRegisterWithRegistrar(
@@ -19,8 +19,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterWebRTCPlugin"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
+  RecordWindowsPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("RecordWindowsPluginCApi"));
   ScreenCapturerWindowsPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("ScreenCapturerWindowsPluginCApi"));
-  SpeechToTextWindowsRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("SpeechToTextWindows"));
 }

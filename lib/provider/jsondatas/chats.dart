@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/chatmodel.dart';
@@ -117,6 +116,8 @@ class Chats {
         participantMap[userId]!.fields!.chatId = json["fields"]["chatId"];
       }
     }
-    websocket.participant = participantFromJson(jsonEncode(participantMap));
+
+    // Convert the map back to a list and assign it
+    websocket.participant = participantMap.values.toList();
   }
 }

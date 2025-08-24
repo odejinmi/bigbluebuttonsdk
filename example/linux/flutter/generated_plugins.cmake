@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   bigbluebuttonsdk
   flutter_webrtc
+  record_linux
   screen_capturer_linux
 )
 

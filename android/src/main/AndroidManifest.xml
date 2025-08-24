@@ -17,15 +17,22 @@
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <uses-permission android:name="android.permission.PROJECT_MEDIA" />
+
     <application>
 
-        <!-- Foreground service declaration with appropriate type -->
-
-                <service
-                    android:name="de.julianassmann.flutter_background.IsolateHolderService"
-                    android:enabled="true"
-                    android:exported="false"
-                    android:foregroundServiceType="mediaProjection" />
+        <!-- Foreground service declaration for media projection -->
+        <service
+            android:name="com.bigbluebutton.bigbluebuttonsdk.ScreenCaptureService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
+<!--        <service-->
+<!--            android:name="de.julianassmann.flutter_background.IsolateHolderService"-->
+<!--            android:enabled="true"-->
+<!--            android:exported="false"-->
+<!--            android:foregroundServiceType="mediaProjection" />-->
 <!--        ERROR: C:\Users\DELL\StudioProjects\onegov\example\build\bigbluebuttonsdk\intermediates\merged_manifest\debug\processDebugManifest\AndroidManifest.xml:33:9-37:72: AAPT: error: 'mediaProjection|manifest' is incompatible with attribute foregroundServiceType (attr) flags [camera=64, connectedDevice=16, dataSync=1, health=256, location=8, mediaPlayback=2, mediaProcessing=8192, mediaProjection=32, microphone=128, phoneCall=4, remoteMessaging=512, shortService=2048, specialUse=1073741824, systemExempted=1024].-->
     </application>
 </manifest>

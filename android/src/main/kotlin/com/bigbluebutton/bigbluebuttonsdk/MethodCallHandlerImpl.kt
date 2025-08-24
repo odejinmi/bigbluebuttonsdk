@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.AudioManager
+import android.media.projection.MediaProjectionManager
 import android.os.Build
 import androidx.core.content.ContextCompat.*
 
@@ -29,12 +30,14 @@ class MethodCallHandlerImpl(
     companion object {
         private const val TAG = "MainActivity"
         private const val REQUEST_PERMISSIONS = 10
+        private val REQUEST_MEDIA_PROJECTION = 1001
     }
 
     private var channel: MethodChannel? = null
     private var result: MethodChannel.Result? = null
     private var eventchannel: EventChannel? = null
     private var eventSink: EventChannel.EventSink? = null
+    private var pendingResult: MethodChannel.Result? = null
 
 
     init {
@@ -93,24 +96,38 @@ class MethodCallHandlerImpl(
                 audioManager.isSpeakerphoneOn = false
                 result.success(null)
             }
+            "stopForegroundService" -> {
+                val stopIntent = Intent(binding.activity, ScreenCaptureService::class.java)
+                binding.activity.stopService(stopIntent)
+                result.success("Service stopped")
+            }
+            "startForegroundService" -> {
+                if (binding.activity == null) {
+                    result.error("NO_ACTIVITY", "Activity is null", null)
+                    return
+                }
+                val projectionManager =
+                    binding.activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+                val captureIntent = projectionManager.createScreenCaptureIntent()
+                pendingResult = result
+                binding.activity.startActivityForResult(captureIntent, REQUEST_MEDIA_PROJECTION)
+//
+//                val serviceIntent = Intent(binding.activity, ScreenCaptureService::class.java).apply {
+//                    putExtra("resultCode", REQUEST_MEDIA_PROJECTION)
+//                    putExtra("data", captureIntent)
+//                }
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    binding.activity.startForegroundService(serviceIntent)
+//                } else {
+//                    binding.activity.startService(serviceIntent)
+//                }
+//                result.success(pendingResult)
+
+            }
 
             else -> result.notImplemented()
         }
-    }
-
-    /**
-     * this is the call back that is invoked when the activity result returns a value after calling
-     * startActivityForResult().
-     * @param data is the intent that has the bundle where we can get our result
-     * @param requestCode if it matches with our REQUEST_CODE it means the result is the one we
-     * asked for.
-     * @param resultCode, it is okay if it equals [RESULT_OK]
-     */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == 100 && resultCode == Activity.RESULT_OK) {
-            // Handle your specific activity result here
-        }
-        return true
     }
 
 
@@ -132,9 +149,32 @@ class MethodCallHandlerImpl(
         grantResults: IntArray
     ): Boolean {
         if (requestCode == REQUEST_PERMISSIONS) {
-            val allGranted = grantResults.all { it == PackageManager.PERMISSION_GRANTED }
 
+            return true
+        }
+        return false
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        if (requestCode == REQUEST_MEDIA_PROJECTION) {
+            if (resultCode == RESULT_OK && data != null) {
+                val serviceIntent = Intent(binding.activity, ScreenCaptureService::class.java).apply {
+                    putExtra("resultCode", resultCode)
+                    putExtra("data", data)
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    binding.activity.startForegroundService(serviceIntent)
+                } else {
+                    binding.activity.startService(serviceIntent)
+                }
+
+                pendingResult?.success("Permission granted and service started")
+                pendingResult = null
+            } else {
+                pendingResult?.error("PERMISSION_DENIED", "User denied screen capture", null)
+                pendingResult = null
+            }
             return true
         }
         return false

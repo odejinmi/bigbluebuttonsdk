@@ -325,13 +325,20 @@ class Websocket extends GetxController {
           var secondsplit = firstsplit[1].split("}\"]");
           var result = "${secondsplit[0]}}\"";
           var json = jsonDecode(jsonDecode(result));
-          if (json["collection"] == "current-user") {
+          if (json["msg"] == "changed" &&
+              json["collection"] == "current-user") {
+            print(json);
             userid = json["id"];
             if (json["fields"].containsKey("loggedOut")) {
               if (json["fields"]["loggedOut"] == true) {
                 isleave = true;
               }
             }
+          } else if (json["msg"] == "removed" &&
+              json["collection"] == "current-user") {
+            print(json);
+            userid = json["id"];
+            isleave = true;
           }
           Websocketresponse().reseponse(json);
         }
@@ -398,9 +405,13 @@ class Websocket extends GetxController {
   }
 
   void websocketsub(json) {
-    channel!.sink.add(
-      jsonEncode(json),
-    );
+    try {
+      channel!.sink.add(
+        jsonEncode(json),
+      );
+    } catch (e) {
+      Websocketresponse().reseponse(logoutjson());
+    }
   }
 
   void closeFoodStream() {
