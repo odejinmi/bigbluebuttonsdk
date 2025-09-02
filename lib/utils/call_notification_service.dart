@@ -1,13 +1,21 @@
 import 'dart:async';
+import 'dart:isolate';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart'
+    hide NotificationVisibility;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 import '../bigbluebuttonsdk_method_channel.dart';
 
 class CallNotificationService {
   static MethodChannelBigbluebuttonsdk? _sdkInstance;
+  static Timer? _keepAliveTimer;
+  static bool _isCallActive = false;
 
   static void initializeSdkInstance(MethodChannelBigbluebuttonsdk sdk) {
     _sdkInstance = sdk;
@@ -27,14 +35,37 @@ class CallNotificationService {
   static bool _isNotificationActive = false;
 
   static Future<void> initialize() async {
+    // Request all necessary permissions
+    await _requestPermissions();
+
+    // Initialize notifications
+    await _initializeNotifications();
+
+    // Initialize background service
+    // await _initializeBackgroundService();
+
+    // Configure iOS categories
+    await configureIOSCategories();
+  }
+
+  static Future<void> _requestPermissions() async {
     // Request notification permissions
     await Permission.notification.request();
 
-    // Android initialization
+    // Request phone permission for call-related features
+    await Permission.phone.request();
+
+    // Request system alert window permission (Android)
+    await Permission.systemAlertWindow.request();
+
+    // Request ignore battery optimization (Android)
+    await Permission.ignoreBatteryOptimizations.request();
+  }
+
+  static Future<void> _initializeNotifications() async {
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    // iOS initialization
     const DarwinInitializationSettings initializationSettingsIOS =
         DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -54,10 +85,84 @@ class CallNotificationService {
     );
   }
 
+  // static Future<void> _initializeBackgroundService() async {
+  //   final service = FlutterBackgroundService();
+  //
+  //   await service.configure(
+  //     androidConfiguration: AndroidConfiguration(
+  //       onStart: onStart,
+  //       autoStart: false,
+  //       isForegroundMode: true,
+  //       notificationChannelId: 'call_background_service',
+  //       initialNotificationTitle: 'Call Service',
+  //       initialNotificationContent: 'Keeping call connection active',
+  //       foregroundServiceNotificationId: 888,
+  //     ),
+  //     iosConfiguration: IosConfiguration(
+  //       autoStart: false,
+  //       onForeground: onStart,
+  //       onBackground: onIosBackground,
+  //     ),
+  //   );
+  // }
+  //
+  // // Background service entry point
+  // @pragma('vm:entry-point')
+  // static void onStart(ServiceInstance service) async {
+  //   DartPluginRegistrant.ensureInitialized();
+  //
+  //   if (service is AndroidServiceInstance) {
+  //     service.on('setAsForeground').listen((event) {
+  //       service.setAsForegroundService();
+  //     });
+  //
+  //     service.on('setAsBackground').listen((event) {
+  //       service.setAsBackgroundService();
+  //     });
+  //   }
+  //
+  //   service.on('stopService').listen((event) {
+  //     service.stopSelf();
+  //   });
+  //
+  //   // Keep WebSocket alive with periodic ping
+  //   Timer.periodic(const Duration(seconds: 30), (timer) async {
+  //     if (!_isCallActive) {
+  //       timer.cancel();
+  //       service.stopSelf();
+  //       return;
+  //     }
+  //
+  //     // Send keep-alive signal to WebSocket
+  //     try {
+  //       // You might need to implement a keep-alive method in your SDK
+  //       // await _sdk.sendKeepAlive();
+  //       print('WebSocket keep-alive sent');
+  //     } catch (e) {
+  //       print('Keep-alive failed: $e');
+  //     }
+  //
+  //     service.invoke(
+  //       'update',
+  //       {
+  //         "current_date": DateTime.now().toIso8601String(),
+  //       },
+  //     );
+  //   });
+  // }
+  //
+  // @pragma('vm:entry-point')
+  // static bool onIosBackground(ServiceInstance service) {
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //   print('iOS background fetch');
+  //   return true;
+  // }
+
   static void _onNotificationResponse(NotificationResponse response) {
     final actionId = response.actionId;
     final payload = response.payload;
     print('Notification actionId: $actionId, payload: $payload');
+
     switch (actionId) {
       case 'unmute':
         _handleUnmute();
@@ -66,7 +171,6 @@ class CallNotificationService {
         _handleHangup();
         break;
       default:
-        // If no actionId, treat as notification tap
         if (payload == 'call_tap') {
           _handleCallTap();
         }
@@ -76,22 +180,21 @@ class CallNotificationService {
 
   static Future<void> _handleUnmute() async {
     print('Unmute button pressed');
-    // Get the Bigbluebuttonsdk instance and call endroom
     await _sdk.mutemyself();
-    // Handle unmute logic
-    // You might want to communicate with your calling service here
   }
 
   static void _handleHangup() async {
     print('Hang up button pressed');
-    // Get the Bigbluebuttonsdk instance and call endroom
+
+    // Stop background processes
+    await _stopBackgroundExecution();
+
     if (_sdk.mydetails != null && _sdk.mydetails!.fields!.role == "MODERATOR") {
       await _sdk.endroom();
     } else {
       _sdk.leaveroom();
     }
 
-    // Dismiss the notification
     await dismissCallNotification();
   }
 
@@ -105,6 +208,9 @@ class CallNotificationService {
     required String status,
     bool isReconnecting = false,
   }) async {
+    // Start background execution when call starts
+    await _startBackgroundExecution();
+
     const String channelId = 'call_channel';
     const String channelName = 'Call Notifications';
     const String channelDescription = 'Notifications for ongoing calls';
@@ -116,9 +222,9 @@ class CallNotificationService {
       importance: Importance.high,
       playSound: false,
       enableVibration: false,
-      // Make channel non-dismissable
       enableLights: true,
       ledColor: Color(0xFF6366F1),
+      showBadge: false,
     );
 
     await _notificationsPlugin
@@ -126,9 +232,7 @@ class CallNotificationService {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(channel);
 
-    // Create action buttons
     final List<AndroidNotificationAction> actions = [
-      // if (_sdk.mydetails.fields != null)
       AndroidNotificationAction(
         'unmute',
         _sdk.mydetails?.fields?.muted == true ? 'Unmute' : 'Mute',
@@ -143,35 +247,29 @@ class CallNotificationService {
       ),
     ];
 
-    // Android notification details
     AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       channelId,
       channelName,
       channelDescription: channelDescription,
       importance: Importance.high,
       priority: Priority.high,
-      ongoing: true, // Makes it persistent
+      ongoing: true,
       autoCancel: false,
-      onlyAlertOnce: true, // Prevents repeated alerts
+      onlyAlertOnce: true,
       showWhen: true,
       when: DateTime.now().millisecondsSinceEpoch,
       usesChronometer: false,
-      chronometerCountDown: false,
       actions: actions,
-      // Custom layout styling
-      color: const Color(0xFF6366F1), // Blue color for call
+      color: const Color(0xFF6366F1),
       colorized: true,
       largeIcon: const DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-      // Style as a call notification
       category: AndroidNotificationCategory.call,
       fullScreenIntent: false,
-      // Make it non-dismissable
-      timeoutAfter: null, // No timeout
-      // Custom sound (optional)
-      // sound: RawResourceAndroidNotificationSound('call_sound'),
+      timeoutAfter: null,
+      // Additional flags to keep notification persistent
+      visibility: NotificationVisibility.public,
     );
 
-    // iOS notification details
     const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
       presentAlert: true,
       presentBadge: true,
@@ -185,9 +283,8 @@ class CallNotificationService {
       iOS: iosDetails,
     );
 
-    // Show the notification
     await _notificationsPlugin.show(
-      0, // Notification ID
+      0,
       title,
       status,
       notificationDetails,
@@ -197,12 +294,82 @@ class CallNotificationService {
     _isNotificationActive = true;
   }
 
+  static Future<void> _startBackgroundExecution() async {
+    _isCallActive = true;
+
+    // Enable wakelock to prevent device from sleeping
+    await WakelockPlus.enable();
+
+    // // Start background service
+    // final service = FlutterBackgroundService();
+    // var isRunning = await service.isRunning();
+    // if (!isRunning) {
+    //   service.startService();
+    // }
+
+    // Start foreground task for iOS
+    FlutterForegroundTask.init(
+      androidNotificationOptions: AndroidNotificationOptions(
+        channelId: 'foreground_service',
+        channelName: 'Call Foreground Service',
+        channelDescription: 'This notification appears when call is active.',
+        channelImportance: NotificationChannelImportance.LOW,
+        priority: NotificationPriority.LOW,
+        // iconData: const NotificationIconData(
+        //   resType: ResourceType.mipmap,
+        //   resPrefix: ResourcePrefix.ic,
+        //   name: 'launcher',
+        // ),
+      ),
+      iosNotificationOptions: const IOSNotificationOptions(
+        showNotification: true,
+        playSound: false,
+      ),
+      foregroundTaskOptions: ForegroundTaskOptions(
+        // interval: 5000,
+        // isOnceEvent: false,
+        autoRunOnBoot: false,
+        allowWakeLock: true,
+        allowWifiLock: true,
+        eventAction: ForegroundTaskEventAction.repeat(5000),
+      ),
+    );
+
+    await FlutterForegroundTask.startService(
+      notificationTitle: 'Call Active',
+      notificationText: 'Keeping connection alive',
+      callback: startCallback,
+    );
+  }
+
+  static Future<void> _stopBackgroundExecution() async {
+    _isCallActive = false;
+
+    // Disable wakelock
+    await WakelockPlus.disable();
+
+    // Stop background service
+    // final service = FlutterBackgroundService();
+    // service.invoke("stopService");
+
+    // Stop foreground task
+    await FlutterForegroundTask.stopService();
+
+    // Cancel keep-alive timer
+    _keepAliveTimer?.cancel();
+  }
+
+  // Foreground task callback
+  @pragma('vm:entry-point')
+  static void startCallback() {
+    FlutterForegroundTask.setTaskHandler(MyTaskHandler());
+  }
+
   static Future<void> updateCallNotification({
     required String title,
     required String status,
     required String time,
   }) async {
-    // Update the existing notification
     await showCallNotification(
       title: title,
       status: status,
@@ -212,18 +379,17 @@ class CallNotificationService {
   static Future<void> dismissCallNotification() async {
     _isNotificationActive = false;
     await _notificationsPlugin.cancel(0);
+    await _stopBackgroundExecution();
   }
 
-  // Method to check if notification is active
   static bool get isNotificationActive => _isNotificationActive;
 
-  // Method to force show notification if dismissed externally
   static Future<void> ensureNotificationExists({
     required String title,
     required String status,
   }) async {
+    print("ensureNotificationExists");
     if (_isNotificationActive) {
-      // Check if notification still exists, if not, recreate it
       await showCallNotification(
         title: title,
         status: status,
@@ -231,7 +397,6 @@ class CallNotificationService {
     }
   }
 
-  // For iOS, you need to configure categories with actions
   static Future<void> configureIOSCategories() async {
     DarwinNotificationCategory callCategory = DarwinNotificationCategory(
       'call_category',
@@ -261,5 +426,45 @@ class CallNotificationService {
           badge: true,
           sound: true,
         );
+  }
+}
+
+// Task handler for foreground service
+class MyTaskHandler extends TaskHandler {
+  @override
+  Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
+    // Keep WebSocket connection alive
+    print('Foreground task event: ${timestamp}');
+
+    // You can add WebSocket ping logic here
+    // Example: await webSocketChannel.sink.add('ping');
+  }
+
+  @override
+  void onButtonPressed(String id) {
+    print('Button pressed: $id');
+  }
+
+  @override
+  void onNotificationPressed() {
+    print('Notification pressed');
+  }
+
+  @override
+  void onRepeatEvent(DateTime timestamp) {
+    // TODO: implement onRepeatEvent
+    print('Notification repeat');
+  }
+
+  @override
+  Future<void> onDestroy(DateTime timestamp, bool isTimeout) {
+    // TODO: implement onDestroy
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> onStart(DateTime timestamp, TaskStarter starter) {
+    // TODO: implement onStart
+    throw UnimplementedError();
   }
 }

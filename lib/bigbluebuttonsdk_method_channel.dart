@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/view/whiteboard.dart';
@@ -149,7 +148,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
       _notificationWatcher = Timer.periodic(Duration(seconds: 2), (timer) {
         if (_isCallActive && CallNotificationService.isNotificationActive) {
           CallNotificationService.ensureNotificationExists(
-            title: websocket.meetingdetails!.confname,
+            title: websocket.meetingDetails!.confname,
             status: "Tap to return to the call",
           );
         }
@@ -169,17 +168,17 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
       // initializeService();
     }
     websocket.initiate(
-      webrtctoken: webrtctoken,
-      baseurl: baseurl,
-      mainwebsocketurl: mainwebsocketurl,
-      mediawebsocketurl: mediawebsocketurl,
-      meetingdetails: meetingdetails!,
+      webrtcToken: webrtctoken,
+      baseUrl: baseurl,
+      mainWebsocketUrl: mainwebsocketurl,
+      mediaWebsocketUrl: mediawebsocketurl,
+      meetingDetails: meetingdetails!,
     );
   }
 
   @override
   typing({required String chatid}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"120\",\"method\":\"startUserTyping\",\"params\":[\"${chatid == 'MAIN-PUBLIC-GROUP-CHAT' ? 'public' : chatid}\"]}",
     ]);
   }
@@ -190,120 +189,116 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  startcaption() {
-    // texttospeech.initSpeech();
-  }
-
-  @override
-  stopcaption() {
-    // texttospeech.stopListening();
-  }
-
-  @override
   sendmessage({required String message, required String chatid}) {
-    websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"14\",\"method\":\"sendGroupChatMsg\",\"params\":[\"$chatid\",{\"correlationId\":\"${websocket.meetingdetails.internalUserId}-${DateTime.now()}\",\"sender\":{\"id\":\"${websocket.meetingdetails.internalUserId}\",\"name\":\"\",\"role\":\"\"},\"chatEmphasizedText\":true,\"message\":\"${message}\"}]}",
+    websocket.websocketSub([
+      "{\"msg\":\"method\",\"id\":\"14\",\"method\":\"sendGroupChatMsg\",\"params\":[\"$chatid\",{\"correlationId\":\"${websocket.meetingDetails!.internalUserId}-${DateTime.now()}\",\"sender\":{\"id\":\"${websocket.meetingDetails!.internalUserId}\",\"name\":\"\",\"role\":\"\"},\"chatEmphasizedText\":true,\"message\":\"${message}\"}]}",
     ]);
   }
 
   @override
   sendecinema({required String videourl}) {
-    websocket.ishowecinema = true;
-    websocket.websocketsub([
+    websocket.isShowECinema = true;
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"317\",\"method\":\"startWatchingExternalVideo\",\"params\":[\"$videourl\"]}",
     ]);
   }
 
   @override
   endecinema() {
-    websocket.ishowecinema = false;
-    websocket.websocketsub([
+    websocket.isShowECinema = false;
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"940\",\"method\":\"stopWatchingExternalVideo\",\"params\":[]}",
     ]);
   }
 
   @override
   startpoll({required String question, required List options}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"sub\",\"id\":\"2UY6dlRwTcfS48xlP\",\"name\":\"current-poll\",\"params\":[false,true]}",
     ]);
-    websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"52\",\"method\":\"startPoll\",\"params\":[{\"YesNo\":\"YN\",\"YesNoAbstention\":\"YNA\",\"TrueFalse\":\"TF\",\"Letter\":\"A-\",\"A2\":\"A-2\",\"A3\":\"A-3\",\"A4\":\"A-4\",\"A5\":\"A-5\",\"Custom\":\"CUSTOM\",\"Response\":\"R-\"},\"CUSTOM\",\"${websocket.mydetails!.fields!.userId!}/1\",false,\"${question}\",false,${jsonEncode(options)}]}",
+    websocket.websocketSub([
+      "{\"msg\":\"method\",\"id\":\"52\",\"method\":\"startPoll\",\"params\":[{\"YesNo\":\"YN\",\"YesNoAbstention\":\"YNA\",\"TrueFalse\":\"TF\",\"Letter\":\"A-\",\"A2\":\"A-2\",\"A3\":\"A-3\",\"A4\":\"A-4\",\"A5\":\"A-5\",\"Custom\":\"CUSTOM\",\"Response\":\"R-\"},\"CUSTOM\",\"${websocket.myDetails!.fields!.userId!}/1\",false,\"${question}\",false,${jsonEncode(options)}]}",
     ]);
   }
 
   @override
   votepoll({required String poll_id, required String selectedOptionId}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"sub\",\"id\":\"qPaGbQlNXGIYJam7t\",\"name\":\"polls\",\"params\":[false]}",
     ]);
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"136\",\"method\":\"publishVote\",\"params\":[\"$poll_id\",[$selectedOptionId]]}",
     ]);
   }
 
   @override
   muteallusers({required String userid}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"11\",\"method\":\"muteAllUsers\",\"params\":[\"${userid}\"]}",
     ]);
   }
 
   @override
   createGroupChat({required Participant participant}) {
-    Chats().createGroupChat(participant: participant);
+    // Chats().createGroupChat(participant: participant);
+    // "{\"msg\":\"method\",\"id\":\"957\",\"method\":\"createGroupChat\",\"params\":[{\"subscriptionId\":\"wWxgIKTehg5OR6P1A\",\"meetingId\":\"1cbd2cb09db2ac48529827879eaad399f2e11c9f-1749702556588\",\"userId\":\"w_9bhtyhpznvxe\",\"clientType\":\"HTML5\",\"validated\":true,\"left\":false,\"approved\":true,\"authTokenValidatedTime\":1749702604070,\"inactivityCheck\":false,\"loginTime\":1749702602616,\"authed\":true,\"avatar\":\"https://ui-avatars.com/api/?name=videx&bold=true\",\"away\":false,\"breakoutProps\":{\"isBreakoutUser\":false,\"parentId\":\"bbb-none\"},\"color\":\"#4a148c\",\"effectiveConnectionType\":null,\"emoji\":\"none\",\"extId\":\"odejinmiabraham@gmail.com\",\"guest\":false,\"guestStatus\":\"ALLOW\",\"intId\":\"w_9bhtyhpznvxe\",\"locked\":true,\"loggedOut\":false,\"mobile\":false,\"name\":\"videx\",\"pin\":false,\"presenter\":false,\"raiseHand\":false,\"reactionEmoji\":\"none\",\"responseDelay\":0,\"role\":\"VIEWER\",\"sortName\":\"videx\",\"speechLocale\":\"\",\"connection_status\":\"normal\",\"id\":\"Fth2CaBDcLQov9PJm\"}]}"
+    var json = [
+      // "{\"msg\":\"method\",\"id\":\"900\",\"method\":\"createGroupChat\",\"params\":[{\"subscriptionId\":\"wWxgIKTehg5OR6P1A\",\"meetingId\":\"${_service.meetingdetails.meetingId}\",\"userId\":\"${participant.fields?.userId}\",\"clientType\":\"HTML5\",\"validated\":true,\"left\":false,\"approved\":true,\"authTokenValidatedTime\":1749702604070,\"inactivityCheck\":false,\"loginTime\":1749702602616,\"authed\":true,\"avatar\":\"${participant.fields?.avatar}\",\"away\":false,\"breakoutProps\":${participant.fields?.breakoutProps},\"color\":\"#4a148c\",\"effectiveConnectionType\":null,\"emoji\":\"none\",\"extId\":\"odejinmiabraham@gmail.com\",\"guest\":false,\"guestStatus\":\"ALLOW\",\"intId\":\"w_9bhtyhpznvxe\",\"locked\":true,\"loggedOut\":false,\"mobile\":false,\"name\":\"videx\",\"pin\":false,\"presenter\":false,\"raiseHand\":false,\"reactionEmoji\":\"none\",\"responseDelay\":0,\"role\":\"VIEWER\",\"sortName\":\"videx\",\"speechLocale\":\"\",\"connection_status\":\"normal\",\"id\":\"Fth2CaBDcLQov9PJm\"}]}"
+      "{\"msg\":\"method\",\"id\":\"900\",\"method\":\"createGroupChat\",\"params\":[${jsonEncode(participant.fields?.toJson())}]}"
+    ];
+    websocket.websocketSub(json);
   }
 
   @override
   uploadpresenter({required PlatformFile filename}) async {
     websocket.platformFile = filename;
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"867\",\"method\":\"requestPresentationUploadToken\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"${filename.name}\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}",
     ]);
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"sub\",\"id\":\"PyItdbzmJUeOFfJyn\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"${filename.name}\",\"yMbQ5qmTpKOn834EuPwMtvKj\"]}",
     ]);
   }
 
   @override
   removepresentation({required String presentationid}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"31\",\"method\":\"setPresentation\",\"params\":[\"\",\"DEFAULT_PRESENTATION_POD\"]}",
     ]);
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"32\",\"method\":\"removePresentation\",\"params\":[\"$presentationid\",\"DEFAULT_PRESENTATION_POD\"]}",
     ]);
   }
 
   @override
   makepresentationdefault({required var presentation}) {
-    websocket.makepresentationdefault(presentation: presentation);
+    websocket.makePresentationDefault(presentation: presentation);
   }
 
   @override
   nextpresentation({required String page}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"33\",\"method\":\"switchSlide\",\"params\":[$page,\"DEFAULT_PRESENTATION_POD\"]}",
     ]);
   }
 
   @override
   raiseHand() {
-    websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"643\",\"method\":\"setEmojiStatus\",\"params\":[\"${websocket.mydetails!.fields!.userId}\",\"raiseHand\"]}",
+    websocket.websocketSub([
+      "{\"msg\":\"method\",\"id\":\"643\",\"method\":\"setEmojiStatus\",\"params\":[\"${websocket.myDetails!.fields!.userId}\",\"raiseHand\"]}",
     ]);
   }
 
   @override
   lowerHand() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"659\",\"method\":\"changeRaiseHand\",\"params\":[false]}",
     ]);
   }
 
   @override
   mutemyself() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"1500\",\"method\":\"toggleVoice\",\"params\":[]}",
     ]);
   }
@@ -321,12 +316,12 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
         "{\"msg\":\"method\",\"id\":\"499\",\"method\":\"allowPendingUsers\",\"params\":[$participants,\"$policy\"]}";
     print(result);
     //ALLOW, DENY
-    websocket.websocketsub([result]);
+    websocket.websocketSub([result]);
   }
 
   @override
   changeGuestPolicy(String policy) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       //ASK_MODERATOR, ALWAYS_ACCEPT
       "{\"msg\":\"method\",\"id\":\"540\",\"method\":\"changeGuestPolicy\",\"params\":[\"$policy\"]}",
     ]);
@@ -334,7 +329,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   stopcamera() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userUnshareWebcam\",\"params\":[\"${videowebsocket.streamID(videowebsocket.edSet.deviceId)}\"]}",
     ]);
     videowebsocket.stopCameraSharing();
@@ -353,8 +348,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     required bool lockOnJoin,
   }) {
     print("disableCam call $disableCam");
-    websocket.websocketsub([
-      "{\"msg\":\"method\",\"id\":\"101\",\"method\":\"toggleLockSettings\",\"params\":[{\"disableCam\":${disableCam},\"disableMic\":${disableMic},\"disableNotes\":${disableNotes},\"disablePrivateChat\":${disablePrivateChat},\"disablePublicChat\":${disablePublicChat},\"hideUserList\":${hideUserList},\"hideViewersAnnotation\":${hideViewersAnnotation},\"hideViewersCursor\":${hideViewersCursor},\"lockOnJoin\":${lockOnJoin},\"lockOnJoinConfigurable\":${lockOnJoinConfigurable},\"setBy\":\"${websocket.mydetails!.fields!.userId}\"}]}",
+    websocket.websocketSub([
+      "{\"msg\":\"method\",\"id\":\"101\",\"method\":\"toggleLockSettings\",\"params\":[{\"disableCam\":${disableCam},\"disableMic\":${disableMic},\"disableNotes\":${disableNotes},\"disablePrivateChat\":${disablePrivateChat},\"disablePublicChat\":${disablePublicChat},\"hideUserList\":${hideUserList},\"hideViewersAnnotation\":${hideViewersAnnotation},\"hideViewersCursor\":${hideViewersCursor},\"lockOnJoin\":${lockOnJoin},\"lockOnJoinConfigurable\":${lockOnJoinConfigurable},\"setBy\":\"${websocket.myDetails!.fields!.userId}\"}]}",
     ]);
   }
 
@@ -445,21 +440,21 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   changerole({required String userid, required String role}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"13\",\"method\":\"changeRole\",\"params\":[\"$userid\",\"${role.toUpperCase()}\"]}",
     ]);
   }
 
   @override
   assignpresenter({required String userid}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"27\",\"method\":\"assignPresenter\",\"params\":[\"$userid\"]}",
     ]);
   }
 
   @override
   removeuser({required String userid, required bool notallowagain}) {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"56\",\"method\":\"removeUser\",\"params\":[\"$userid\",$notallowagain}]}",
     ]);
   }
@@ -476,7 +471,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     if (GetPlatform.isIOS || GetPlatform.isAndroid) {
       CallNotificationService.dismissCallNotification();
     }
-    websocket.leaveroom();
+    _isCallActive = false;
+    websocket.leaveRoom();
   }
 
   @override
@@ -484,26 +480,27 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     if (GetPlatform.isIOS || GetPlatform.isAndroid) {
       CallNotificationService.dismissCallNotification();
     }
-    websocket.endroom();
+    _isCallActive = false;
+    websocket.endRoom();
   }
 
   @override
   toggleRecording() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"187\",\"method\":\"toggleRecording\",\"params\":[]}",
     ]);
   }
 
   @override
   stoptyping() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"57\",\"method\":\"stopUserTyping\",\"params\":[]}",
     ]);
   }
 
   @override
   breakeoutroom() {
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"376\",\"method\":\"createBreakoutRoom\",\"params\":[[{\"users\":[],\"name\":\"tolu (Room 1)\",\"captureNotesFilename\":\"Room_0_Notes\",\"captureSlidesFilename\":\"Room_0_Whiteboard\",\"shortName\":\"Room 1\",\"isDefaultName\":true,\"freeJoin\":true,\"sequence\":1},{\"users\":[],\"name\":\"tolu (Room 2)\",\"captureNotesFilename\":\"Room_1_Notes\",\"captureSlidesFilename\":\"Room_1_Whiteboard\",\"shortName\":\"Room 2\",\"isDefaultName\":true,\"freeJoin\":true,\"sequence\":2}],15,true,false,false,false]}",
     ]);
   }
@@ -515,7 +512,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   get mydetails {
-    return websocket.mydetails;
+    return websocket.myDetails;
   }
 
   @override
@@ -525,7 +522,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   get polljson {
-    return websocket.polljson;
+    return websocket.pollJson;
   }
 
   @override
@@ -535,27 +532,27 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   get ispolling {
-    return websocket.ispolling;
+    return websocket.isPolling;
   }
 
   @override
   set ispolling(value) {
-    return websocket.ispolling = value;
+    return websocket.isPolling = value;
   }
 
   @override
   get isrecording {
-    return websocket.isrecording;
+    return websocket.isRecording;
   }
 
   @override
   get recordingtime {
-    return websocket.recordingtime;
+    return websocket.recordingTime;
   }
 
   @override
   get pollanalyseparser {
-    return websocket.pollanalyseparser;
+    return websocket.pollAnalyseParser;
   }
 
   @override
@@ -580,11 +577,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   get presentationmodel {
-    return websocket.presentationmodel;
+    return websocket.presentationModel;
   }
 
   @override
   get ishowecinema {
-    return websocket.ishowecinema;
+    return websocket.isShowECinema;
   }
 }

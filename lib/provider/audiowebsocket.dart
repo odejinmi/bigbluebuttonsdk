@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
-import 'DirectSocketIOStreamer.dart';
 // import 'Speechtotext.dart';
 
 class Audiowebsocket extends GetxController {
@@ -237,8 +236,14 @@ class Audiowebsocket extends GetxController {
         },
       ],
       "iceTransportPolicy": "relay",
+
+      'sdpSemantics': 'unified-plan',
+      // Add these for better connection stability
+      'iceCandidatePoolSize': 10,
+      'bundlePolicy': 'max-bundle',
+      'rtcpMuxPolicy': 'require',
     };
-    _peerConnection = await createPeerConnection(websocket.sturnserver);
+    _peerConnection = await createPeerConnection(websocket.stunServer);
 
     // listen for remotePeer mediaTrack event
     _peerConnection?.onTrack = (event) {};

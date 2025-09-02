@@ -100,7 +100,7 @@ class RemoteScreenShareWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await createPeerConnection(websocket.sturnserver);
+    peerConnection = await createPeerConnection(websocket.stunServer);
 
     // Set the remote description (answer)
     await peerConnection!
@@ -251,7 +251,7 @@ class RemoteScreenShareWebSocket extends GetxController {
     // Clear local and remote video renderers
     localRTCVideoRenderer.srcObject = null;
     websocket.remoteRTCVideoRenderer.srcObject = null;
-    websocket.ismesharing = false;
+    websocket.isMeSharing = false;
 
     update();
   }

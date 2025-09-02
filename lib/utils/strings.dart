@@ -1,5 +1,7 @@
 // import 'package:flutter_background/flutter_background.dart';
 
+import 'dart:math';
+
 /**
  * GetX Template Generator - fb.com/htngu.99
  * */
@@ -9,6 +11,19 @@ void logLongText(String text, {int chunkSize = 1000}) {
       '.{1,$chunkSize}'); // This will split the text into chunks of size `chunkSize`
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
+
+String generateRandomId(int length) {
+  const String chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  Random random = Random();
+
+  return String.fromCharCodes(Iterable.generate(
+      length, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
+}
+
+// // Usage
+// String randomId = generateRandomId(17);
+// print(randomId); // Example: "aB3xY9mN2kL8pQ4vZ"
 
 // Future<bool> startForegroundService() async {
 //   // Check if the background execution is already enabled

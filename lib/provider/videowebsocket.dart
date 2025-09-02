@@ -116,7 +116,7 @@ class Videowebsocket extends GetxController {
   Future<void> createPeerconnect() async {
     try {
       // Create the peer connection
-      peerConnection = await createPeerConnection(websocket.sturnserver);
+      peerConnection = await createPeerConnection(websocket.stunServer);
       print('PeerConnection created: ${peerConnection != null}');
 
       _localStream = await createVideoStream(
@@ -151,7 +151,7 @@ class Videowebsocket extends GetxController {
       label: 'new camera',
     );
     var list = websocket.participant.where((v) {
-      return v.fields!.userId == websocket.mydetails!.fields!.userId;
+      return v.fields!.userId == websocket.myDetails!.fields!.userId;
     }).toList();
     if (list.isNotEmpty && list.first.rtcVideoRenderer != null) {
       adjustvideo();
@@ -243,7 +243,7 @@ class Videowebsocket extends GetxController {
     try {
       // Render remote video
       var list = websocket.participant.where((v) {
-        return v.fields!.userId == websocket.mydetails!.fields!.userId;
+        return v.fields!.userId == websocket.myDetails!.fields!.userId;
       }).toList();
       if (list.isNotEmpty) {
         list[0].mediaStream = _localStream;
@@ -317,7 +317,7 @@ class Videowebsocket extends GetxController {
 
   void receiveStart() async {
     // Receive start answer from the Kurento server
-    websocket.websocketsub([
+    websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"100\",\"method\":\"userShareWebcam\",\"params\":[\"${streamID(edSet.deviceId)}\"]}"
     ]);
     isvideo = true;
@@ -441,7 +441,7 @@ class Videowebsocket extends GetxController {
     }
     // Render remote video
     var list = websocket.participant.where((v) {
-      return v.fields!.userId == websocket.mydetails!.fields!.userId;
+      return v.fields!.userId == websocket.myDetails!.fields!.userId;
     }).toList();
     if (list.isNotEmpty) {
       list[0].mediaStream = null;

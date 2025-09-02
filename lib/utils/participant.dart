@@ -6,9 +6,8 @@ import 'dart:convert';
 
 import '../bigbluebuttonsdk.dart';
 
-
-
-Participant participantFromJson(String str) => Participant.fromJson(json.decode(str));
+Participant participantFromJson(String str) =>
+    Participant.fromJson(json.decode(str));
 
 String participantToJson(Participant data) => json.encode(data.toJson());
 
@@ -17,9 +16,9 @@ class Participant {
   String? collection;
   String? id;
   String? presentation;
-  bool? isvidieo = false;
-  dynamic vidieoid;
-  dynamic vidieodeviceId;
+  bool? isvideo = false;
+  dynamic videoid;
+  dynamic videodeviceId;
   dynamic mediaStream;
   RTCVideoRenderer? rtcVideoRenderer;
   Fields? fields;
@@ -27,10 +26,10 @@ class Participant {
   Participant({
     this.msg,
     this.collection,
-    this.isvidieo,
+    this.isvideo,
     this.presentation,
-    this.vidieoid,
-    this.vidieodeviceId,
+    this.videoid,
+    this.videodeviceId,
     this.mediaStream,
     this.rtcVideoRenderer,
     this.id,
@@ -38,30 +37,30 @@ class Participant {
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) => Participant(
-    msg: json["msg"],
-    collection: json["collection"],
-    isvidieo: json["isvidieo"],
-    presentation: json["presentation"],
-    vidieoid: json["vidieoid"],
-    vidieodeviceId: json["vidieodeviceId"],
-    mediaStream: json["mediaStream"],
-    rtcVideoRenderer: json["RTCVideoRenderer"],
-    id: json["id"],
-    fields: json["fields"] == null ? null : Fields.fromJson(json["fields"]),
-  );
+        msg: json["msg"],
+        collection: json["collection"],
+        isvideo: json["isvideo"],
+        presentation: json["presentation"],
+        videoid: json["videoid"],
+        videodeviceId: json["videodeviceId"],
+        mediaStream: json["mediaStream"],
+        rtcVideoRenderer: json["RTCVideoRenderer"],
+        id: json["id"],
+        fields: json["fields"] == null ? null : Fields.fromJson(json["fields"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "msg": msg,
-    "collection": collection,
-    "presentation": presentation,
-    "isvidieo": isvidieo,
-    "vidieoid": vidieoid,
-    "vidieodeviceId": vidieodeviceId,
-    "mediaStream": mediaStream,
-    "RTCVideoRenderer": rtcVideoRenderer,
-    "id": id,
-    "fields": fields?.toJson(),
-  };
+        "msg": msg,
+        "collection": collection,
+        "presentation": presentation,
+        "isvideo": isvideo,
+        "videoid": videoid,
+        "videodeviceId": videodeviceId,
+        "mediaStream": mediaStream,
+        "RTCVideoRenderer": rtcVideoRenderer,
+        "id": id,
+        "fields": fields?.toJson(),
+      };
 
   @override
   String toString() => toJson().toString();
@@ -147,84 +146,86 @@ class Fields {
   });
 
   factory Fields.fromJson(Map<String, dynamic> json) => Fields(
-    meetingId: json["meetingId"],
-    userId: json["userId"],
-    clientType: json["clientType"],
-    validated: json["validated"],
-    left: json["left"],
-    chatId: json["chatId"],
-    talking: json["talking"],
-    spoke: json["spoke"],
-    muted: json["muted"],
-    voiceid: json["voiceid"],
-    approved: json["approved"],
-    authTokenValidatedTime: json["authTokenValidatedTime"],
-    inactivityCheck: json["inactivityCheck"],
-    loginTime: json["loginTime"],
-    authed: json["authed"],
-    avatar: json["avatar"],
-    away: json["away"],
-    breakoutProps: json["breakoutProps"] == null ? null : BreakoutProps.fromJson(json["breakoutProps"]),
-    color: json["color"],
-    effectiveConnectionType: json["effectiveConnectionType"],
-    emoji: json["emoji"],
-    extId: json["extId"],
-    guest: json["guest"],
-    guestStatus: json["guestStatus"],
-    intId: json["intId"],
-    locked: json["locked"],
-    loggedOut: json["loggedOut"],
-    mobile: json["mobile"],
-    name: json["name"],
-    pin: json["pin"],
-    presenter: json["presenter"],
-    raiseHand: json["raiseHand"],
-    reactionEmoji: json["reactionEmoji"],
-    responseDelay: json["responseDelay"],
-    role: json["role"],
-    sortName: json["sortName"],
-    speechLocale: json["speechLocale"],
-  );
+        meetingId: json["meetingId"],
+        userId: json["userId"],
+        clientType: json["clientType"],
+        validated: json["validated"],
+        left: json["left"],
+        chatId: json["chatId"],
+        talking: json["talking"],
+        spoke: json["spoke"],
+        muted: json["muted"],
+        voiceid: json["voiceid"],
+        approved: json["approved"],
+        authTokenValidatedTime: json["authTokenValidatedTime"],
+        inactivityCheck: json["inactivityCheck"],
+        loginTime: json["loginTime"],
+        authed: json["authed"],
+        avatar: json["avatar"],
+        away: json["away"],
+        breakoutProps: json["breakoutProps"] == null
+            ? null
+            : BreakoutProps.fromJson(json["breakoutProps"]),
+        color: json["color"],
+        effectiveConnectionType: json["effectiveConnectionType"],
+        emoji: json["emoji"],
+        extId: json["extId"],
+        guest: json["guest"],
+        guestStatus: json["guestStatus"],
+        intId: json["intId"],
+        locked: json["locked"],
+        loggedOut: json["loggedOut"],
+        mobile: json["mobile"],
+        name: json["name"],
+        pin: json["pin"],
+        presenter: json["presenter"],
+        raiseHand: json["raiseHand"],
+        reactionEmoji: json["reactionEmoji"],
+        responseDelay: json["responseDelay"],
+        role: json["role"],
+        sortName: json["sortName"],
+        speechLocale: json["speechLocale"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "meetingId": meetingId,
-    "userId": userId,
-    "clientType": clientType,
-    "validated": validated,
-    "left": left,
-    "approved": approved,
-    "talking": talking,
-    "spoke": spoke,
-    "muted": muted,
-    "voiceid": voiceid,
-    "authTokenValidatedTime": authTokenValidatedTime,
-    "inactivityCheck": inactivityCheck,
-    "loginTime": loginTime,
-    "authed": authed,
-    "avatar": avatar,
-    "chatId": chatId,
-    "away": away,
-    "breakoutProps": breakoutProps?.toJson(),
-    "color": color,
-    "effectiveConnectionType": effectiveConnectionType,
-    "emoji": emoji,
-    "extId": extId,
-    "guest": guest,
-    "guestStatus": guestStatus,
-    "intId": intId,
-    "locked": locked,
-    "loggedOut": loggedOut,
-    "mobile": mobile,
-    "name": name,
-    "pin": pin,
-    "presenter": presenter,
-    "raiseHand": raiseHand,
-    "reactionEmoji": reactionEmoji,
-    "responseDelay": responseDelay,
-    "role": role,
-    "sortName": sortName,
-    "speechLocale": speechLocale,
-  };
+        "meetingId": meetingId,
+        "userId": userId,
+        "clientType": clientType,
+        "validated": validated,
+        "left": left,
+        "approved": approved,
+        "talking": talking,
+        "spoke": spoke,
+        "muted": muted,
+        "voiceid": voiceid,
+        "authTokenValidatedTime": authTokenValidatedTime,
+        "inactivityCheck": inactivityCheck,
+        "loginTime": loginTime,
+        "authed": authed,
+        "avatar": avatar,
+        "chatId": chatId,
+        "away": away,
+        "breakoutProps": breakoutProps?.toJson(),
+        "color": color,
+        "effectiveConnectionType": effectiveConnectionType,
+        "emoji": emoji,
+        "extId": extId,
+        "guest": guest,
+        "guestStatus": guestStatus,
+        "intId": intId,
+        "locked": locked,
+        "loggedOut": loggedOut,
+        "mobile": mobile,
+        "name": name,
+        "pin": pin,
+        "presenter": presenter,
+        "raiseHand": raiseHand,
+        "reactionEmoji": reactionEmoji,
+        "responseDelay": responseDelay,
+        "role": role,
+        "sortName": sortName,
+        "speechLocale": speechLocale,
+      };
 
   @override
   toString() => toJson().toString();
@@ -240,16 +241,15 @@ class BreakoutProps {
   });
 
   factory BreakoutProps.fromJson(Map<String, dynamic> json) => BreakoutProps(
-    isBreakoutUser: json["isBreakoutUser"],
-    parentId: json["parentId"],
-  );
+        isBreakoutUser: json["isBreakoutUser"],
+        parentId: json["parentId"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "isBreakoutUser": isBreakoutUser,
-    "parentId": parentId,
-  };
-  
+        "isBreakoutUser": isBreakoutUser,
+        "parentId": parentId,
+      };
+
   @override
   String toString() => toJson().toString();
 }
-

@@ -141,14 +141,6 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startcaption() {
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-
-  stopcaption() {
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-
   stopcamera() {
     throw UnimplementedError('initialize() has not been implemented.');
   }

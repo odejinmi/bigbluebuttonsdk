@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import '../../utils/meetingdetails.dart';
+
 import '../../utils/strings.dart';
 import '../bigbluebuttonsdk.dart';
-import 'websocket.dart';
 
 class RemoteVideoWebSocket extends GetxController {
   var _isWebsocketRunning = false.obs;
@@ -102,10 +102,11 @@ class RemoteVideoWebSocket extends GetxController {
       'OfferToReceiveVideo': true,
     };
 
-    peerConnection = await createPeerConnection(websocket.sturnserver);
+    peerConnection = await createPeerConnection(websocket.stunServer);
 
     // Set remote description with the received answer
-    await peerConnection!.setRemoteDescription(RTCSessionDescription(answer, 'offer'));
+    await peerConnection!
+        .setRemoteDescription(RTCSessionDescription(answer, 'offer'));
 
     var newAnswer = await peerConnection!.createAnswer(constraints);
     await peerConnection!.setLocalDescription(newAnswer);
@@ -142,7 +143,7 @@ class RemoteVideoWebSocket extends GetxController {
         print("Received remote video track.");
         // Render remote video
         var list = websocket.participant.where((v) {
-          return v.vidieodeviceId != null && v.vidieodeviceId! == cameraId;
+          return v.videodeviceId != null && v.videodeviceId! == cameraId;
         }).toList();
         if (list.isNotEmpty) {
           list[0].mediaStream = event.streams[0];
@@ -157,20 +158,20 @@ class RemoteVideoWebSocket extends GetxController {
 // Handle the reception of remote media streams
     // Properly handle incoming tracks (audio or video)
     var result2 = await peerConnection!.getRemoteStreams();
-    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video' ) {
-        remoteRTCVideoRenderer.srcObject = result2[0];
-        print("Received remote video track.");
-        // Render remote video
-        var list = websocket.participant.where((v) {
-          return v.vidieodeviceId != null && v.vidieodeviceId! == cameraId;
-        }).toList();
-        if (list.isNotEmpty) {
-          list[0].mediaStream = result2[0];
-          list[0].rtcVideoRenderer = RTCVideoRenderer();
-          await list[0].rtcVideoRenderer!.initialize();
-          list[0].rtcVideoRenderer!.srcObject = result2[0];
-          // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
-        }
+    if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video') {
+      remoteRTCVideoRenderer.srcObject = result2[0];
+      print("Received remote video track.");
+      // Render remote video
+      var list = websocket.participant.where((v) {
+        return v.videodeviceId != null && v.videodeviceId! == cameraId;
+      }).toList();
+      if (list.isNotEmpty) {
+        list[0].mediaStream = result2[0];
+        list[0].rtcVideoRenderer = RTCVideoRenderer();
+        await list[0].rtcVideoRenderer!.initialize();
+        list[0].rtcVideoRenderer!.srcObject = result2[0];
+        // 4a52e9693531407dfa0b6471e3a22ce0a6f0ee64b2f4c1af256b4a6cb8c35418
+      }
     }
 
     peerConnection!.onIceConnectionState = (state) {
@@ -197,7 +198,7 @@ class RemoteVideoWebSocket extends GetxController {
     websocketsub(payload);
 
     channel!.stream.listen(
-          (event) async {
+      (event) async {
         var e = jsonDecode(event);
         print("New WebSocket event: $event");
         switch (e['id']) {
@@ -254,7 +255,6 @@ class RemoteVideoWebSocket extends GetxController {
     var iceCandidate = RTCIceCandidate(candidate, null, 0);
     await peerConnection?.addCandidate(iceCandidate);
   }
-
 
   void stopCameraSharing() async {
     if (isWebsocketRunning) {

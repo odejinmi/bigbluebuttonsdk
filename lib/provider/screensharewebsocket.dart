@@ -61,7 +61,7 @@ class Screensharewebsocket extends GetxController {
 
   Future<void> createPeerConnections(bool audio) async {
     // Create the peer connection
-    peerConnection = await createPeerConnection(websocket.sturnserver);
+    peerConnection = await createPeerConnection(websocket.stunServer);
 
     // Get local media stream (screen sharing)
     _localStream = await mediaDevices.getDisplayMedia({
@@ -156,7 +156,7 @@ class Screensharewebsocket extends GetxController {
             receiveCandidate(e['candidate']['candidate']);
             break;
           case 'playStart':
-            websocket.ismesharing = true;
+            websocket.isMeSharing = true;
             receiveStart();
             break;
           case 'error':

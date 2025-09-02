@@ -218,14 +218,6 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.endroom();
   }
 
-  stopcaption() {
-    BigbluebuttonsdkPlatform.instance.stopcaption();
-  }
-
-  startcaption() {
-    BigbluebuttonsdkPlatform.instance.startcaption();
-  }
-
   starvirtual({required Uint8List backgroundimage}) {
     BigbluebuttonsdkPlatform.instance
         .starvirtual(backgroundimage: backgroundimage);
