@@ -43,7 +43,13 @@ class WebSocketResponse {
   };
 
   Future<void> response(Map<String, dynamic> json) async {
+    if (json["collection"] == "current-user") {
+      print("pre addevent");
+    }
     _service.addEvent(jsonEncode(json));
+    if (json["collection"] == "current-user") {
+      print("post addevent");
+    }
 
     final collection = json["collection"];
     if (collection != null && _collectionHandlers.containsKey(collection)) {

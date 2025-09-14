@@ -29,6 +29,20 @@ export 'utils/pollanalyseparser.dart';
 export 'utils/typingmodel.dart';
 
 class Bigbluebuttonsdk {
+  static Bigbluebuttonsdk _instance = Bigbluebuttonsdk();
+
+  /// The default instance of [BigbluebuttonsdkPlatform] to use.
+  ///
+  /// Defaults to [Bigbluebuttonsdk].
+  static Bigbluebuttonsdk get instance => _instance;
+
+  /// Platform-specific implementations should set this with their own
+  /// platform-specific class that extends [Bigbluebuttonsdk] when
+  /// they register themselves.
+  static set instance(Bigbluebuttonsdk instance) {
+    _instance = instance;
+  }
+
   Future<String?> getPlatformVersion() {
     return BigbluebuttonsdkPlatform.instance.getPlatformVersion();
   }

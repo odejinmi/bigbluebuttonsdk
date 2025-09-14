@@ -53,10 +53,11 @@ class Websocket extends GetxController implements WebSocketService {
 
   // WebSocket related
   WebSocketChannel? channel;
-  Timer? _pingTimer;
-  int retryLimit = 3;
+  final _retryLimit = 20.obs;
+  set retryLimit(int value) => _retryLimit.value = value;
+  int get retryLimit => _retryLimit.value;
+
   bool isLoading = false;
-  bool _isVideoEnabled = true;
   @override
   late Typing typing;
 
@@ -288,7 +289,8 @@ class Websocket extends GetxController implements WebSocketService {
     _enableWakelock();
     _resetParticipants();
     _subscribeToWebSocket();
-    _startPing();
+    timer?.cancel();
+    startWebSocketPing();
     _listenToWebSocket();
   }
 
@@ -306,10 +308,6 @@ class Websocket extends GetxController implements WebSocketService {
 
   void _subscribeToWebSocket() {
     sub("sub");
-  }
-
-  void _startPing() {
-    startWebSocketPing();
   }
 
   void _listenToWebSocket() {
@@ -334,6 +332,7 @@ class Websocket extends GetxController implements WebSocketService {
     final stunServerData = await Diorequest().get(
       "https://$baseUrl/bigbluebutton/api/stuns?sessionToken=$webrtcToken",
     );
+    if (stunServerData == null) return;
     stunServer = formatToIceServers(stunServerData);
     Get.find<Audiowebsocket>().initiate(
       webrtctoken: webrtcToken,
@@ -387,7 +386,8 @@ class Websocket extends GetxController implements WebSocketService {
   }
 
   void _handleWebSocketError(dynamic error) {
-    print("WebSocket error: $error");
+    // print("WebSocket error: $error");
+    print("WebSocket error: ");
     retryConnection();
   }
 
@@ -397,13 +397,13 @@ class Websocket extends GetxController implements WebSocketService {
       retryLimit--;
       startStream();
     } else {
-      _webSocketResponse.response(logoutJson());
+      logoutJson();
     }
   }
 
   // WebSocket ping management
   void startWebSocketPing() {
-    _pingTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+    timer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (channel != null && isWebsocketRunning) {
         sendPingMessage();
       } else {
@@ -414,7 +414,7 @@ class Websocket extends GetxController implements WebSocketService {
   }
 
   void stopWebSocketPing() {
-    _pingTimer?.cancel();
+    timer?.cancel();
   }
 
   void sendPingMessage() {
@@ -434,23 +434,27 @@ class Websocket extends GetxController implements WebSocketService {
     try {
       channel!.sink.add(jsonEncode(json));
     } catch (e) {
-      _webSocketResponse.response(logoutJson());
+      logoutJson();
     }
   }
 
   // Utility methods
-  Map<String, dynamic> logoutJson() {
-    isLeave = true;
-    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
-      CallNotificationService.dismissCallNotification();
+  void logoutJson() {
+    if (!isLeave) {
+      if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+        CallNotificationService.dismissCallNotification();
+      }
+      WakelockPlus.disable();
+      stopall();
+      var json = {
+        "msg": "changed",
+        "collection": "current-user",
+        "id": userId,
+        "fields": {"loggedOut": true}
+      };
+      isLeave = true;
+      _webSocketResponse.response(json);
     }
-    WakelockPlus.disable();
-    return {
-      "msg": "changed",
-      "collection": "current-user",
-      "id": userId,
-      "fields": {"loggedOut": true}
-    };
   }
 
   Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
@@ -485,15 +489,10 @@ class Websocket extends GetxController implements WebSocketService {
   // Stream management
   @override
   void addEvent(String event) {
-    if (isWebsocketRunning && controller != null) {
-      try {
-        controller.sink.add(event);
-      } catch (e) {
-        print('Error sending message: $e');
-        _webSocketResponse.response(logoutJson());
-      }
-    } else {
-      print('Cannot send message: WebSocket not connected');
+    try {
+      controller.sink.add(event);
+    } catch (e) {
+      print('Error sending message: $e');
     }
   }
 
@@ -618,9 +617,13 @@ class Websocket extends GetxController implements WebSocketService {
 
   @override
   void onClose() {
-    stopWebSocketPing();
-    timer?.cancel();
+    stopall();
     closeStream();
     super.onClose();
+  }
+
+  void stopall() {
+    stopWebSocketPing();
+    timer?.cancel();
   }
 }

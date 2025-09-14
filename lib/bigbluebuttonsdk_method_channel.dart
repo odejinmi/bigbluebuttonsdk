@@ -40,7 +40,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   bool _isCallActive = false;
   String _callStatus = 'Tap to return to the call';
-  late Timer _notificationWatcher;
+  late Timer? _notificationWatcher = null;
 
   Future<void> switchToEarpiece() async {
     await methodChannel.invokeMethod('earpiece');
@@ -144,20 +144,13 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
       CallNotificationService.initialize();
 
-      // Watch for notification dismissal and recreate if needed
-      _notificationWatcher = Timer.periodic(Duration(seconds: 2), (timer) {
-        if (_isCallActive && CallNotificationService.isNotificationActive) {
-          CallNotificationService.ensureNotificationExists(
-            title: websocket.meetingDetails!.confname,
-            status: "Tap to return to the call",
-          );
-        }
-      });
-
       // setState(() {
       _isCallActive = true;
       _callStatus = 'Connected';
       // });
+
+      // Improved notification watcher with better logic
+      _startNotificationWatcher();
 
       CallNotificationService.showCallNotification(
         title: meetingdetails!.confname,
@@ -466,22 +459,69 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     }).toList();
   }
 
+  // Separate method for notification watching logic
+  void _startNotificationWatcher() {
+    _notificationWatcher?.cancel(); // Cancel any existing watcher
+
+    _notificationWatcher = Timer.periodic(Duration(seconds: 3), (timer) {
+      print("_notificationWatcher - Call Active: $_isCallActive ");
+
+      // If call has ended, stop the watcher
+      if (!_isCallActive) {
+        print("Stopping notification watcher - call ended");
+        timer.cancel();
+        return;
+      }
+
+      // Only ensure notification exists if call is still active
+      if (_isCallActive && CallNotificationService.isNotificationActive) {
+        CallNotificationService.ensureNotificationExists(
+          title: websocket.meetingDetails?.confname ?? 'Meeting',
+          status: "Tap to return to the call",
+        );
+      }
+    });
+  }
+
   @override
   leaveroom() {
-    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
-      CallNotificationService.dismissCallNotification();
-    }
-    _isCallActive = false;
+    print('Leaving room - cleaning up notifications');
+    _cleanupCall();
     websocket.leaveRoom();
   }
 
   @override
   endroom() {
-    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
-      CallNotificationService.dismissCallNotification();
-    }
-    _isCallActive = false;
+    print('Ending room - cleaning up notifications');
+    _cleanupCall();
     websocket.endRoom();
+  }
+
+  // Centralized cleanup method
+  void _cleanupCall() {
+    _isCallActive = false;
+
+    // Cancel the notification watcher first
+    _notificationWatcher?.cancel();
+    _notificationWatcher = null;
+
+    if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+      // Dismiss notification after a short delay to ensure cleanup
+      Future.delayed(Duration(milliseconds: 500), () {
+        CallNotificationService.dismissCallNotification();
+      });
+    }
+  }
+
+  // Add this method to handle app lifecycle changes
+  void handleAppLifecycleChange(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed && _isCallActive) {
+      // App came back to foreground, ensure notification is still there
+      CallNotificationService.ensureNotificationExists(
+        title: websocket.meetingDetails?.confname ?? 'Meeting',
+        status: "Tap to return to the call",
+      );
+    }
   }
 
   @override

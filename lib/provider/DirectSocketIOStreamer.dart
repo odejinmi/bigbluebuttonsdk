@@ -9,6 +9,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import '../utils/diorequest.dart';
+
 class DirectSocketIOStreamer extends GetxController {
   var websocket = Get.find<Websocket>();
 
@@ -30,10 +32,12 @@ class DirectSocketIOStreamer extends GetxController {
 
   static const String serverUrl = 'https://k4caption.konn3ct.ng/';
 
-  // @override
-  // onInit() {
-  //   connectToServer();
-  // }
+  @override
+  onInit() {
+    super.onInit();
+    getlanguage();
+    // connectToServer();
+  }
 
   Future<void> connectToServer() async {
     try {
@@ -144,6 +148,22 @@ class DirectSocketIOStreamer extends GetxController {
     } catch (e) {
       // print('❌ WAV chunk recording error: $e');
     }
+  }
+
+  void getlanguage() async {
+    var cmddetails = await Diorequest().get(
+      "https://megatongue.prisca.5starcompany.com.ng/api/languages",
+    );
+    print("language cmddetails");
+    print(cmddetails);
+    if (cmddetails["success"]) {
+      if (cmddetails["data"] == 0) {
+        // checkdonationpayment(reference);
+      }
+      // Get.offNamed(
+      // Routes.POSTJOIN, arguments: {"token": webtoken,"meetingdetails":cmddetails["response"]});
+      // update();
+    } else {}
   }
 
   Future<void> _stopAndSendWavChunk(

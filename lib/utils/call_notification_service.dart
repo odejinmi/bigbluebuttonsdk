@@ -291,7 +291,7 @@ class CallNotificationService {
       payload: 'call_tap',
     );
 
-    _isNotificationActive = true;
+    isNotificationActive = true;
   }
 
   static Future<void> _startBackgroundExecution() async {
@@ -377,23 +377,30 @@ class CallNotificationService {
   }
 
   static Future<void> dismissCallNotification() async {
-    _isNotificationActive = false;
+    print('Dismissing call notification');
+    isNotificationActive = false;
+
     await _notificationsPlugin.cancel(0);
     await _stopBackgroundExecution();
   }
 
   static bool get isNotificationActive => _isNotificationActive;
+  static set isNotificationActive(bool value) => _isNotificationActive = value;
 
   static Future<void> ensureNotificationExists({
     required String title,
     required String status,
   }) async {
-    print("ensureNotificationExists");
-    if (_isNotificationActive) {
-      await showCallNotification(
-        title: title,
-        status: status,
-      );
+    try {
+      // Only ensure notification exists if call is still active and not ended
+      if (isNotificationActive) {
+        await showCallNotification(
+          title: title,
+          status: status,
+        );
+      }
+    } catch (e) {
+      print('Error ensuring notification exists: $e');
     }
   }
 
