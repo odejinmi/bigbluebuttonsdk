@@ -225,9 +225,16 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  muteallusers({required String userid}) {
+  muteallusers() {
     websocket.websocketSub([
-      "{\"msg\":\"method\",\"id\":\"11\",\"method\":\"muteAllUsers\",\"params\":[\"${userid}\"]}",
+      "{\"msg\":\"method\",\"id\":\"11\",\"method\":\"muteAllUsers\",\"params\":[\"\"]}",
+    ]);
+  }
+
+  @override
+  muteauser({required String userid}) {
+    websocket.websocketSub([
+      "{\"msg\":\"method\",\"id\":\"44\",\"method\":\"toggleVoice\",\"params\":[\"$userid\"]}",
     ]);
   }
 
@@ -543,6 +550,11 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"376\",\"method\":\"createBreakoutRoom\",\"params\":[[{\"users\":[],\"name\":\"tolu (Room 1)\",\"captureNotesFilename\":\"Room_0_Notes\",\"captureSlidesFilename\":\"Room_0_Whiteboard\",\"shortName\":\"Room 1\",\"isDefaultName\":true,\"freeJoin\":true,\"sequence\":1},{\"users\":[],\"name\":\"tolu (Room 2)\",\"captureNotesFilename\":\"Room_1_Notes\",\"captureSlidesFilename\":\"Room_1_Whiteboard\",\"shortName\":\"Room 2\",\"isDefaultName\":true,\"freeJoin\":true,\"sequence\":2}],15,true,false,false,false]}",
     ]);
+  }
+
+  @override
+  get availableLanguages {
+    return texttospeech.availableLanguages;
   }
 
   @override

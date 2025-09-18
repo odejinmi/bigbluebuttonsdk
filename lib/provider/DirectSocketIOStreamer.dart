@@ -32,6 +32,11 @@ class DirectSocketIOStreamer extends GetxController {
 
   static const String serverUrl = 'https://k4caption.konn3ct.ng/';
 
+  var _availableLanguages = <dynamic>[].obs;
+  set availableLanguages(List<dynamic> value) =>
+      _availableLanguages.value = value;
+  List<dynamic> get availableLanguages => _availableLanguages.value;
+
   @override
   onInit() {
     super.onInit();
@@ -156,13 +161,8 @@ class DirectSocketIOStreamer extends GetxController {
     );
     print("language cmddetails");
     print(cmddetails);
-    if (cmddetails["success"]) {
-      if (cmddetails["data"] == 0) {
-        // checkdonationpayment(reference);
-      }
-      // Get.offNamed(
-      // Routes.POSTJOIN, arguments: {"token": webtoken,"meetingdetails":cmddetails["response"]});
-      // update();
+    if (cmddetails["status_code"] == 200) {
+      availableLanguages = cmddetails["message"];
     } else {}
   }
 

@@ -107,7 +107,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  muteallusers({
+  muteallusers() {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  muteauser({
     required String userid,
   }) {
     throw UnimplementedError('initialize() has not been implemented.');
@@ -209,6 +213,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   get participant {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  get availableLanguages {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

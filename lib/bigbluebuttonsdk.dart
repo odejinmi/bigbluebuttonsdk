@@ -125,10 +125,14 @@ class Bigbluebuttonsdk {
         .votepoll(poll_id: poll_id, selectedOptionId: selectedOptionId);
   }
 
-  muteallusers({
+  muteallusers() {
+    BigbluebuttonsdkPlatform.instance.muteallusers();
+  }
+
+  muteauser({
     required String userid,
   }) {
-    BigbluebuttonsdkPlatform.instance.muteallusers(userid: userid);
+    BigbluebuttonsdkPlatform.instance.muteauser(userid: userid);
   }
 
   createGroupChat({
@@ -245,6 +249,10 @@ class Bigbluebuttonsdk {
 
   get participant {
     return BigbluebuttonsdkPlatform.instance.participant;
+  }
+
+  get availableLanguages {
+    return BigbluebuttonsdkPlatform.instance.availableLanguages;
   }
 
   get mydetails {
