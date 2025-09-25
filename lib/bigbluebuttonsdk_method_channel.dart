@@ -138,7 +138,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     remotescreensharewebsocket = Get.put(RemoteScreenShareWebSocket());
     // texttospeech = Get.put(Texttospeech());
     whiteboardcontrolle = Get.put(Whiteboardcontroller());
-    if (GetPlatform.isAndroid || GetPlatform.isIOS) {
+    if (GetPlatform.isAndroid) {
       // Initialize the SDK instance for CallNotificationService
       CallNotificationService.initializeSdkInstance(this);
 
