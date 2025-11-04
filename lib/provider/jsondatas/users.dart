@@ -37,6 +37,8 @@ class Users {
     if (json["msg"] == "added") {
       _service.myDetails = Participant.fromJson(json);
     } else if (json["msg"] == "changed") {
+      print("user change");
+      print(json);
       _service.myDetails = Participant.fromJson(
           _service.mergeData(json, _service.myDetails!.toJson()));
       if (json["fields"]["ejected"] != null && json["fields"]["ejected"]) {

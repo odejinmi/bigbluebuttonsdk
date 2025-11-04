@@ -192,10 +192,10 @@ class CallNotificationService {
     if (_sdk.mydetails != null && _sdk.mydetails!.fields!.role == "MODERATOR") {
       await _sdk.endroom();
     } else {
-      _sdk.leaveroom();
+      await _sdk.leaveroom();
     }
 
-    await dismissCallNotification();
+    // await dismissCallNotification();
   }
 
   static void _handleCallTap() {
