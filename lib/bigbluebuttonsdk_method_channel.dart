@@ -149,9 +149,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
       _callStatus = 'Connected';
       // });
 
-      // Improved notification watcher with better logic
-      _startNotificationWatcher();
-
       CallNotificationService.showCallNotification(
         title: meetingdetails!.confname,
         status: 'Tap to return to the call',
@@ -466,30 +463,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     }).toList();
   }
 
-  // Separate method for notification watching logic
-  void _startNotificationWatcher() {
-    _notificationWatcher?.cancel(); // Cancel any existing watcher
-
-    _notificationWatcher = Timer.periodic(Duration(seconds: 3), (timer) {
-      print("_notificationWatcher - Call Active: $_isCallActive ");
-
-      // If call has ended, stop the watcher
-      if (!_isCallActive) {
-        print("Stopping notification watcher - call ended");
-        timer.cancel();
-        return;
-      }
-
-      // Only ensure notification exists if call is still active
-      if (_isCallActive && CallNotificationService.isNotificationActive) {
-        CallNotificationService.ensureNotificationExists(
-          title: websocket.meetingDetails?.confname ?? 'Meeting',
-          status: "Tap to return to the call",
-        );
-      }
-    });
-  }
-
   @override
   leaveroom() {
     print('Leaving room - cleaning up notifications');
@@ -522,12 +495,19 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   // Add this method to handle app lifecycle changes
   void handleAppLifecycleChange(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed && _isCallActive) {
-      // App came back to foreground, ensure notification is still there
-      CallNotificationService.ensureNotificationExists(
-        title: websocket.meetingDetails?.confname ?? 'Meeting',
-        status: "Tap to return to the call",
-      );
+    if (state == AppLifecycleState.resumed) {
+      if (_isCallActive) {
+        // App came back to foreground, dismiss the notification
+        CallNotificationService.dismissCallNotification();
+      }
+    } else if (state == AppLifecycleState.paused) {
+      if (_isCallActive) {
+        // App is in the background, show the notification
+        CallNotificationService.showCallNotification(
+          title: websocket.meetingDetails?.confname ?? 'Meeting',
+          status: "Tap to return to the call",
+        );
+      }
     }
   }
 

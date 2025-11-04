@@ -8,7 +8,7 @@ import 'package:bigbluebuttonsdk/utils/strings.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+// import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../bigbluebuttonsdk.dart';
 import '../utils/diorequest.dart';
@@ -80,550 +80,555 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   MeetingResponse? get meetingResponse => _meetingResponse.value;
   @override
-  set meetingResponse(MeetingResponse? value) => _meetingResponse.value = value;
-
-  @override
-  List<dynamic> get waitingParticipant => _waitingParticipant.value;
-  @override
-  set waitingParticipant(List<dynamic> value) =>
-      _waitingParticipant.value = value;
-
-  @override
-  List<Participant> get talking => _talking.value;
-  @override
-  set talking(List<Participant> value) => _talking.value = value;
-
-  @override
-  Participant? get myDetails => _myDetails.value;
-  @override
-  set myDetails(Participant? value) => _myDetails.value = value;
-
-  @override
-  RTCVideoRenderer get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
-  @override
-  set remoteRTCVideoRenderer(RTCVideoRenderer value) =>
-      _remoteRTCVideoRenderer.value = value;
-
-  @override
-  List<dynamic> get breakoutRoom => _breakoutRoom.value;
-  @override
-  set breakoutRoom(List<dynamic> value) => _breakoutRoom.value = value;
-
-  @override
-  Pollanalyseparser get pollAnalyseParser => _pollAnalyseParser.value;
-  @override
-  set pollAnalyseParser(Pollanalyseparser value) =>
-      _pollAnalyseParser.value = value;
-
-  @override
-  bool get isTypingNow => _isTyping.value;
-  @override
-  set isTypingNow(bool value) => _isTyping.value = value;
-
-  @override
-  bool get isMeSharing => _isMeSharing.value;
-  @override
-  set isMeSharing(bool value) => _isMeSharing.value = value;
-
-  @override
-  PlatformFile get platformFile => _platformFile.value;
-  @override
-  set platformFile(PlatformFile value) => _platformFile.value = value;
-
-  @override
-  List<Presentationmodel> get presentationModel => _presentationModel.value;
-  @override
-  set presentationModel(List<Presentationmodel> value) =>
-      _presentationModel.value = value;
-
-  @override
-  List<dynamic> get slidePosition => _slidePosition.value;
-  @override
-  set slidePosition(List<dynamic> value) => _slidePosition.value = value;
-
-  @override
-  List<dynamic> get slides => _slides.value;
-  @override
-  set slides(List<dynamic> value) => _slides.value = value;
-
-  @override
-  Timer? get timer => _timer.value;
-  @override
-  set timer(Timer? value) => _timer.value = value;
-
-  @override
-  bool get isPolling => _isPolling.value;
-  @override
-  set isPolling(bool value) => _isPolling.value = value;
-
-  @override
-  Map<String, dynamic> get pollJson => _pollJson.value;
-  @override
-  set pollJson(Map<String, dynamic> value) => _pollJson.value = value;
-
-  @override
-  bool get isShowECinema => _isShowECinema.value;
-  @override
-  set isShowECinema(bool value) => _isShowECinema.value = value;
-
-  @override
-  bool get isChat => _isChat.value;
-  @override
-  set isChat(bool value) => _isChat.value = value;
-
-  @override
-  bool get isRecording => _isRecording.value;
-  @override
-  set isRecording(bool value) => _isRecording.value = value;
-
-  @override
-  String get recordingTime => _recordingTime.value;
-  @override
-  set recordingTime(String value) {
-    var seconds = int.parse(value);
-    final hours = (seconds / 3600).floor();
-    final minutes = ((seconds % 3600) / 60).floor();
-    final remainingSeconds = seconds % 60;
-    _recordingTime.value =
-        '${twoDigitString(hours)}:${twoDigitString(minutes)}:${twoDigitString(remainingSeconds)}';
+  set meetingResponse(MeetingResponse? value) {
+     _meetingResponse.value = value;
+     if(value != null && value.fields.meetingEnded){
+       logoutJson();
+     }
   }
 
-  @override
-  String get webrtcToken => _webrtcToken.value;
-  @override
-  set webrtcToken(String value) => _webrtcToken.value = value;
+    @override
+    List<dynamic> get waitingParticipant => _waitingParticipant.value;
+    @override
+    set waitingParticipant(List<dynamic> value) =>
+        _waitingParticipant.value = value;
 
-  @override
-  String get mainWebsocketUrl => _mainWebsocketUrl.value;
-  @override
-  set mainWebsocketUrl(String value) => _mainWebsocketUrl.value = value;
+    @override
+    List<Participant> get talking => _talking.value;
+    @override
+    set talking(List<Participant> value) => _talking.value = value;
 
-  @override
-  String get baseUrl => _baseUrl.value;
-  @override
-  set baseUrl(String value) => _baseUrl.value = value;
+    @override
+    Participant? get myDetails => _myDetails.value;
+    @override
+    set myDetails(Participant? value) => _myDetails.value = value;
 
-  @override
-  String get mediaWebsocketUrl => _mediaWebsocketUrl.value;
-  @override
-  set mediaWebsocketUrl(String value) => _mediaWebsocketUrl.value = value;
+    @override
+    RTCVideoRenderer get remoteRTCVideoRenderer => _remoteRTCVideoRenderer.value;
+    @override
+    set remoteRTCVideoRenderer(RTCVideoRenderer value) =>
+        _remoteRTCVideoRenderer.value = value;
 
-  @override
-  Map<String, dynamic> get stunServer => _stunServer.value;
-  @override
-  set stunServer(Map<String, dynamic> value) => _stunServer.value = value;
+    @override
+    List<dynamic> get breakoutRoom => _breakoutRoom.value;
+    @override
+    set breakoutRoom(List<dynamic> value) => _breakoutRoom.value = value;
 
-  @override
-  List<ChatMessage> get chatMessages => _chatMessages.value;
-  @override
-  set chatMessages(List<ChatMessage> value) => _chatMessages.value = value;
+    @override
+    Pollanalyseparser get pollAnalyseParser => _pollAnalyseParser.value;
+    @override
+    set pollAnalyseParser(Pollanalyseparser value) =>
+        _pollAnalyseParser.value = value;
 
-  @override
-  String get reason => _reason.value;
-  @override
-  set reason(String value) => _reason.value = value;
+    @override
+    bool get isTypingNow => _isTyping.value;
+    @override
+    set isTypingNow(bool value) => _isTyping.value = value;
 
-  @override
-  StreamController<String> get controller => _controller.value;
-  @override
-  set controller(StreamController<String> value) => _controller.value = value;
+    @override
+    bool get isMeSharing => _isMeSharing.value;
+    @override
+    set isMeSharing(bool value) => _isMeSharing.value = value;
 
-  @override
-  bool get isLeave => _isLeave.value;
-  @override
-  set isLeave(bool value) => _isLeave.value = value;
+    @override
+    PlatformFile get platformFile => _platformFile.value;
+    @override
+    set platformFile(PlatformFile value) => _platformFile.value = value;
 
-  @override
-  String get userId => _userId.value;
-  @override
-  set userId(String value) => _userId.value = value;
+    @override
+    List<Presentationmodel> get presentationModel => _presentationModel.value;
+    @override
+    set presentationModel(List<Presentationmodel> value) =>
+        _presentationModel.value = value;
 
-  // Computed properties
-  @override
-  dynamic get currentSlide {
-    final result = slides.where((v) => v["fields"]["current"] == true).toList();
-    return result.isNotEmpty ? result.last : null;
-  }
+    @override
+    List<dynamic> get slidePosition => _slidePosition.value;
+    @override
+    set slidePosition(List<dynamic> value) => _slidePosition.value = value;
 
-  @override
-  Stream<String> get stream => controller.stream;
+    @override
+    List<dynamic> get slides => _slides.value;
+    @override
+    set slides(List<dynamic> value) => _slides.value = value;
 
-  // Helper methods
-  @override
-  String twoDigitString(int value) => value.toString().padLeft(2, '0');
+    @override
+    Timer? get timer => _timer.value;
+    @override
+    set timer(Timer? value) => _timer.value = value;
 
-  @override
-  List<ChatMessage> getChatMessages(String chatId) {
-    return chatMessages.where((message) => message.chatId == chatId).toList();
-  }
+    @override
+    bool get isPolling => _isPolling.value;
+    @override
+    set isPolling(bool value) => _isPolling.value = value;
 
-  late final WebSocketResponse _webSocketResponse;
+    @override
+    Map<String, dynamic> get pollJson => _pollJson.value;
+    @override
+    set pollJson(Map<String, dynamic> value) => _pollJson.value = value;
 
-  @override
-  void onInit() {
-    _webSocketResponse = WebSocketResponse(this);
-    super.onInit();
-  }
+    @override
+    bool get isShowECinema => _isShowECinema.value;
+    @override
+    set isShowECinema(bool value) => _isShowECinema.value = value;
 
-  // WebSocket management
-  @override
-  void initiate({
-    required String webrtcToken,
-    required String baseUrl,
-    required String mainWebsocketUrl,
-    required String mediaWebsocketUrl,
-    required Meetingdetails meetingDetails,
-  }) {
-    this.webrtcToken = webrtcToken;
-    this.baseUrl = baseUrl;
-    this.meetingDetails = meetingDetails;
-    this.mainWebsocketUrl = mainWebsocketUrl;
-    this.mediaWebsocketUrl = mediaWebsocketUrl;
-    startStream();
-  }
+    @override
+    bool get isChat => _isChat.value;
+    @override
+    set isChat(bool value) => _isChat.value = value;
 
-  void startStream() {
-    if (isWebsocketRunning) return;
+    @override
+    bool get isRecording => _isRecording.value;
+    @override
+    set isRecording(bool value) => _isRecording.value = value;
 
-    _initializeWebSocket();
-    _enableWakelock();
-    _resetParticipants();
-    _subscribeToWebSocket();
-    timer?.cancel();
-    startWebSocketPing();
-    _listenToWebSocket();
-  }
-
-  void _initializeWebSocket() {
-    channel = WebSocketChannel.connect(Uri.parse(mainWebsocketUrl));
-  }
-
-  void _enableWakelock() {
-    WakelockPlus.enable();
-  }
-
-  void _resetParticipants() {
-    participant = <Participant>[];
-  }
-
-  void _subscribeToWebSocket() {
-    sub("sub");
-  }
-
-  void _listenToWebSocket() {
-    channel!.stream.listen(
-      _handleWebSocketMessage,
-      onDone: _handleWebSocketDone,
-      onError: _handleWebSocketError,
-    );
-    update();
-  }
-
-  void _handleWebSocketMessage(dynamic event) async {
-    if (!isWebsocketRunning) {
-      await _handleFirstConnection();
-    }
-    _processWebSocketEvent(event);
-    update();
-  }
-
-  Future<void> _handleFirstConnection() async {
-    isWebsocketRunning = true;
-    final stunServerData = await Diorequest().get(
-      "https://$baseUrl/bigbluebutton/api/stuns?sessionToken=$webrtcToken",
-    );
-    if (stunServerData == null) return;
-    stunServer = formatToIceServers(stunServerData);
-    Get.find<Audiowebsocket>().initiate(
-      webrtctoken: webrtcToken,
-      mediawebsocketurl: mediaWebsocketUrl,
-      meetingdetails: meetingDetails!,
-    );
-  }
-
-  void _processWebSocketEvent(String event) {
-    final firstSplit = event.toString().split("a[");
-    if (firstSplit.length <= 1) return;
-
-    final secondSplit = firstSplit[1].split("}\"]");
-    final result = "${secondSplit[0]}}\"";
-
-    try {
-      final json = jsonDecode(jsonDecode(result));
-      _handleWebSocketJson(json);
-    } catch (e) {
-      print("Error processing WebSocket event: $e");
-    }
-  }
-
-  void _handleWebSocketJson(Map<String, dynamic> json) {
-    if (json["msg"] == "changed" && json["collection"] == "current-user") {
-      _handleCurrentUserChange(json);
-    } else if (json["msg"] == "removed" &&
-        json["collection"] == "current-user") {
-      _handleCurrentUserRemoval(json);
+    @override
+    String get recordingTime => _recordingTime.value;
+    @override
+    set recordingTime(String value) {
+      var seconds = int.parse(value);
+      final hours = (seconds / 3600).floor();
+      final minutes = ((seconds % 3600) / 60).floor();
+      final remainingSeconds = seconds % 60;
+      _recordingTime.value =
+      '${twoDigitString(hours)}:${twoDigitString(minutes)}:${twoDigitString(remainingSeconds)}';
     }
 
-    _webSocketResponse.response(json);
-  }
+    @override
+    String get webrtcToken => _webrtcToken.value;
+    @override
+    set webrtcToken(String value) => _webrtcToken.value = value;
 
-  void _handleCurrentUserChange(Map<String, dynamic> json) {
-    userId = json["id"];
-    if (json["fields"].containsKey("loggedOut") &&
-        json["fields"]["loggedOut"] == true) {
-      isLeave = true;
+    @override
+    String get mainWebsocketUrl => _mainWebsocketUrl.value;
+    @override
+    set mainWebsocketUrl(String value) => _mainWebsocketUrl.value = value;
+
+    @override
+    String get baseUrl => _baseUrl.value;
+    @override
+    set baseUrl(String value) => _baseUrl.value = value;
+
+    @override
+    String get mediaWebsocketUrl => _mediaWebsocketUrl.value;
+    @override
+    set mediaWebsocketUrl(String value) => _mediaWebsocketUrl.value = value;
+
+    @override
+    Map<String, dynamic> get stunServer => _stunServer.value;
+    @override
+    set stunServer(Map<String, dynamic> value) => _stunServer.value = value;
+
+    @override
+    List<ChatMessage> get chatMessages => _chatMessages.value;
+    @override
+    set chatMessages(List<ChatMessage> value) => _chatMessages.value = value;
+
+    @override
+    String get reason => _reason.value;
+    @override
+    set reason(String value) => _reason.value = value;
+
+    @override
+    StreamController<String> get controller => _controller.value;
+    @override
+    set controller(StreamController<String> value) => _controller.value = value;
+
+    @override
+    bool get isLeave => _isLeave.value;
+    @override
+    set isLeave(bool value) => _isLeave.value = value;
+
+    @override
+    String get userId => _userId.value;
+    @override
+    set userId(String value) => _userId.value = value;
+
+    // Computed properties
+    @override
+    dynamic get currentSlide {
+      final result = slides.where((v) => v["fields"]["current"] == true).toList();
+      return result.isNotEmpty ? result.last : null;
     }
-  }
 
-  void _handleCurrentUserRemoval(Map<String, dynamic> json) {
-    userId = json["id"];
-    isLeave = true;
-  }
+    @override
+    Stream<String> get stream => controller.stream;
 
-  void _handleWebSocketDone() {
-    print("WebSocket connection closed");
-    retryConnection();
-  }
+    // Helper methods
+    @override
+    String twoDigitString(int value) => value.toString().padLeft(2, '0');
 
-  void _handleWebSocketError(dynamic error) {
-    // print("WebSocket error: $error");
-    print("WebSocket error: ");
-    retryConnection();
-  }
+    @override
+    List<ChatMessage> getChatMessages(String chatId) {
+      return chatMessages.where((message) => message.chatId == chatId).toList();
+    }
 
-  void retryConnection() {
-    isWebsocketRunning = false;
-    if (!isLeave && retryLimit > 0) {
-      retryLimit--;
+    late final WebSocketResponse _webSocketResponse;
+
+    @override
+    void onInit() {
+      _webSocketResponse = WebSocketResponse(this);
+      super.onInit();
+    }
+
+    // WebSocket management
+    @override
+    void initiate({
+      required String webrtcToken,
+      required String baseUrl,
+      required String mainWebsocketUrl,
+      required String mediaWebsocketUrl,
+      required Meetingdetails meetingDetails,
+    }) {
+      this.webrtcToken = webrtcToken;
+      this.baseUrl = baseUrl;
+      this.meetingDetails = meetingDetails;
+      this.mainWebsocketUrl = mainWebsocketUrl;
+      this.mediaWebsocketUrl = mediaWebsocketUrl;
       startStream();
-    } else {
-      logoutJson();
     }
-  }
 
-  // WebSocket ping management
-  void startWebSocketPing() {
-    timer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      if (channel != null && isWebsocketRunning) {
-        sendPingMessage();
-      } else {
-        print("WebSocket is not connected, stopping ping.");
-        stopWebSocketPing();
-      }
-    });
-  }
+    void startStream() {
+      if (isWebsocketRunning) return;
 
-  void stopWebSocketPing() {
-    timer?.cancel();
-  }
-
-  void sendPingMessage() {
-    final pingPayload = ["{\"msg\":\"pong\"}"];
-    websocketSub(pingPayload);
-  }
-
-  @override
-  void stopWebsocket() {
-    channel?.sink.close();
-    stopWebSocketPing();
-  }
-
-  // WebSocket communication
-  @override
-  void websocketSub(List<String> json) {
-    try {
-      channel!.sink.add(jsonEncode(json));
-    } catch (e) {
-      logoutJson();
+      _initializeWebSocket();
+      _enableWakelock();
+      _resetParticipants();
+      _subscribeToWebSocket();
+      timer?.cancel();
+      startWebSocketPing();
+      _listenToWebSocket();
     }
-  }
 
-  // Utility methods
-  void logoutJson() {
-    if (!isLeave) {
-      if (GetPlatform.isIOS || GetPlatform.isAndroid) {
-        CallNotificationService.dismissCallNotification();
+    void _initializeWebSocket() {
+      channel = WebSocketChannel.connect(Uri.parse(mainWebsocketUrl));
+    }
+
+    void _enableWakelock() {
+      WakelockPlus.enable();
+    }
+
+    void _resetParticipants() {
+      participant = <Participant>[];
+    }
+
+    void _subscribeToWebSocket() {
+      sub("sub");
+    }
+
+    void _listenToWebSocket() {
+      channel!.stream.listen(
+        _handleWebSocketMessage,
+        onDone: _handleWebSocketDone,
+        onError: _handleWebSocketError,
+      );
+      update();
+    }
+
+    void _handleWebSocketMessage(dynamic event) async {
+      if (!isWebsocketRunning) {
+        await _handleFirstConnection();
       }
-      WakelockPlus.disable();
-      stopall();
-      var json = {
-        "msg": "changed",
-        "collection": "current-user",
-        "id": userId,
-        "fields": {"loggedOut": true}
-      };
-      isLeave = true;
+      _processWebSocketEvent(event);
+      update();
+    }
+
+    Future<void> _handleFirstConnection() async {
+      isWebsocketRunning = true;
+      final stunServerData = await Diorequest().get(
+        "https://$baseUrl/bigbluebutton/api/stuns?sessionToken=$webrtcToken",
+      );
+      if (stunServerData == null) return;
+      stunServer = formatToIceServers(stunServerData);
+      Get.find<Audiowebsocket>().initiate(
+        webrtctoken: webrtcToken,
+        mediawebsocketurl: mediaWebsocketUrl,
+        meetingdetails: meetingDetails!,
+      );
+    }
+
+    void _processWebSocketEvent(String event) {
+      final firstSplit = event.toString().split("a[");
+      if (firstSplit.length <= 1) return;
+
+      final secondSplit = firstSplit[1].split("}\"]");
+      final result = "${secondSplit[0]}}\"";
+
+      try {
+        final json = jsonDecode(jsonDecode(result));
+        _handleWebSocketJson(json);
+      } catch (e) {
+        print("Error processing WebSocket event: $e");
+      }
+    }
+
+    void _handleWebSocketJson(Map<String, dynamic> json) {
+      if (json["msg"] == "changed" && json["collection"] == "current-user") {
+        _handleCurrentUserChange(json);
+      } else if (json["msg"] == "removed" &&
+          json["collection"] == "current-user") {
+        _handleCurrentUserRemoval(json);
+      }
+
       _webSocketResponse.response(json);
     }
-  }
 
-  Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
-    return {
-      "iceServers": (data["turnServers"] as List<dynamic>)
-          .where((server) => !server["url"].toString().contains(":443"))
-          .map((server) => {
-                "urls": server["url"],
-                "username": server["username"],
-                "credential": server["password"]
-              })
-          .toList(),
-    };
-  }
-
-  @override
-  Map<String, dynamic> mergeData(
-    Map<String, dynamic> incomingData,
-    Map<String, dynamic> existingData,
-  ) {
-    incomingData.forEach((key, value) {
-      if (value is Map<String, dynamic> &&
-          existingData[key] is Map<String, dynamic>) {
-        existingData[key] = mergeData(value, existingData[key]);
-      } else if (key != "id") {
-        existingData[key] = value;
+    void _handleCurrentUserChange(Map<String, dynamic> json) {
+      userId = json["id"];
+      if (json["fields"].containsKey("loggedOut") &&
+          json["fields"]["loggedOut"] == true) {
+        isLeave = true;
       }
-    });
-    return existingData;
-  }
-
-  // Stream management
-  @override
-  void addEvent(String event) {
-    try {
-      controller.sink.add(event);
-    } catch (e) {
-      print('Error sending message: $e');
     }
-  }
 
-  void closeStream() {
-    controller.close();
-  }
-
-  // Meeting actions
-  @override
-  void leaveRoom() {
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"380\",\"method\":\"userLeftMeeting\",\"params\":[]}"
-    ]);
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"380\",\"method\":\"setExitReason\",\"params\":[\"logout\"]}"
-    ]);
-    mainSub("unsub");
-  }
-
-  @override
-  void endRoom() {
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"653\",\"method\":\"endMeeting\",\"params\":[]}"
-    ]);
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"654\",\"method\":\"setExitReason\",\"params\":[\"meetingEnded\"]}"
-    ]);
-    mainSub("unsub");
-  }
-
-  @override
-  void raiseHand() {
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"51\",\"method\":\"setEmojiStatus\",\"params\":[\"w_vb2mu96l9r0c\",\"raiseHand\"]}"
-    ]);
-  }
-
-  @override
-  void clearEmojis() {
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"51\",\"method\":\"setEmojiStatus\",\"params\":[\"w_vb2mu96l9r0c\",\"none\"]}"
-    ]);
-  }
-
-  @override
-  void muteAllExceptPresenter() {
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"27\",\"method\":\"muteAllExceptPresenter\",\"params\":[\"w_kvz0eh5afurv\"]}"
-    ]);
-  }
-
-  @override
-  void makePresentationDefault({required dynamic presentation}) {
-    websocketSub([
-      "{\"msg\":\"sub\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"undefined\",\"${presentation["id"]}\"]}"
-    ]);
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"962\",\"method\":\"setUsedToken\",\"params\":[\"${presentation["fields"]["authzToken"]}\"]}"
-    ]);
-  }
-
-  // Subscription methods
-  void sub(String type) {
-    websocketSub([
-      "{\"msg\":\"connect\",\"version\":\"1\",\"support\":[\"1\",\"pre2\",\"pre1\"]}"
-    ]);
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"1\",\"method\":\"userChangedLocalSettings\",\"params\":[{\"application\":{\"animations\":true,\"chatAudioAlerts\":false,\"chatPushAlerts\":false,\"userJoinAudioAlerts\":false,\"userJoinPushAlerts\":false,\"userLeaveAudioAlerts\":false,\"userLeavePushAlerts\":false,\"raiseHandAudioAlerts\":true,\"raiseHandPushAlerts\":true,\"guestWaitingAudioAlerts\":true,\"guestWaitingPushAlerts\":true,\"paginationEnabled\":true,\"pushLayoutToEveryone\":false,\"fallbackLocale\":\"en\",\"overrideLocale\":null,\"locale\":\"en-US\"},\"audio\":{\"inputDeviceId\":\"undefined\",\"outputDeviceId\":\"undefined\"},\"dataSaving\":{\"viewParticipantsWebcams\":true,\"viewScreenshare\":true}}]}"
-    ]);
-    websocketSub([
-      "{\"msg\":\"method\",\"id\":\"2\",\"method\":\"validateAuthToken\",\"params\":[\"${meetingDetails!.meetingId}\",\"${meetingDetails!.internalUserId}\",\"${meetingDetails!.authToken}\",\"${meetingDetails!.externUserId}\"]}"
-    ]);
-    mainSub(type);
-  }
-
-  void mainSub(String type) {
-    final subscriptions = [
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meteor_autoupdate_clientVersions\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"auth-token-validation\",\"params\":[{\"meetingId\":\"${meetingDetails!.meetingId}\",\"userId\":\"${meetingDetails!.internalUserId}\"}]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"current-user\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meetings\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"polls\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentations\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"slides\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"slide-positions\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"captions\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voiceUsers\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voiceUsers\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"whiteboard-multi-user\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"screenshare\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"group-chat\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentation-pods\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-settings\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"guestUser\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-infos\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"note\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meeting-time-remaining\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"local-settings\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-typing\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"record-meetings\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"video-streams\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"connection-status\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voice-call-states\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"external-video-meetings\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meetings\",\"params\":[\"MODERATOR\"]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users\",\"params\":[\"MODERATOR\"]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"breakouts\",\"params\":[\"MODERATOR\"]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"guestUser\",\"params\":[\"MODERATOR\"]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"annotations\",\"params\":[]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-cursor-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"message\",{\"useCollection\":false,\"args\":[]}]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"removed\",{\"useCollection\":false,\"args\":[]}]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"added\",{\"useCollection\":false,\"args\":[]}]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"group-chat-msg\",\"params\":[[]]}",
-      "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-persistent-data\",\"params\":[]}",
-    ];
-
-    for (final subscription in subscriptions) {
-      websocketSub([subscription]);
+    void _handleCurrentUserRemoval(Map<String, dynamic> json) {
+      userId = json["id"];
+      isLeave = true;
     }
-  }
 
-  @override
-  void onClose() {
-    stopall();
-    closeStream();
-    super.onClose();
-  }
+    void _handleWebSocketDone() {
+      print("WebSocket connection closed");
+      retryConnection();
+    }
 
-  void stopall() {
-    stopWebSocketPing();
-    timer?.cancel();
-  }
+    void _handleWebSocketError(dynamic error) {
+      // print("WebSocket error: $error");
+      print("WebSocket error: ");
+      retryConnection();
+    }
+
+    void retryConnection() {
+      isWebsocketRunning = false;
+      if (!isLeave && retryLimit > 0) {
+        retryLimit--;
+        startStream();
+      } else {
+        logoutJson();
+      }
+    }
+
+    // WebSocket ping management
+    void startWebSocketPing() {
+      timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+        if (channel != null && isWebsocketRunning) {
+          sendPingMessage();
+        } else {
+          print("WebSocket is not connected, stopping ping.");
+          stopWebSocketPing();
+        }
+      });
+    }
+
+    void stopWebSocketPing() {
+      timer?.cancel();
+    }
+
+    void sendPingMessage() {
+      final pingPayload = ["{\"msg\":\"pong\"}"];
+      websocketSub(pingPayload);
+    }
+
+    @override
+    void stopWebsocket() {
+      channel?.sink.close();
+      stopWebSocketPing();
+    }
+
+    // WebSocket communication
+    @override
+    void websocketSub(List<String> json) {
+      try {
+        channel!.sink.add(jsonEncode(json));
+      } catch (e) {
+        logoutJson();
+      }
+    }
+
+    // Utility methods
+    void logoutJson() {
+      if (!isLeave) {
+        if (GetPlatform.isIOS || GetPlatform.isAndroid) {
+          CallNotificationService.dismissCallNotification();
+        }
+        WakelockPlus.disable();
+        stopall();
+        var json = {
+          "msg": "changed",
+          "collection": "current-user",
+          "id": userId,
+          "fields": {"loggedOut": true}
+        };
+        isLeave = true;
+        _webSocketResponse.response(json);
+      }
+    }
+
+    Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
+      return {
+        "iceServers": (data["turnServers"] as List<dynamic>)
+            .where((server) => !server["url"].toString().contains(":443"))
+            .map((server) => {
+          "urls": server["url"],
+          "username": server["username"],
+          "credential": server["password"]
+        })
+            .toList(),
+      };
+    }
+
+    @override
+    Map<String, dynamic> mergeData(
+        Map<String, dynamic> incomingData,
+        Map<String, dynamic> existingData,
+        ) {
+      incomingData.forEach((key, value) {
+        if (value is Map<String, dynamic> &&
+            existingData[key] is Map<String, dynamic>) {
+          existingData[key] = mergeData(value, existingData[key]);
+        } else if (key != "id") {
+          existingData[key] = value;
+        }
+      });
+      return existingData;
+    }
+
+    // Stream management
+    @override
+    void addEvent(String event) {
+      try {
+        controller.sink.add(event);
+      } catch (e) {
+        print('Error sending message: $e');
+      }
+    }
+
+    void closeStream() {
+      controller.close();
+    }
+
+    // Meeting actions
+    @override
+    void leaveRoom() {
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"380\",\"method\":\"userLeftMeeting\",\"params\":[]}"
+      ]);
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"380\",\"method\":\"setExitReason\",\"params\":[\"logout\"]}"
+      ]);
+      mainSub("unsub");
+    }
+
+    @override
+    void endRoom() {
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"653\",\"method\":\"endMeeting\",\"params\":[]}"
+      ]);
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"654\",\"method\":\"setExitReason\",\"params\":[\"meetingEnded\"]}"
+      ]);
+      mainSub("unsub");
+    }
+
+    @override
+    void raiseHand() {
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"51\",\"method\":\"setEmojiStatus\",\"params\":[\"w_vb2mu96l9r0c\",\"raiseHand\"]}"
+      ]);
+    }
+
+    @override
+    void clearEmojis() {
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"51\",\"method\":\"setEmojiStatus\",\"params\":[\"w_vb2mu96l9r0c\",\"none\"]}"
+      ]);
+    }
+
+    @override
+    void muteAllExceptPresenter() {
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"27\",\"method\":\"muteAllExceptPresenter\",\"params\":[\"w_kvz0eh5afurv\"]}"
+      ]);
+    }
+
+    @override
+    void makePresentationDefault({required dynamic presentation}) {
+      websocketSub([
+        "{\"msg\":\"sub\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentation-upload-token\",\"params\":[\"DEFAULT_PRESENTATION_POD\",\"undefined\",\"${presentation["id"]}\"]}"
+      ]);
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"962\",\"method\":\"setUsedToken\",\"params\":[\"${presentation["fields"]["authzToken"]}\"]}"
+      ]);
+    }
+
+    // Subscription methods
+    void sub(String type) {
+      websocketSub([
+        "{\"msg\":\"connect\",\"version\":\"1\",\"support\":[\"1\",\"pre2\",\"pre1\"]}"
+      ]);
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"1\",\"method\":\"userChangedLocalSettings\",\"params\":[{\"application\":{\"animations\":true,\"chatAudioAlerts\":false,\"chatPushAlerts\":false,\"userJoinAudioAlerts\":false,\"userJoinPushAlerts\":false,\"userLeaveAudioAlerts\":false,\"userLeavePushAlerts\":false,\"raiseHandAudioAlerts\":true,\"raiseHandPushAlerts\":true,\"guestWaitingAudioAlerts\":true,\"guestWaitingPushAlerts\":true,\"paginationEnabled\":true,\"pushLayoutToEveryone\":false,\"fallbackLocale\":\"en\",\"overrideLocale\":null,\"locale\":\"en-US\"},\"audio\":{\"inputDeviceId\":\"undefined\",\"outputDeviceId\":\"undefined\"},\"dataSaving\":{\"viewParticipantsWebcams\":true,\"viewScreenshare\":true}}]}"
+      ]);
+      websocketSub([
+        "{\"msg\":\"method\",\"id\":\"2\",\"method\":\"validateAuthToken\",\"params\":[\"${meetingDetails!.meetingId}\",\"${meetingDetails!.internalUserId}\",\"${meetingDetails!.authToken}\",\"${meetingDetails!.externUserId}\"]}"
+      ]);
+      mainSub(type);
+    }
+
+    void mainSub(String type) {
+      final subscriptions = [
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meteor_autoupdate_clientVersions\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"auth-token-validation\",\"params\":[{\"meetingId\":\"${meetingDetails!.meetingId}\",\"userId\":\"${meetingDetails!.internalUserId}\"}]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"current-user\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meetings\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"polls\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentations\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"slides\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"slide-positions\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"captions\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voiceUsers\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voiceUsers\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"whiteboard-multi-user\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"screenshare\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"group-chat\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"presentation-pods\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-settings\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"guestUser\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-infos\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"note\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meeting-time-remaining\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"local-settings\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-typing\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"record-meetings\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"video-streams\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"connection-status\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"voice-call-states\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"external-video-meetings\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"meetings\",\"params\":[\"MODERATOR\"]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users\",\"params\":[\"MODERATOR\"]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"breakouts\",\"params\":[\"MODERATOR\"]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"guestUser\",\"params\":[\"MODERATOR\"]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"annotations\",\"params\":[]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-cursor-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"message\",{\"useCollection\":false,\"args\":[]}]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"removed\",{\"useCollection\":false,\"args\":[]}]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996\",\"params\":[\"added\",{\"useCollection\":false,\"args\":[]}]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"group-chat-msg\",\"params\":[[]]}",
+        "{\"msg\":\"$type\",\"id\":\"${generateRandomId(17)}\",\"name\":\"users-persistent-data\",\"params\":[]}",
+      ];
+
+      for (final subscription in subscriptions) {
+        websocketSub([subscription]);
+      }
+    }
+
+    @override
+    void onClose() {
+      stopall();
+      closeStream();
+      super.onClose();
+    }
+
+    void stopall() {
+      stopWebSocketPing();
+      timer?.cancel();
+    }
 }
