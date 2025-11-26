@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bigbluebuttonsdk
+  flutter_sound
   flutter_webrtc
   permission_handler_windows
   record_windows
