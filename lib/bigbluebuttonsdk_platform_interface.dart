@@ -31,6 +31,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
+  Future<Map<String, dynamic>> callMethod(String method, List<dynamic> params) {
+    throw UnimplementedError('callMethod() has not been implemented.');
+  }
+
   Startroom() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
@@ -107,7 +111,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  muteallusers() {
+  Future<Map<String, dynamic>> muteallusers() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -137,7 +141,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('lowerHand() has not been implemented.');
   }
 
-  mutemyself() {
+  Future<Map<String, dynamic>> mutemyself() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -216,9 +220,9 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get availableLanguages {
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
+  // get availableLanguages {
+  //   throw UnimplementedError('initialize() has not been implemented.');
+  // }
 
   get mydetails {
     throw UnimplementedError('initialize() has not been implemented.');

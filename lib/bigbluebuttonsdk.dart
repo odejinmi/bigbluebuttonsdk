@@ -125,8 +125,8 @@ class Bigbluebuttonsdk {
         .votepoll(poll_id: poll_id, selectedOptionId: selectedOptionId);
   }
 
-  muteallusers() {
-    BigbluebuttonsdkPlatform.instance.muteallusers();
+  Future<Map<String, dynamic>> muteallusers() {
+    return BigbluebuttonsdkPlatform.instance.muteallusers();
   }
 
   muteauser({
@@ -251,9 +251,9 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.participant;
   }
 
-  get availableLanguages {
-    return BigbluebuttonsdkPlatform.instance.availableLanguages;
-  }
+  // get availableLanguages {
+  //   return BigbluebuttonsdkPlatform.instance.availableLanguages;
+  // }
 
   get mydetails {
     return BigbluebuttonsdkPlatform.instance.mydetails;
