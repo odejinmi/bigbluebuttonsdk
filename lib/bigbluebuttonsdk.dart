@@ -47,8 +47,13 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.getPlatformVersion();
   }
 
-  startroom() {
-    BigbluebuttonsdkPlatform.instance.Startroom();
+  Startroom(
+      {required ValueChanged leavemeeting,
+        required ValueChanged externalvideomeetings,
+        required ValueChanged polls,
+        required ValueChanged breakouts,
+        required ValueChanged currentpoll}) {
+    BigbluebuttonsdkPlatform.instance.Startroom(leavemeeting: leavemeeting,externalvideomeetings: externalvideomeetings, polls: polls, currentpoll: currentpoll, breakouts: breakouts);
   }
 
   initialize(
@@ -61,7 +66,7 @@ class Bigbluebuttonsdk {
         meetingdetails: meetingdetails);
   }
 
-  locksettings({
+  Future<Map<String, dynamic>> locksettings({
     bool disableCam = false,
     bool disableMic = false,
     bool disableNotes = false,
@@ -86,42 +91,42 @@ class Bigbluebuttonsdk {
         lockOnJoin: lockOnJoin);
   }
 
-  typing({required String chatid}) {
-    BigbluebuttonsdkPlatform.instance.typing(chatid: chatid);
+  Future<Map<String, dynamic>> typing({required String chatid}) {
+    return BigbluebuttonsdkPlatform.instance.typing(chatid: chatid);
   }
 
-  sendmessage({required String message, required String chatid}) {
-    BigbluebuttonsdkPlatform.instance
+  Future<Map<String, dynamic>> sendmessage({required String message, required String chatid}) {
+    return BigbluebuttonsdkPlatform.instance
         .sendmessage(chatid: chatid, message: message);
   }
 
-  sendecinema({required String videourl}) {
-    BigbluebuttonsdkPlatform.instance.sendecinema(videourl: videourl);
+  Future<Map<String, dynamic>> sendecinema({required String videourl}) {
+    return BigbluebuttonsdkPlatform.instance.sendecinema(videourl: videourl);
   }
 
-  allowPendingUsers(List<dynamic> participant, String policy) {
-    BigbluebuttonsdkPlatform.instance.allowPendingUsers(participant, policy);
+  Future<Map<String, dynamic>> allowPendingUsers(List<dynamic> participant, String policy) {
+    return BigbluebuttonsdkPlatform.instance.allowPendingUsers(participant, policy);
   }
 
-  changeGuestPolicy(String policy) {
-    BigbluebuttonsdkPlatform.instance.changeGuestPolicy(policy);
+  Future<Map<String, dynamic>> changeGuestPolicy(String policy) {
+    return BigbluebuttonsdkPlatform.instance.changeGuestPolicy(policy);
   }
 
   Widget whiteboard() {
     return BigbluebuttonsdkPlatform.instance.whiteboard();
   }
 
-  endecinema() {
-    BigbluebuttonsdkPlatform.instance.endecinema();
+  Future<Map<String, dynamic>> endecinema() {
+    return BigbluebuttonsdkPlatform.instance.endecinema();
   }
 
-  startpoll({required String question, required List options}) {
-    BigbluebuttonsdkPlatform.instance
+  Future<Map<String, dynamic>> startpoll({required String question, required List options}) {
+    return BigbluebuttonsdkPlatform.instance
         .startpoll(question: question, options: options);
   }
 
-  votepoll({required String poll_id, required String selectedOptionId}) {
-    BigbluebuttonsdkPlatform.instance
+  Future<Map<String, dynamic>> votepoll({required String poll_id, required String selectedOptionId}) {
+    return BigbluebuttonsdkPlatform.instance
         .votepoll(poll_id: poll_id, selectedOptionId: selectedOptionId);
   }
 
@@ -129,16 +134,16 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.muteallusers();
   }
 
-  muteauser({
+  Future<Map<String, dynamic>> muteauser({
     required String userid,
   }) {
-    BigbluebuttonsdkPlatform.instance.muteauser(userid: userid);
+    return BigbluebuttonsdkPlatform.instance.muteauser(userid: userid);
   }
 
-  createGroupChat({
+  Future<Map<String, dynamic>> createGroupChat({
     required Participant participant,
   }) {
-    BigbluebuttonsdkPlatform.instance.createGroupChat(participant: participant);
+    return BigbluebuttonsdkPlatform.instance.createGroupChat(participant: participant);
   }
 
   uploadpresenter({
@@ -147,12 +152,12 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.uploadpresenter(filename: filename);
   }
 
-  raiseHand() {
-    BigbluebuttonsdkPlatform.instance.raiseHand();
+  Future<Map<String, dynamic>> raiseHand() {
+    return BigbluebuttonsdkPlatform.instance.raiseHand();
   }
 
-  lowerHand() {
-    BigbluebuttonsdkPlatform.instance.lowerHand();
+  Future<Map<String, dynamic>> lowerHand() {
+    return BigbluebuttonsdkPlatform.instance.lowerHand();
   }
 
   switchVideoQuality(
@@ -169,13 +174,13 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.switchmicrophone(deviceid: deviceid);
   }
 
-  removepresentation({required String presentationid}) {
-    BigbluebuttonsdkPlatform.instance
+  Future<Map<String, dynamic>> removepresentation({required String presentationid}) {
+    return BigbluebuttonsdkPlatform.instance
         .removepresentation(presentationid: presentationid);
   }
 
-  nextpresentation({required String page}) {
-    BigbluebuttonsdkPlatform.instance.nextpresentation(page: page);
+  Future<Map<String, dynamic>> nextpresentation({required String page}) {
+    return BigbluebuttonsdkPlatform.instance.nextpresentation(page: page);
   }
 
   makepresentationdefault({required var presentation}) {
@@ -183,8 +188,8 @@ class Bigbluebuttonsdk {
         .makepresentationdefault(presentation: presentation);
   }
 
-  mutemyself() {
-    BigbluebuttonsdkPlatform.instance.mutemyself();
+  Future<Map<String, dynamic>> mutemyself() {
+    return BigbluebuttonsdkPlatform.instance.mutemyself();
   }
 
   stopcamera() {
@@ -203,37 +208,37 @@ class Bigbluebuttonsdk {
     BigbluebuttonsdkPlatform.instance.startscreenshare(audio);
   }
 
-  changerole({required String userid, required String role}) {
-    BigbluebuttonsdkPlatform.instance.changerole(userid: userid, role: role);
+  Future<Map<String, dynamic>> changerole({required String userid, required String role}) {
+    return BigbluebuttonsdkPlatform.instance.changerole(userid: userid, role: role);
   }
 
-  assignpresenter({required String userid}) {
-    BigbluebuttonsdkPlatform.instance.assignpresenter(userid: userid);
+  Future<Map<String, dynamic>> assignpresenter({required String userid}) {
+    return BigbluebuttonsdkPlatform.instance.assignpresenter(userid: userid);
   }
 
-  removeuser({required String userid, required bool notallowagain}) {
-    BigbluebuttonsdkPlatform.instance
+  Future<Map<String, dynamic>> removeuser({required String userid, required bool notallowagain}) {
+    return BigbluebuttonsdkPlatform.instance
         .removeuser(userid: userid, notallowagain: notallowagain);
   }
 
-  leaveroom() {
-    BigbluebuttonsdkPlatform.instance.leaveroom();
+  Future<Map<String, dynamic>> leaveroom() {
+    return BigbluebuttonsdkPlatform.instance.leaveroom();
   }
 
-  toggleRecording() {
-    BigbluebuttonsdkPlatform.instance.toggleRecording();
+  Future<Map<String, dynamic>> toggleRecording() {
+    return BigbluebuttonsdkPlatform.instance.toggleRecording();
   }
 
-  breakeoutroom() {
-    BigbluebuttonsdkPlatform.instance.breakeoutroom();
+  Future<Map<String, dynamic>> breakeoutroom() {
+    return BigbluebuttonsdkPlatform.instance.breakeoutroom();
   }
 
-  stoptyping() {
-    BigbluebuttonsdkPlatform.instance.stoptyping();
+  Future<Map<String, dynamic>> stoptyping() {
+    return BigbluebuttonsdkPlatform.instance.stoptyping();
   }
 
-  endroom() {
-    BigbluebuttonsdkPlatform.instance.endroom();
+  Future<Map<String, dynamic>> endroom() {
+    return BigbluebuttonsdkPlatform.instance.endroom();
   }
 
   starvirtual({required Uint8List backgroundimage}) {

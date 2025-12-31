@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'bigbluebuttonsdk.dart';
@@ -35,7 +36,20 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('callMethod() has not been implemented.');
   }
 
-  Startroom() {
+  Future<Map<String, dynamic>> clearEmojis() {
+    throw UnimplementedError('callMethod() has not been implemented.');
+  }
+
+  Future<Map<String, dynamic>> muteAllExceptPresenter() {
+    throw UnimplementedError('callMethod() has not been implemented.');
+  }
+
+  Startroom(
+      {required ValueChanged leavemeeting,
+        required ValueChanged externalvideomeetings,
+        required ValueChanged polls,
+        required ValueChanged breakouts,
+        required ValueChanged currentpoll}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
@@ -46,21 +60,21 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  typing({
+  Future<Map<String, dynamic>> typing({
     required String chatid,
   }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  removepresentation({required String presentationid}) {
+  Future<Map<String, dynamic>> removepresentation({required String presentationid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  allowPendingUsers(List<dynamic> participant, String policy) {
+  Future<Map<String, dynamic>> allowPendingUsers(List<dynamic> participant, String policy) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  locksettings({
+  Future<Map<String, dynamic>> locksettings({
     required bool disableCam,
     required bool disableMic,
     required bool disableNotes,
@@ -75,11 +89,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  changeGuestPolicy(String policy) {
+  Future<Map<String, dynamic>> changeGuestPolicy(String policy) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  nextpresentation({required String page}) {
+  Future<Map<String, dynamic>> nextpresentation({required String page}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -87,15 +101,15 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('whiteboard() has not been implemented.');
   }
 
-  sendmessage({required String message, required String chatid}) {
+  Future<Map<String, dynamic>> sendmessage({required String message, required String chatid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  sendecinema({required String videourl}) {
+  Future<Map<String, dynamic>> sendecinema({required String videourl}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  endecinema() {
+  Future<Map<String, dynamic>> endecinema() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -103,11 +117,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startpoll({required String question, required List options}) {
+  Future<Map<String, dynamic>> startpoll({required String question, required List options}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  votepoll({required String poll_id, required String selectedOptionId}) {
+  Future<Map<String, dynamic>> votepoll({required String poll_id, required String selectedOptionId}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -115,13 +129,13 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  muteauser({
+  Future<Map<String, dynamic>> muteauser({
     required String userid,
   }) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  createGroupChat({
+  Future<Map<String, dynamic>> createGroupChat({
     required Participant participant,
   }) {
     throw UnimplementedError('initialize() has not been implemented.');
@@ -133,11 +147,11 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  raiseHand() {
+  Future<Map<String, dynamic>> raiseHand() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  lowerHand() {
+  Future<Map<String, dynamic>> lowerHand() {
     throw UnimplementedError('lowerHand() has not been implemented.');
   }
 
@@ -149,7 +163,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  stopcamera() {
+  Future<Map<String, dynamic>> stopcamera() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -165,7 +179,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  changerole({required String userid, required String role}) {
+  Future<Map<String, dynamic>> changerole({required String userid, required String role}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -182,15 +196,15 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('switchmicrophone() has not been implemented.');
   }
 
-  assignpresenter({required String userid}) {
+  Future<Map<String, dynamic>> assignpresenter({required String userid}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  leaveroom() {
+  Future<Map<String, dynamic>> leaveroom() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  removeuser({required String userid, required bool notallowagain}) {
+  Future<Map<String, dynamic>> removeuser({required String userid, required bool notallowagain}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -200,19 +214,19 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  toggleRecording() {
+  Future<Map<String, dynamic>> toggleRecording() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  breakeoutroom() {
+  Future<Map<String, dynamic>> breakeoutroom() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  endroom() {
+  Future<Map<String, dynamic>> endroom() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  stoptyping() {
+  Future<Map<String, dynamic>> stoptyping() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

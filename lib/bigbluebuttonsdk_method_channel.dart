@@ -39,68 +39,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     return version;
   }
 
-  @override
-  Future<Map<String, dynamic>> callMethod(String method, List<dynamic> params) {
-    final completer = Completer<Map<String, dynamic>>();
-    final id = generateRandomId(17);
-
-    StreamSubscription<String>? subscription;
-
-    subscription = websocket.stream.listen((message) {
-      try {
-        final json = jsonDecode(message);
-        bool found = false;
-
-        if (json['msg'] == 'result' && json['id'] == id) {
-          if (!completer.isCompleted) {
-            completer.complete(json);
-          }
-          found = true;
-        } else if (json['msg'] == 'updated' &&
-            json['methods'] != null &&
-            (json['methods'] as List).contains(id)) {
-          if (!completer.isCompleted) {
-            completer.complete(json);
-          }
-          found = true;
-        }
-
-        if (found) {
-          subscription?.cancel();
-        }
-      } catch (e) {
-        if (!completer.isCompleted) {
-          completer.completeError(e);
-        }
-        subscription?.cancel();
-      }
-    });
-
-    Future.delayed(const Duration(seconds: 10), () {
-      if (!completer.isCompleted) {
-        completer.completeError(
-            TimeoutException("WebSocket response timeout for method $method"));
-        subscription?.cancel();
-      }
-    });
-
-    final List<String> jsonToSend = [
-      jsonEncode({
-        "msg": "method",
-        "id": id,
-        "method": method,
-        "params": params,
-      })
-    ];
-
-    websocket.websocketSub(jsonToSend);
-
-    return completer.future;
-  }
-
-  bool _isCallActive = false;
-  String _callStatus = 'Tap to return to the call';
-  late Timer? _notificationWatcher = null;
 
   Future<void> switchToEarpiece() async {
     await methodChannel.invokeMethod('earpiece');
@@ -148,7 +86,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }) {
     assert(() {
       if (baseurl.isEmpty) {
-        throw DuploException('publicKey cannot be null or empty');
+        throw DuploException('baseurl cannot be null or empty');
         // } else if (!publicKey.startsWith("pk_")) {
         //   throw DuploException(Utils.getKeyErrorMsg('public'));
         // } else if (mainwebsocketur.isEmpty) {
@@ -156,7 +94,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
         // } else if (!secretKey.startsWith("sk_")) {
         //   throw DuploException(Utils.getKeyErrorMsg('secret'));
       } else if (webrtctoken.isEmpty) {
-        throw DuploException('secretKey cannot be null or empty');
+        throw DuploException('webrtctoken cannot be null or empty');
         // } else if (!secretKey.startsWith("sk_")) {
         //   throw DuploException(Utils.getKeyErrorMsg('secret'));
       } else {
@@ -187,9 +125,30 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   // var texttospeech = Get.put(Texttospeech());
   var whiteboardcontrolle = Get.put(Whiteboardcontroller());
 
+  var isLeave = false;
+
   @override
-  Startroom() {
+  Future<Map<String, dynamic>>  clearEmojis() {
+    return websocket.callMethod("setEmojiStatus", ["${websocket.myDetails!.fields!.userId}","none"]);
+  }
+
+  @override
+  Future<Map<String, dynamic>>  muteAllExceptPresenter() {
+    return websocket.callMethod("muteAllExceptPresenter", ["${websocket.myDetails!.fields!.userId}"]);
+  }
+
+  @override
+  Startroom(
+      {required ValueChanged leavemeeting,
+      required ValueChanged externalvideomeetings,
+      required ValueChanged polls,
+      required ValueChanged breakouts,
+      required ValueChanged currentpoll}) {
     websocket = Get.put(Websocket());
+    websocket.leavemeeting = leavemeeting;
+    websocket.externalvideomeetings = externalvideomeetings;
+    websocket.polls = polls;
+    websocket.currentpoll = currentpoll;
     texttospeech = Get.put(DirectSocketIOStreamer());
     audiowebsocket = Get.put(Audiowebsocket());
     videowebsocket = Get.put(Videowebsocket());
@@ -203,11 +162,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
       CallNotificationService.initializeSdkInstance(this);
 
       CallNotificationService.initialize();
-
-      // setState(() {
-      _isCallActive = true;
-      _callStatus = 'Connected';
-      // });
 
       CallNotificationService.showCallNotification(
         title: meetingdetails!.confname,
@@ -227,11 +181,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  typing({required String chatid}) {
-    callMethod("startUserTyping", ["${chatid == 'MAIN-PUBLIC-GROUP-CHAT' ? 'public' : chatid}"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"120","method":"startUserTyping","params":["${chatid == 'MAIN-PUBLIC-GROUP-CHAT' ? 'public' : chatid}"]}",
-    // ]);
+  Future<Map<String, dynamic>>  typing({required String chatid}) {
+   return websocket.callMethod("startUserTyping", ["${chatid == 'MAIN-PUBLIC-GROUP-CHAT' ? 'public' : chatid}"]);
   }
 
   @override
@@ -240,85 +191,58 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  sendmessage({required String message, required String chatid}) {
-    callMethod("sendGroupChatMsg", ["$chatid",{"correlationId":"${websocket.meetingDetails!.internalUserId}-${DateTime.now()}","sender":{"id":"${websocket.meetingDetails!.internalUserId}","name":"","role":""},"chatEmphasizedText":true,"message":"${message}"}]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"14","method":"sendGroupChatMsg","params":["$chatid",{"correlationId":"${websocket.meetingDetails!.internalUserId}-${DateTime.now()}","sender":{"id":"${websocket.meetingDetails!.internalUserId}","name":"","role":""},"chatEmphasizedText":true,"message":"${message}"}]}",
-    // ]);
+  Future<Map<String, dynamic>> sendmessage({required String message, required String chatid}) {
+   return websocket.callMethod("sendGroupChatMsg", ["$chatid",{"correlationId":"${websocket.meetingDetails!.internalUserId}-${DateTime.now()}","sender":{"id":"${websocket.meetingDetails!.internalUserId}","name":"","role":""},"chatEmphasizedText":true,"message":"${message}"}]);
+
   }
 
   @override
-  sendecinema({required String videourl}) {
+  Future<Map<String, dynamic>> sendecinema({required String videourl}) {
     websocket.isShowECinema = true;
-    callMethod("startWatchingExternalVideo", ["$videourl"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"317","method":"startWatchingExternalVideo","params":["$videourl"]}",
-    // ]);
+   return websocket.callMethod("startWatchingExternalVideo", ["$videourl"]);
   }
 
   @override
-  endecinema() {
+  Future<Map<String, dynamic>> endecinema() {
     websocket.isShowECinema = false;
-    callMethod("stopWatchingExternalVideo", []);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"940","method":"stopWatchingExternalVideo","params":[]}",
-    // ]);
+   return websocket.callMethod("stopWatchingExternalVideo", []);
   }
 
   @override
-  startpoll({required String question, required List options}) {
+  Future<Map<String, dynamic>> startpoll({required String question, required List options}) {
     websocket.websocketSub([
       '{"msg":"sub","id":"2UY6dlRwTcfS48xlP","name":"current-poll","params":[false,true]}',
     ]);
-    callMethod("startPoll", [{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,"${question}",false,jsonEncode(options)]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"52","method":"startPoll","params":[{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,"${question}",false,${jsonEncode(options)}]}",
-    // ]);
+    return websocket.callMethod("startPoll", [{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,"${question}",false,jsonEncode(options)]);
   }
 
   @override
-  votepoll({required String poll_id, required String selectedOptionId}) {
+  Future<Map<String, dynamic>> votepoll({required String poll_id, required String selectedOptionId}) {
     websocket.websocketSub([
       '{"msg":"sub","id":"qPaGbQlNXGIYJam7t","name":"polls","params":[false]}',
     ]);
-    callMethod("publishVote", ["$poll_id",[selectedOptionId]]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"136","method":"publishVote","params":["$poll_id",[$selectedOptionId]]}",
-    // ]);
+    return websocket.callMethod("publishVote", ["$poll_id",[selectedOptionId]]);
   }
 
   @override
   Future<Map<String, dynamic>> muteallusers() {
-    return callMethod("muteAllUsers", []);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"11","method":"muteAllUsers","params":[""]}",
-    // ]);
+    return websocket.callMethod("muteAllUsers", []);
   }
 
   @override
-  muteauser({required String userid}) {
-    callMethod("toggleVoice", ["$userid"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"44","method":"toggleVoice","params":["$userid"]}",
-    // ]);
+  Future<Map<String, dynamic>> muteauser({required String userid}) {
+    return websocket.callMethod("toggleVoice", ["$userid"]);
   }
 
   @override
-  createGroupChat({required Participant participant}) {
-    // Chats().createGroupChat(participant: participant);
-    // "{"msg":"method","id":"957","method":"createGroupChat","params":[{"subscriptionId":"wWxgIKTehg5OR6P1A","meetingId":"1cbd2cb09db2ac48529827879eaad399f2e11c9f-1749702556588","userId":"w_9bhtyhpznvxe","clientType":"HTML5","validated":true,"left":false,"approved":true,"authTokenValidatedTime":1749702604070,"inactivityCheck":false,"loginTime":1749702602616,"authed":true,"avatar":"https://ui-avatars.com/api/?name=videx&bold=true","away":false,"breakoutProps":{"isBreakoutUser":false,"parentId":"bbb-none"},"color":"#4a148c","effectiveConnectionType":null,"emoji":"none","extId":"odejinmiabraham@gmail.com","guest":false,"guestStatus":"ALLOW","intId":"w_9bhtyhpznvxe","locked":true,"loggedOut":false,"mobile":false,"name":"videx","pin":false,"presenter":false,"raiseHand":false,"reactionEmoji":"none","responseDelay":0,"role":"VIEWER","sortName":"videx","speechLocale":"","connection_status":"normal","id":"Fth2CaBDcLQov9PJm"}]}"
-    // var json = [
-    //   // "{"msg":"method","id":"900","method":"createGroupChat","params":[{"subscriptionId":"wWxgIKTehg5OR6P1A","meetingId":"${_service.meetingdetails.meetingId}","userId":"${participant.fields?.userId}","clientType":"HTML5","validated":true,"left":false,"approved":true,"authTokenValidatedTime":1749702604070,"inactivityCheck":false,"loginTime":1749702602616,"authed":true,"avatar":"${participant.fields?.avatar}","away":false,"breakoutProps":${participant.fields?.breakoutProps},"color":"#4a148c","effectiveConnectionType":null,"emoji":"none","extId":"odejinmiabraham@gmail.com","guest":false,"guestStatus":"ALLOW","intId":"w_9bhtyhpznvxe","locked":true,"loggedOut":false,"mobile":false,"name":"videx","pin":false,"presenter":false,"raiseHand":false,"reactionEmoji":"none","responseDelay":0,"role":"VIEWER","sortName":"videx","speechLocale":"","connection_status":"normal","id":"Fth2CaBDcLQov9PJm"}]}"
-    //   "{"msg":"method","id":"900","method":"createGroupChat","params":[${jsonEncode(participant.fields?.toJson())}]}"
-    // ];
-    // websocket.websocketSub(json);
-    callMethod("createGroupChat", [jsonEncode(participant.fields?.toJson())]);
+  Future<Map<String, dynamic>> createGroupChat({required Participant participant}) {
+    return websocket.callMethod("createGroupChat", [jsonEncode(participant.fields?.toJson())]);
   }
 
   @override
   uploadpresenter({required PlatformFile filename}) async {
     websocket.platformFile = filename;
-    callMethod("requestPresentationUploadToken", ["DEFAULT_PRESENTATION_POD","${filename.name}","yMbQ5qmTpKOn834EuPwMtvKj"]);
+    websocket.callMethod("requestPresentationUploadToken", ["DEFAULT_PRESENTATION_POD","${filename.name}","yMbQ5qmTpKOn834EuPwMtvKj"]);
     // websocket.websocketSub([
     //   "{"msg":"method","id":"867","method":"requestPresentationUploadToken","params":["DEFAULT_PRESENTATION_POD","${filename.name}","yMbQ5qmTpKOn834EuPwMtvKj"]}",
     // ]);
@@ -328,15 +252,10 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  removepresentation({required String presentationid}) {
-    callMethod("setPresentation", ["","DEFAULT_PRESENTATION_POD"]);
-    callMethod("removePresentation", ["$presentationid","DEFAULT_PRESENTATION_POD"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"31","method":"setPresentation","params":["","DEFAULT_PRESENTATION_POD"]}",
-    // ]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"32","method":"removePresentation","params":["$presentationid","DEFAULT_PRESENTATION_POD"]}",
-    // ]);
+  Future<Map<String, dynamic>> removepresentation({required String presentationid}) async {
+   var result = await websocket.callMethod("setPresentation", ["","DEFAULT_PRESENTATION_POD"]);
+   // if (result != null) {
+    return websocket.callMethod("removePresentation", ["$presentationid","DEFAULT_PRESENTATION_POD"]);
   }
 
   @override
@@ -345,36 +264,27 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  nextpresentation({required String page}) {
-    callMethod("switchSlide", [page,"DEFAULT_PRESENTATION_POD"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"33","method":"switchSlide","params":[$page,"DEFAULT_PRESENTATION_POD"]}",
-    // ]);
+  Future<Map<String, dynamic>> nextpresentation({required String page}) {
+    return websocket.callMethod("switchSlide", [page,"DEFAULT_PRESENTATION_POD"]);
   }
 
   @override
-  raiseHand() {
-    callMethod("setEmojiStatus", ["${websocket.myDetails!.fields!.userId}","raiseHand"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"643","method":"setEmojiStatus","params":["${websocket.myDetails!.fields!.userId}","raiseHand"]}",
-    // ]);
+  Future<Map<String, dynamic>> raiseHand() {
+    return websocket.callMethod("setEmojiStatus", ["${websocket.myDetails!.fields!.userId}","raiseHand"]);
   }
 
   @override
-  lowerHand() {
-    callMethod("changeRaiseHand", [false]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"659","method":"changeRaiseHand","params":[false]}",
-    // ]);
+  Future<Map<String, dynamic>> lowerHand() {
+    return websocket.callMethod("changeRaiseHand", [false]);
   }
 
   @override
   Future<Map<String, dynamic>> mutemyself() {
-    return callMethod('toggleVoice', []);
+    return websocket.callMethod('toggleVoice', []);
   }
 
   @override
-  allowPendingUsers(List<dynamic> participant, String policy) {
+  Future<Map<String, dynamic>> allowPendingUsers(List<dynamic> participant, String policy) {
     // "{"msg":"method","id":"499","method":"allowPendingUsers","params":[[{"name":"ODEJINMI TOLULOPE","intId":"w_usontnyslc26","role":"VIEWER","avatar":"https://konn3ct.com/assets/images/konn3ctIcon.png","guest":false,"authenticated":true,"_id":"y7tgajM35toQgB74Q"}],"ALLOW"]}"
     List<dynamic> participants = [];
     participant.forEach((element) {
@@ -382,33 +292,22 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
         '{"name":"${element["fields"]["name"]}","intId":"${element["fields"]["intId"]}","role":"${element["fields"]["role"]}","avatar":"${element["fields"]["avatar"]}","guest":${element["fields"]["guest"]},"authenticated":${element["fields"]["authenticated"]},"_id":"${element["id"]}"}',
       );
     });
-    callMethod("allowPendingUsers", [participants,"$policy"]);
-    // var result =
-    //     "{"msg":"method","id":"499","method":"allowPendingUsers","params":[$participants,"$policy"]}";
-    // print(result);
-    // //ALLOW, DENY
-    // websocket.websocketSub([result]);
+    return websocket.callMethod("allowPendingUsers", [participants,"$policy"]);
   }
 
   @override
-  changeGuestPolicy(String policy) {
-    callMethod("changeGuestPolicy", [policy]);
-    // websocket.websocketSub([
-    //   //ASK_MODERATOR, ALWAYS_ACCEPT
-    //   "{"msg":"method","id":"540","method":"changeGuestPolicy","params":["$policy"]}",
-    // ]);
+  Future<Map<String, dynamic>> changeGuestPolicy(String policy) {
+    return websocket.callMethod("changeGuestPolicy", [policy]);
   }
 
   @override
-  stopcamera() {
-    callMethod("userUnshareWebcam", [videowebsocket.streamID(videowebsocket.edSet.deviceId)]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"100","method":"userUnshareWebcam","params":["${videowebsocket.streamID(videowebsocket.edSet.deviceId)}"]}",
-    // ]);
+  Future<Map<String, dynamic>> stopcamera() async {
+    var result = await websocket.callMethod("userUnshareWebcam", [videowebsocket.streamID(videowebsocket.edSet.deviceId)]);
     videowebsocket.stopCameraSharing();
+    return result;
   }
 
-  locksettings({
+  Future<Map<String, dynamic>> locksettings({
     required bool disableCam,
     required bool disableMic,
     required bool disableNotes,
@@ -420,11 +319,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     required bool lockOnJoinConfigurable,
     required bool lockOnJoin,
   }) {
-    print("disableCam call $disableCam");
-    callMethod("toggleLockSettings", [{"disableCam":disableCam,"disableMic":disableMic,"disableNotes":disableNotes,"disablePrivateChat":disablePrivateChat,"disablePublicChat":disablePublicChat,"hideUserList":hideUserList,"hideViewersAnnotation":hideViewersAnnotation,"hideViewersCursor":hideViewersCursor,"lockOnJoin":lockOnJoin,"lockOnJoinConfigurable":lockOnJoinConfigurable,"setBy":"websocket.myDetails!.fields!.userId"}]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"101","method":"toggleLockSettings","params":[{"disableCam":${disableCam},"disableMic":${disableMic},"disableNotes":${disableNotes},"disablePrivateChat":${disablePrivateChat},"disablePublicChat":${disablePublicChat},"hideUserList":${hideUserList},"hideViewersAnnotation":${hideViewersAnnotation},"hideViewersCursor":${hideViewersCursor},"lockOnJoin":${lockOnJoin},"lockOnJoinConfigurable":${lockOnJoinConfigurable},"setBy":"${websocket.myDetails!.fields!.userId}"}]}",
-    // ]);
+   return websocket.callMethod("toggleLockSettings", [{"disableCam":disableCam,"disableMic":disableMic,"disableNotes":disableNotes,"disablePrivateChat":disablePrivateChat,"disablePublicChat":disablePublicChat,"hideUserList":hideUserList,"hideViewersAnnotation":hideViewersAnnotation,"hideViewersCursor":hideViewersCursor,"lockOnJoin":lockOnJoin,"lockOnJoinConfigurable":lockOnJoinConfigurable,"setBy":websocket.myDetails!.fields!.userId}]);
   }
 
   @override
@@ -513,37 +408,36 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  changerole({required String userid, required String role}) {
-    callMethod("changeRole", ["$userid","$role"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"13","method":"changeRole","params":["$userid","$role"]}",
-    // ]);
+  Future<Map<String, dynamic>> changerole({required String userid, required String role}) {
+    return websocket.callMethod("changeRole", ["$userid","$role"]);
   }
 
   @override
-  assignpresenter({required String userid}) {
-    callMethod("assignPresenter", ["$userid"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"19","method":"assignPresenter","params":["$userid"]}",
-    // ]);
+  Future<Map<String, dynamic>> assignpresenter({required String userid}) {
+    return websocket.callMethod("assignPresenter", ["$userid"]);
   }
 
   @override
-  leaveroom() {
-    websocket.leaveRoom();
+  Future<Map<String, dynamic>> leaveroom() async {
+    // logoutJson();
+    isLeave = true;
+    await websocket.callMethod("userLeftMeeting", []);
+    return websocket.callMethod("setExitReason", ["logout"]);
+    // mainSub("unsub");
   }
 
   @override
-  endroom() {
-    websocket.endRoom();
+  Future<Map<String, dynamic>> endroom() async {
+    // logoutJson();
+    isLeave = true;
+    await websocket.callMethod("endMeeting", []);
+    return websocket.callMethod("setExitReason", ["meetingEnded"]);
+    // mainSub("unsub");
   }
 
   @override
-  removeuser({required String userid, required bool notallowagain}) {
-    callMethod("removeUser", ["$userid"]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"20","method":"removeUser","params":["$userid"]}",
-    // ]);
+  Future<Map<String, dynamic>> removeuser({required String userid, required bool notallowagain}) {
+    return websocket.callMethod("removeUser", ["$userid"]);
   }
 
   @override
@@ -552,27 +446,18 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  toggleRecording() {
-    callMethod("toggleRecording", []);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"${generateRandomId(17)}","method":"toggleRecording","params":[]}",
-    // ]);
+  Future<Map<String, dynamic>> toggleRecording() {
+    return websocket.callMethod("toggleRecording", []);
   }
 
   @override
-  breakeoutroom() {
-    callMethod("createBreakoutRoom", [2,10,[],false,false,false,"room-",true,true,[]]);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"17","method":"createBreakoutRoom","params":[2,10,[],false,false,false,"room-",true,true,[]]}",
-    // ]);
+  Future<Map<String, dynamic>> breakeoutroom() {
+    return websocket.callMethod("createBreakoutRoom", [2,10,[],false,false,false,"room-",true,true,[]]);
   }
 
   @override
-  stoptyping() {
-    callMethod("stopUserTyping", []);
-    // websocket.websocketSub([
-    //   "{"msg":"method","id":"336","method":"stopUserTyping","params":[]}",
-    // ]);
+  Future<Map<String, dynamic>> stoptyping() {
+    return websocket.callMethod("stopUserTyping", []);
   }
 
   // @override

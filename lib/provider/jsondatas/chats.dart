@@ -11,20 +11,11 @@ class Chats {
   final WebSocketService _service;
   Chats(this._service);
 
-  createGroupChat({
-    required Participant participant,
-  }) {
-    // "{\"msg\":\"method\",\"id\":\"957\",\"method\":\"createGroupChat\",\"params\":[{\"subscriptionId\":\"wWxgIKTehg5OR6P1A\",\"meetingId\":\"1cbd2cb09db2ac48529827879eaad399f2e11c9f-1749702556588\",\"userId\":\"w_9bhtyhpznvxe\",\"clientType\":\"HTML5\",\"validated\":true,\"left\":false,\"approved\":true,\"authTokenValidatedTime\":1749702604070,\"inactivityCheck\":false,\"loginTime\":1749702602616,\"authed\":true,\"avatar\":\"https://ui-avatars.com/api/?name=videx&bold=true\",\"away\":false,\"breakoutProps\":{\"isBreakoutUser\":false,\"parentId\":\"bbb-none\"},\"color\":\"#4a148c\",\"effectiveConnectionType\":null,\"emoji\":\"none\",\"extId\":\"odejinmiabraham@gmail.com\",\"guest\":false,\"guestStatus\":\"ALLOW\",\"intId\":\"w_9bhtyhpznvxe\",\"locked\":true,\"loggedOut\":false,\"mobile\":false,\"name\":\"videx\",\"pin\":false,\"presenter\":false,\"raiseHand\":false,\"reactionEmoji\":\"none\",\"responseDelay\":0,\"role\":\"VIEWER\",\"sortName\":\"videx\",\"speechLocale\":\"\",\"connection_status\":\"normal\",\"id\":\"Fth2CaBDcLQov9PJm\"}]}"
-    var json = [
-      // "{\"msg\":\"method\",\"id\":\"900\",\"method\":\"createGroupChat\",\"params\":[{\"subscriptionId\":\"wWxgIKTehg5OR6P1A\",\"meetingId\":\"${_service.meetingdetails.meetingId}\",\"userId\":\"${participant.fields?.userId}\",\"clientType\":\"HTML5\",\"validated\":true,\"left\":false,\"approved\":true,\"authTokenValidatedTime\":1749702604070,\"inactivityCheck\":false,\"loginTime\":1749702602616,\"authed\":true,\"avatar\":\"${participant.fields?.avatar}\",\"away\":false,\"breakoutProps\":${participant.fields?.breakoutProps},\"color\":\"#4a148c\",\"effectiveConnectionType\":null,\"emoji\":\"none\",\"extId\":\"odejinmiabraham@gmail.com\",\"guest\":false,\"guestStatus\":\"ALLOW\",\"intId\":\"w_9bhtyhpznvxe\",\"locked\":true,\"loggedOut\":false,\"mobile\":false,\"name\":\"videx\",\"pin\":false,\"presenter\":false,\"raiseHand\":false,\"reactionEmoji\":\"none\",\"responseDelay\":0,\"role\":\"VIEWER\",\"sortName\":\"videx\",\"speechLocale\":\"\",\"connection_status\":\"normal\",\"id\":\"Fth2CaBDcLQov9PJm\"}]}"
-      "{\"msg\":\"method\",\"id\":\"900\",\"method\":\"createGroupChat\",\"params\":[${jsonEncode(participant.fields?.toJson())}]}"
-    ];
-    _service.websocketSub(json);
+  Future<Map<String, dynamic>> createGroupChat({required Participant participant}) {
+    return _service.callMethod("createGroupChat", [jsonEncode(participant.fields?.toJson())]);
   }
 
   void addmessages(var json) {
-    print('messages');
-    print(json);
     var message = json["fields"];
     // MotionToast.success(
     //   title: Text("Public Message from ${message["senderName"]}"),

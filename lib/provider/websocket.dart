@@ -47,7 +47,7 @@ class Websocket extends GetxController implements WebSocketService {
   final _stunServer = <String, dynamic>{}.obs;
   final _chatMessages = <ChatMessage>[].obs;
   final _reason = "You left the session".obs;
-  final _controller = StreamController<String>().obs;
+  final _controller = StreamController<String>.broadcast().obs;
   final _isLeave = false.obs;
   final _userId = "".obs;
 
@@ -431,6 +431,68 @@ class Websocket extends GetxController implements WebSocketService {
     timer?.cancel();
   }
 
+  int id = 0;
+  @override
+  Future<Map<String, dynamic>> callMethod(String method, List<dynamic> params) {
+    final completer = Completer<Map<String, dynamic>>();
+    id += 1;
+
+    StreamSubscription<String>? subscription;
+
+    subscription = stream.listen((message) {
+      try {
+        final json = jsonDecode(message);
+        bool found = false;
+
+        if (json['msg'] == 'result' && json['id'] == id) {
+          if (!completer.isCompleted) {
+            completer.complete(json);
+          }
+          found = true;
+        } else if (json['msg'] == 'updated' &&
+            json['methods'] != null &&
+            (json['methods'] as List).contains(id)) {
+          if (!completer.isCompleted) {
+            completer.complete(json);
+          }
+          found = true;
+        }
+
+        if (found) {
+          subscription?.cancel();
+        }
+      } catch (e) {
+        if (!completer.isCompleted) {
+          completer.completeError(e);
+        }
+        subscription?.cancel();
+      }
+    });
+
+    Future.delayed(const Duration(seconds: 10), () {
+      if (!completer.isCompleted) {
+        completer.completeError(
+            TimeoutException("WebSocket response timeout for method $method"));
+        subscription?.cancel();
+      }
+    });
+
+    final List<String> jsonToSend = [
+      jsonEncode({
+        "msg": "method",
+        "id": id.toString(),
+        "method": method,
+        "params": params,
+      })
+    ];
+    print("jsonToSend");
+    print(jsonToSend);
+    websocketSub(jsonToSend);
+
+    return completer.future;
+  }
+
+
   void sendPingMessage() {
     final pingPayload = [jsonEncode({"msg":"pong"})];
     websocketSub(pingPayload);
@@ -439,6 +501,7 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   void stopWebsocket() {
     channel?.sink.close();
+    leavemeeting(true);
     stopWebSocketPing();
   }
 
@@ -470,6 +533,38 @@ class Websocket extends GetxController implements WebSocketService {
       _webSocketResponse.response(json);
     }
   }
+
+  @override
+  var _externalvideomeetings;
+  @override
+  set externalvideomeetings (value) => _externalvideomeetings = value;
+  @override
+  get externalvideomeetings => _externalvideomeetings;
+
+  var _leavemeeting;
+  set leavemeeting (value) => _leavemeeting = value;
+  get leavemeeting => _leavemeeting;
+
+  @override
+  var _polls;
+  @override
+  set polls (value) => _polls = value;
+  @override
+  get polls => _polls;
+
+  @override
+  var _currentpoll;
+  @override
+  set currentpoll (value) => _currentpoll = value;
+  @override
+  get currentpoll => _currentpoll;
+
+ @override
+  var _breakouts;
+  @override
+  set breakouts (value) => _breakouts = value;
+  @override
+  get breakouts => _breakouts;
 
   Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
     return {
@@ -515,53 +610,6 @@ class Websocket extends GetxController implements WebSocketService {
   }
 
   // Meeting actions
-    @override
-  void leaveRoom() {
-      logoutJson();
-    isLeave = true;
-    websocketSub([
-      jsonEncode({"msg":"method","id":"380","method":"userLeftMeeting","params":[]})
-    ]);
-    websocketSub([
-      jsonEncode({"msg":"method","id":"380","method":"setExitReason","params":["logout"]})
-    ]);
-    mainSub("unsub");
-  }
-
-  @override
-  void endRoom() {
-    logoutJson();
-    isLeave = true;
-    websocketSub([
-      jsonEncode({"msg":"method","id":"653","method":"endMeeting","params":[]})
-    ]);
-    websocketSub([
-      jsonEncode({"msg":"method","id":"654","method":"setExitReason","params":["meetingEnded"]})
-    ]);
-    mainSub("unsub");
-  }
-
-  @override
-  void raiseHand() {
-    websocketSub([
-      jsonEncode({"msg":"method","id":"51","method":"setEmojiStatus","params":["w_vb2mu96l9r0c","raiseHand"]})
-    ]);
-  }
-
-  @override
-  void clearEmojis() {
-    websocketSub([
-      jsonEncode({"msg":"method","id":"51","method":"setEmojiStatus","params":["w_vb2mu96l9r0c","none"]})
-    ]);
-  }
-
-  @override
-  void muteAllExceptPresenter() {
-    websocketSub([
-      jsonEncode({"msg":"method","id":"27","method":"muteAllExceptPresenter","params":["w_kvz0eh5afurv"]})
-    ]);
-  }
-
   @override
   void makePresentationDefault({required dynamic presentation}) {
     websocketSub([

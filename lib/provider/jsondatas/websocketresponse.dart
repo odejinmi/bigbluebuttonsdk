@@ -176,12 +176,16 @@ class WebSocketResponse {
 
 // Add other handler methods following the same pattern...
   Future<void> _handleExternalVideoMeetings(Map<String, dynamic> json) async {
-    if (json["fields"] != null) {
-      if (json["fields"]["externalVideoUrl"] != null) {
-      } else {
-        // Navigator.pop(context);
-        _service.isShowECinema = false;
-      }
+    if (json["msg"] == "added" || json["msg"] == "changed") {
+    if (json["fields"] != null && json["fields"]["externalVideoUrl"] != null) {
+        _service.externalvideomeetings(json["fields"]["externalVideoUrl"]);
+    } else {
+      // Navigator.pop(context);
+      _service.isShowECinema = false;
+      // _service.externalvideomeetings(false);
+    }
+    } else if (json["msg"] == "removed") {
+      _service.externalvideomeetings(false);
     }
   }
 
@@ -189,6 +193,9 @@ class WebSocketResponse {
     if (json["msg"] == "added") {
       _service.isPolling = true;
       _service.pollJson = json;
+      _service.polls(json["fields"]);
+    } else if (json["msg"] == "removed"){
+      _service.polls(json["fields"]);
     }
   }
 
@@ -200,6 +207,7 @@ class WebSocketResponse {
       _service.pollAnalyseParser = pollanalyseparserFromJson(
         jsonEncode(json["fields"]),
       );
+      _service.currentpoll(json["fields"]);
     } else if (json["msg"] == "changed") {
       _service.pollAnalyseParser = Pollanalyseparser.fromJson(
         _service.mergeData(
@@ -297,6 +305,7 @@ class WebSocketResponse {
     print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.breakoutRoom.add(json);
+      _service.breakouts();
       // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"breakoutId\":\"65ad68093588dfa5eb0de0b177c6df044143072d-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"42b94a09c8d622ea635fbe02dd7ba106220403c4-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 2)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":2,\"shortName\":\"Room 2\",\"timeRemaining\":0}}"]
       // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"EGWZpi2v44R8KempF\",\"fields\":{\"breakoutId\":\"f24a3b915ad0f42a729728a397851c07cff5431e-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"0982362fd72cbad57966fb5b681c0cf741617f37-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 1)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":1,\"shortName\":\"Room 1\",\"timeRemaining\":0}}"]
     } else if (json["msg"] == "changed") {
@@ -316,6 +325,11 @@ class WebSocketResponse {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(
           _service.mergeData(json, _service.meetingResponse!.toJson())));
       // a["{\"msg\":\"changed\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+      if(json["fields"] != null &&
+          json["fields"]["meetingEnded"] != null &&
+          json["fields"]["meetingEnded"]) {
+        _service.stopWebsocket();
+      }
     } else if (json["msg"] == "added") {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
       // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]

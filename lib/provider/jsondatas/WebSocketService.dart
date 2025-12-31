@@ -114,11 +114,23 @@ abstract class WebSocketService {
       Map<String, dynamic> incomingData, Map<String, dynamic> existingData);
   void makePresentationDefault({required dynamic presentation});
 
-  void leaveRoom();
-
-  void endRoom();
-  void raiseHand();
-  void clearEmojis();
-  void muteAllExceptPresenter();
   void stopWebsocket();
+
+  Future<Map<String, dynamic>> callMethod(String method, List<dynamic> params);
+
+  var _externalvideomeetings;
+  set externalvideomeetings (value) => _externalvideomeetings = value;
+  get externalvideomeetings => _externalvideomeetings;
+
+  var _polls;
+  set polls (value) => _polls = value;
+  get polls => _polls;
+
+  var _currentpoll;
+  set currentpoll (value) => _currentpoll = value;
+  get currentpoll => _currentpoll;
+
+  var _breakouts;
+  set breakouts (value) => _breakouts = value;
+  get breakouts => _breakouts;
 }
