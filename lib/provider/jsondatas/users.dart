@@ -45,6 +45,7 @@ class Users {
         _service.reason = "You are kicked out of the session";
       } else if (json["fields"]["loggedOut"] != null &&
           json["fields"]["loggedOut"]) {
+        _service.leavemeeting ("You are kicked out of the session");
         _service.stopWebsocket();
         Get.delete<Websocket>();
         Get.delete<Audiowebsocket>();

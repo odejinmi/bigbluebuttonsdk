@@ -416,6 +416,7 @@ class Videowebsocket extends GetxController {
         "cameraId": streamID(edSet.deviceId),
         "role": "share"
       };
+      print(stopPayload);
       websocketsub(stopPayload);
     }
 
@@ -424,12 +425,14 @@ class Videowebsocket extends GetxController {
       await channel?.sink.close();
       channel = null;
       isWebsocketRunning = false;
+      print('hello $isWebsocketRunning');
     }
 
     // 3. Close the peer connection if it's active
     if (peerConnection != null) {
       await peerConnection?.close();
       peerConnection = null;
+      print('object $peerConnection');
     }
 
     // 4. Stop the local media stream (camera)
@@ -438,6 +441,7 @@ class Videowebsocket extends GetxController {
         track.stop(); // Stop each track
       });
       _localStream = null;
+      print('Hello1 $_localStream');
     }
     // Render remote video
     var list = websocket.participant.where((v) {

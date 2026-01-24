@@ -328,6 +328,7 @@ class WebSocketResponse {
       if(json["fields"] != null &&
           json["fields"]["meetingEnded"] != null &&
           json["fields"]["meetingEnded"]) {
+        _service.leavemeeting("Oops! Session has Ended");
         _service.stopWebsocket();
       }
     } else if (json["msg"] == "added") {

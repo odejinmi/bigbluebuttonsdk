@@ -469,7 +469,7 @@ class Websocket extends GetxController implements WebSocketService {
       }
     });
 
-    Future.delayed(const Duration(seconds: 10), () {
+    Future.delayed(const Duration(seconds: 30), () {
       if (!completer.isCompleted) {
         completer.completeError(
             TimeoutException("WebSocket response timeout for method $method"));
@@ -501,7 +501,7 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   void stopWebsocket() {
     channel?.sink.close();
-    leavemeeting(true);
+    // leavemeeting(true);
     stopWebSocketPing();
   }
 
@@ -541,8 +541,11 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   get externalvideomeetings => _externalvideomeetings;
 
+ @override
   var _leavemeeting;
+ @override
   set leavemeeting (value) => _leavemeeting = value;
+ @override
   get leavemeeting => _leavemeeting;
 
   @override

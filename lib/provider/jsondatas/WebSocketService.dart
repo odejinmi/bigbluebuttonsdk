@@ -133,4 +133,8 @@ abstract class WebSocketService {
   var _breakouts;
   set breakouts (value) => _breakouts = value;
   get breakouts => _breakouts;
+
+  var _leavemeeting;
+  set leavemeeting (value) => _leavemeeting = value;
+  get leavemeeting => _leavemeeting;
 }

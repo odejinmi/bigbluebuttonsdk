@@ -302,9 +302,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Future<Map<String, dynamic>> stopcamera() async {
-    var result = await websocket.callMethod("userUnshareWebcam", [videowebsocket.streamID(videowebsocket.edSet.deviceId)]);
     videowebsocket.stopCameraSharing();
-    return result;
+    return websocket.callMethod("userUnshareWebcam", [videowebsocket.streamID(videowebsocket.edSet.deviceId)]);
   }
 
   Future<Map<String, dynamic>> locksettings({
