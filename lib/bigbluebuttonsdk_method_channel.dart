@@ -134,6 +134,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Future<Map<String, dynamic>>  muteAllExceptPresenter() {
+    // toggleVoice
     return websocket.callMethod("muteAllExceptPresenter", ["${websocket.myDetails!.fields!.userId}"]);
   }
 

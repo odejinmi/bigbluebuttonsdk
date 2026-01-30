@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:bigbluebuttonsdk/provider/jsondatas/WebSocketService.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
@@ -362,8 +363,6 @@ class Websocket extends GetxController implements WebSocketService {
         json["collection"] == "current-user") {
       _handleCurrentUserRemoval(json);
     }
-      print("json response");
-      print(json);
     _webSocketResponse.response(json);
   }
 
@@ -444,14 +443,15 @@ class Websocket extends GetxController implements WebSocketService {
         final json = jsonDecode(message);
         bool found = false;
 
-        if (json['msg'] == 'result' && json['id'] == id) {
+
+        if (json['msg'] == 'result' && json['id'] == id.toString()) {
           if (!completer.isCompleted) {
             completer.complete(json);
           }
           found = true;
         } else if (json['msg'] == 'updated' &&
             json['methods'] != null &&
-            (json['methods'] as List).contains(id)) {
+            (json['methods'] as List).contains(id.toString())) {
           if (!completer.isCompleted) {
             completer.complete(json);
           }

@@ -225,6 +225,10 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.leaveroom();
   }
 
+  Future<Map<String, dynamic>> muteAllExceptPresenter() {
+    return BigbluebuttonsdkPlatform.instance.muteAllExceptPresenter();
+  }
+
   Future<Map<String, dynamic>> toggleRecording() {
     return BigbluebuttonsdkPlatform.instance.toggleRecording();
   }
