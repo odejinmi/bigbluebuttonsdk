@@ -36,9 +36,8 @@ class Users {
   currentuser(var json) {
     if (json["msg"] == "added") {
       _service.myDetails = Participant.fromJson(json);
+      _service.setusermobile();
     } else if (json["msg"] == "changed") {
-      print("user change");
-      print(json);
       _service.myDetails = Participant.fromJson(
           _service.mergeData(json, _service.myDetails!.toJson()));
       if (json["fields"]["ejected"] != null && json["fields"]["ejected"]) {
@@ -116,8 +115,6 @@ class Users {
   }
 
   void controlingvoice(var json) {
-    // print("controlingvoice");
-    // print(json);
     if (json["msg"] == "added") {
       var list = _service.participant.where((v) {
         if (v.fields!.voiceid == null) {

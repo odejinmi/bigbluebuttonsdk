@@ -70,9 +70,6 @@ class Videowebsocket extends GetxController {
     try {
       // Enumerate media devices
       var devices = await mediaDevices.enumerateDevices();
-      print('Available media devices:');
-      devices.forEach((device) => print(
-          'Device: ${device.label}, Kind: ${device.kind}, ID: ${device.deviceId}'));
       return devices.where((device) => device.kind == 'videoinput').toList();
     } catch (e) {
       print('Error enumerating devices: ${e}');
@@ -105,7 +102,6 @@ class Videowebsocket extends GetxController {
     };
     try {
       final stream = await mediaDevices.getUserMedia(constraints);
-      print('Local video stream created: ${stream.id}');
       return stream;
     } catch (e) {
       print('Error creating local video stream: ${e}');
@@ -117,18 +113,15 @@ class Videowebsocket extends GetxController {
     try {
       // Create the peer connection
       peerConnection = await createPeerConnection(websocket.stunServer);
-      print('PeerConnection created: ${peerConnection != null}');
 
       _localStream = await createVideoStream(
         width: width,
         frameRate: frameRate,
         videoDeviceId: edSet.deviceId,
       );
-      print('_localStream: ${_localStream != null}');
 
       // Add local tracks to the peer connection
       _localStream!.getTracks().forEach((track) {
-        print('Adding track: ${track.kind}');
         peerConnection?.addTrack(track, _localStream!);
       });
       negotiate();

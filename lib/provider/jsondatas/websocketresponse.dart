@@ -43,13 +43,7 @@ class WebSocketResponse {
   };
 
   Future<void> response(Map<String, dynamic> json) async {
-    if (json["collection"] == "current-user") {
-      print("pre addevent");
-    }
     _service.addEvent(jsonEncode(json));
-    if (json["collection"] == "current-user") {
-      print("post addevent");
-    }
 
     final collection = json["collection"];
     if (collection != null && _collectionHandlers.containsKey(collection)) {
@@ -200,7 +194,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleCurrentPoll(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.isPolling = true;
       _service.pollJson = json;
@@ -221,7 +214,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleScreenshare(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       var remotevideowebsocket = Get.find<RemoteScreenShareWebSocket>();
       remotevideowebsocket.initiate(
@@ -236,7 +228,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handlePresentationUploadToken(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     // a["{\"msg\":\"changed\",\"collection\":\"presentation-upload-token\",\"id\":\"LCLjzj7Ruv2rYCQ8Q\",\"fields\":{\"used\":true}}"]
     if (json["msg"] == "added") {
       uploadpresentation(json);
@@ -247,13 +238,11 @@ class WebSocketResponse {
   }
 
   Future<void> _handlePresentations(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.presentationModel.add(
         presentationmodelFromJson(jsonEncode(json)),
       );
     } else if (json["msg"] == "changed") {
-      print(jsonEncode(json));
       var list = _service.presentationModel.where((v) {
         return v.id == json["id"];
       }).toList();
@@ -268,7 +257,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleSlidePosition(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.slidePosition.add(json);
     } else if (json["msg"] == "removed") {
@@ -280,7 +268,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleSlides(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       if (_service.slides.isNotEmpty &&
           json["fields"]["presentationId"] !=
@@ -302,7 +289,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleBreakouts(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.breakoutRoom.add(json);
       _service.breakouts();
@@ -314,13 +300,11 @@ class WebSocketResponse {
   }
 
   static Future<void> _handleAnnotations(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     var whiteboard = Get.find<Whiteboardcontroller>();
     whiteboard.parsedata(json);
   }
 
   Future<void> _handleMeetings(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "changed") {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(
           _service.mergeData(json, _service.meetingResponse!.toJson())));
@@ -338,7 +322,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleStreamAnnotations(Map<String, dynamic> json) async {
-    print(jsonEncode(json));
     if (json["msg"] == "added") {
       _service.breakoutRoom.add(json);
       // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"breakoutId\":\"65ad68093588dfa5eb0de0b177c6df044143072d-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"42b94a09c8d622ea635fbe02dd7ba106220403c4-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 2)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":2,\"shortName\":\"Room 2\",\"timeRemaining\":0}}"]
@@ -360,12 +343,10 @@ class WebSocketResponse {
       "pod_id": "DEFAULT_PRESENTATION_POD",
       "is_downloadable": false,
     });
-    print("presentation upload");
     var cmddetails = await Diorequest().post(
       "https://${_service.baseUrl}/bigbluebutton/presentation/${token["fields"]["authzToken"]}/upload",
       formData,
     );
-    print(cmddetails);
     if (cmddetails["success"]) {
       _service.makePresentationDefault(presentation: token);
       // Get.offNamed(

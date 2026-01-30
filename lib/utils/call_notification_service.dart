@@ -161,7 +161,6 @@ class CallNotificationService {
   static void _onNotificationResponse(NotificationResponse response) {
     final actionId = response.actionId;
     final payload = response.payload;
-    print('Notification actionId: $actionId, payload: $payload');
 
     switch (actionId) {
       case 'unmute':
@@ -179,12 +178,10 @@ class CallNotificationService {
   }
 
   static Future<void> _handleUnmute() async {
-    print('Unmute button pressed');
     await _sdk.mutemyself();
   }
 
   static void _handleHangup() async {
-    print('Hang up button pressed');
 
     // Stop background processes
     await _stopBackgroundExecution();
@@ -199,7 +196,6 @@ class CallNotificationService {
   }
 
   static void _handleCallTap() {
-    print('Call notification tapped');
     // Handle opening the call screen
   }
 
@@ -377,7 +373,6 @@ class CallNotificationService {
   }
 
   static Future<void> dismissCallNotification() async {
-    print('Dismissing call notification');
     isNotificationActive = false;
 
     await _notificationsPlugin.cancel(0);
@@ -441,7 +436,6 @@ class MyTaskHandler extends TaskHandler {
   @override
   Future<void> onEvent(DateTime timestamp, SendPort? sendPort) async {
     // Keep WebSocket connection alive
-    print('Foreground task event: ${timestamp}');
 
     // You can add WebSocket ping logic here
     // Example: await webSocketChannel.sink.add('ping');

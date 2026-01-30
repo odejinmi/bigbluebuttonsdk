@@ -74,7 +74,6 @@ class DrawingPainter extends CustomPainter {
       } else if (path.fields?.annotationInfo?.type == "text" && actions != null) {
         for (var action in actions!) {
           if (action.text != null) {
-            print("typing text here");
             final textPainter = TextPainter(
               text: TextSpan(text: action.text, style: TextStyle(color: Colors.black, fontSize: 16)),
               textAlign: TextAlign.left,

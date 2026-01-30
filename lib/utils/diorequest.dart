@@ -39,9 +39,6 @@ class Diorequest {
         };
       }
     } on DioException catch (e) {
-      debugPrint.debugPrint("response error");
-      debugPrint.debugPrint(e.toString());
-      debugPrint.debugPrint(e.message);
       return {
         "success": false,
         "message": "Kindly Check your internet \n error: ${e.message}",

@@ -21,8 +21,6 @@ class Whiteboardcontroller extends GetxController {
   }
 
   void parsedata(var data) {
-    print("data json drawing");
-    print(data);
     if (data["msg"] == "added") {
       pathse.add(annotationsFromJson(jsonEncode(data)));
     } else if (data["msg"] == "removed") {

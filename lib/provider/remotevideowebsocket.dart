@@ -134,13 +134,10 @@ class RemoteVideoWebSocket extends GetxController {
     // Handle the reception of remote media streams
     // Properly handle incoming tracks (audio or video)
     peerConnection!.onTrack = (RTCTrackEvent event) async {
-      print("onTrack triggered");
-      print(event);
 
       // Attach video stream to the remote renderer if track is video
       if (event.track.kind == 'video' && event.streams.isNotEmpty) {
         remoteRTCVideoRenderer.srcObject = event.streams[0];
-        print("Received remote video track.");
         // Render remote video
         var list = websocket.participant.where((v) {
           return v.videodeviceId != null && v.videodeviceId! == cameraId;
@@ -160,7 +157,6 @@ class RemoteVideoWebSocket extends GetxController {
     var result2 = await peerConnection!.getRemoteStreams();
     if (result2.isNotEmpty && result2[0]?.getTracks().first.kind == 'video') {
       remoteRTCVideoRenderer.srcObject = result2[0];
-      print("Received remote video track.");
       // Render remote video
       var list = websocket.participant.where((v) {
         return v.videodeviceId != null && v.videodeviceId! == cameraId;
@@ -175,7 +171,6 @@ class RemoteVideoWebSocket extends GetxController {
     }
 
     peerConnection!.onIceConnectionState = (state) {
-      print("ICE Connection State: $state");
       if (state == RTCIceConnectionState.RTCIceConnectionStateFailed) {
         reconnectWebSocket(cameraId);
       }
@@ -200,20 +195,13 @@ class RemoteVideoWebSocket extends GetxController {
     channel!.stream.listen(
       (event) async {
         var e = jsonDecode(event);
-        print("New WebSocket event: $event");
         switch (e['id']) {
           case 'startResponse':
             receiveViewerSDPAnswer(e['sdpAnswer'], e['cameraId']);
             break;
           case 'playStart':
             var result = await peerConnection!.getSenders();
-            result.forEach((sender) {
-              print("Track sender: ${sender.track}");
-            });
             var result2 = await peerConnection!.getRemoteStreams();
-            result2.forEach((sender) {
-              print("Track remote stream: ${sender!.getTracks().length}");
-            });
             break;
           case 'iceCandidate':
             receiveCandidate(e['candidate']['candidate']);
@@ -238,7 +226,6 @@ class RemoteVideoWebSocket extends GetxController {
   void reconnectWebSocket(String cameraId) {
     if (retryLimit > 0) {
       retryLimit--;
-      print("Reconnecting WebSocket...");
       Future.delayed(Duration(seconds: 5), () {
         initViewerStream(cameraId);
       });

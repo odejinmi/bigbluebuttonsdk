@@ -380,13 +380,10 @@ class Websocket extends GetxController implements WebSocketService {
   }
 
   void _handleWebSocketDone() {
-    print("WebSocket connection closed");
     retryConnection();
   }
 
   void _handleWebSocketError(dynamic error) {
-    // print("WebSocket error: $error");
-    print("WebSocket error: ");
     retryConnection();
   }
 
@@ -401,14 +398,12 @@ class Websocket extends GetxController implements WebSocketService {
     final timeSinceDisconnect = DateTime.now().difference(_firstDisconnectionTime!);
 
     if (timeSinceDisconnect.inMinutes < 10) {
-      print('Connection lost. Attempting to reconnect in 5 seconds...');
       Future.delayed(const Duration(seconds: 5), () {
         if (!isLeave) {
           startStream();
         }
       });
     } else {
-      print('Could not reconnect within 10 minutes. Logging out.');
       logoutJson();
       _firstDisconnectionTime = null; // Reset for the next session
     }
@@ -420,7 +415,6 @@ class Websocket extends GetxController implements WebSocketService {
       if (channel != null && isWebsocketRunning) {
         sendPingMessage();
       } else {
-        print("WebSocket is not connected, stopping ping.");
         stopWebSocketPing();
       }
     });
@@ -485,14 +479,17 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
-    print("jsonToSend");
-    print(jsonToSend);
     websocketSub(jsonToSend);
 
     return completer.future;
   }
 
 
+  @override
+  Future<void> setusermobile() async {
+    var response = await callMethod("setMobileUser", []);
+    print("setMobileUser response ${jsonEncode(response)}");
+  }
   void sendPingMessage() {
     final pingPayload = [jsonEncode({"msg":"pong"})];
     websocketSub(pingPayload);

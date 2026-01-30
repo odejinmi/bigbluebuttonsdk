@@ -321,9 +321,6 @@ class Audiowebsocket extends GetxController {
         break;
       case 'webRTCAudioSuccess':
         stopWebSocketPing();
-        print("webRTCAudioSuccess");
-        print(response);
-        print("speech to text has been initialized");
         speechtotext.connectToServer();
         break;
       case 'error':

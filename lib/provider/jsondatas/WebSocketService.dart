@@ -108,6 +108,7 @@ abstract class WebSocketService {
   });
 
   void websocketSub(List<String> json);
+  void setusermobile();
   // Methods
   void addEvent(String event);
   Map<String, dynamic> mergeData(

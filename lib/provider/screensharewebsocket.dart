@@ -180,8 +180,6 @@ class Screensharewebsocket extends GetxController {
   }
 
   void websocketsub(Map<String, dynamic> json) {
-    debugPrint("json");
-    debugPrint(json.toString());
     channel!.sink.add(jsonEncode(json));
   }
 
