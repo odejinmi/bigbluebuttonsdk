@@ -4,9 +4,13 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bigbluebuttonsdk
+  emoji_picker_flutter
+  flutter_timezone
   flutter_webrtc
+  gtk
   record_linux
   screen_capturer_linux
+  url_launcher_linux
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

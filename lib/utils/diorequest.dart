@@ -1,3 +1,4 @@
+import 'dart:developer' as dev;
 import 'dart:math';
 
 import 'package:dio/dio.dart';
@@ -7,6 +8,8 @@ import 'package:get/route_manager.dart';
 
 class Diorequest {
   final dio = Dio();
+  final apibaseurl =
+      "https://konnectsandbox.convergenceondemand.com/conferencing/api/";
 
   String generateRandomString(int length) {
     const chars =
@@ -16,20 +19,21 @@ class Diorequest {
         length, (_) => chars.codeUnitAt(rnd.nextInt(chars.length))));
   }
 
-  Future<dynamic> get(String endpoint) async {
+  Future<dynamic> get(String endpoint, {String token = ""}) async {
     try {
       var header = {
         'Content-Type': Headers.jsonContentType,
-        'Authorization': 'Bearer token'
+        'Authorization': 'Bearer $token'
       };
       final options = Options(headers: header);
-      String url = 'apibaseurl$endpoint';
+      String url = '$apibaseurl$endpoint';
       if (endpoint.contains("https")) {
         url = endpoint;
       }
+      dev.log(url);
       Response response = await dio.get(url, options: options);
       if (response.statusCode == 200) {
-        return checktoken(response);
+        return response.data;
       } else if (response.statusCode == 201) {
         logout();
         return {
@@ -39,6 +43,9 @@ class Diorequest {
         };
       }
     } on DioException catch (e) {
+      debugPrint.debugPrint("response error");
+      debugPrint.debugPrint(e.toString());
+      debugPrint.debugPrint(e.message);
       return {
         "success": false,
         "message": "Kindly Check your internet \n error: ${e.message}",
@@ -48,11 +55,12 @@ class Diorequest {
   }
 
   // var enableencryption = false;
-  Future<dynamic> post(String endpoint, var data) async {
-    String url = 'apibaseurl$endpoint';
+  Future<dynamic> post(String endpoint, var data, {String token = ""}) async {
+    String url = '$apibaseurl$endpoint';
     if (endpoint.contains("https")) {
       url = endpoint;
     }
+    dev.log(url);
     String Ivstring = generateRandomString(16);
     // String keystring = dotenv.env['API_KEY'] ?? 'API_KEY not found';
     String keystring = "12345678901234567890123456789012";
@@ -64,10 +72,10 @@ class Diorequest {
     // }
     var header = {
       'Content-Type': Headers.jsonContentType,
-      'Authorization': 'Bearer token',
+      'Authorization': 'Bearer $token',
       'timestamp': Ivstring,
     };
-    debugPrint.debugPrint(url);
+    // debugPrint.debugPrint(url);
     // debugPrint.debugPrint("headers: $header");
     // debugPrint.debugPrint(data.toMap());
     // debugPrint.debugPrint(payload.toMap());
@@ -97,15 +105,15 @@ class Diorequest {
       debugPrint.debugPrint(response.toString());
       debugPrint.debugPrint(response.statusMessage.toString());
       if (response.statusCode == 200) {
-        //   if(response is String){
-        return {
-          "success": true,
-          "message": response,
-          "status": response == "upload-success"
-        };
-        // }else {
-        //   return  checktoken(response);
-        // }
+        if (response is String) {
+          return {
+            "success": true,
+            "message": response,
+            "status": response == "upload-success"
+          };
+        } else {
+          return response.data;
+        }
       } else if (response.statusCode == 201) {
         logout();
         return {
@@ -127,7 +135,7 @@ class Diorequest {
 
   dynamic checktoken(Response response) {
     if (response.data["status"] == 0 &&
-            response.data["message"] == "Kindly login your account." ||
+        response.data["message"] == "Kindly login your account." ||
         response.data["message"] == "Unauthorized!") {
       logout();
       return response.data;

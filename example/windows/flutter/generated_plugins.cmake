@@ -3,11 +3,18 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
   bigbluebuttonsdk
+  emoji_picker_flutter
+  flutter_inappwebview_windows
+  flutter_timezone
   flutter_webrtc
+  local_auth_windows
   permission_handler_windows
   record_windows
   screen_capturer_windows
+  share_plus
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
