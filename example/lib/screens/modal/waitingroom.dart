@@ -136,100 +136,105 @@ class Waitingroom extends GetView<postjoinController> {
                           const SizedBox(height: 20),
                           const Divider(),
                           const SizedBox(height: 20),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          if(controller.guestpermission != "Always Accept")
+                          Column(
                             children: [
-                              GestureDetector(
-                                onTap: () {
-                                  controller.bigbluebuttonsdkPlugin
-                                      .allowPendingUsers(
-                                    logic.waitingParticipant,
-                                    "ALLOW",
-                                  );
-                                },
-                                child: Container(
-                                  height: 48,
-                                  // width: 153,
-                                  padding: const EdgeInsets.only(
-                                    top: 8,
-                                    right: 16,
-                                    bottom: 6,
-                                    left: 16,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                    border: Border.all(color: Colors.white),
-                                  ),
-                                  child: const Row(
-                                    children: [
-                                      Icon(
-                                        Icons.check_rounded,
-                                        color: Colors.white,
-                                        size: 23,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.bigbluebuttonsdkPlugin
+                                          .allowPendingUsers(
+                                        logic.waitingParticipant,
+                                        "ALLOW",
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 48,
+                                      // width: 153,
+                                      padding: const EdgeInsets.only(
+                                        top: 8,
+                                        right: 16,
+                                        bottom: 6,
+                                        left: 16,
                                       ),
-                                      Text(
-                                        'Allow Everyone',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                      decoration: BoxDecoration(
+                                        color: Colors.transparent,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8),
                                         ),
+                                        border: Border.all(color: Colors.white),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  controller.bigbluebuttonsdkPlugin
-                                      .allowPendingUsers(
-                                    logic.waitingParticipant,
-                                    "DENY",
-                                  );
-                                },
-                                child: Container(
-                                  height: 48,
-                                  // width: 153,
-                                  padding: const EdgeInsets.only(
-                                    top: 8,
-                                    right: 16,
-                                    bottom: 8,
-                                    left: 16,
-                                  ),
-                                  decoration: const BoxDecoration(
-                                    color: Color.fromRGBO(204, 82, 95, 1),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
+                                      child: const Row(
+                                        children: [
+                                          Icon(
+                                            Icons.check_rounded,
+                                            color: Colors.white,
+                                            size: 23,
+                                          ),
+                                          Text(
+                                            'Allow Everyone',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                  child: const Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                        size: 23,
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.bigbluebuttonsdkPlugin
+                                          .allowPendingUsers(
+                                        logic.waitingParticipant,
+                                        "DENY",
+                                      );
+                                    },
+                                    child: Container(
+                                      height: 48,
+                                      // width: 153,
+                                      padding: const EdgeInsets.only(
+                                        top: 8,
+                                        right: 16,
+                                        bottom: 8,
+                                        left: 16,
                                       ),
-                                      Text(
-                                        'Deny Everyone',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
+                                      decoration: const BoxDecoration(
+                                        color: Color.fromRGBO(204, 82, 95, 1),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(8),
                                         ),
                                       ),
-                                    ],
+                                      child: const Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 23,
+                                          ),
+                                          Text(
+                                            'Deny Everyone',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
+                                ],
                               ),
+                              const SizedBox(height: 20),
+                              const Divider(),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          const Divider(),
                           Flexible(
                             child: ListView.builder(
                               scrollDirection: Axis.vertical,
@@ -262,9 +267,11 @@ class Waitingroom extends GetView<postjoinController> {
                                       ),
                                       const SizedBox(width: 10),
                                       GestureDetector(
-                                        onTap: () {
-                                          controller.bigbluebuttonsdkPlugin
-                                              .allowPendingUsers(user, "ALLOW");
+                                        onTap: () async {
+                                          var result = await controller.bigbluebuttonsdkPlugin
+                                              .allowPendingUsers([user], "ALLOW");
+                                          print("pending result");
+                                          print(result);
                                         },
                                         child: Container(
                                           height: 22,
@@ -297,9 +304,11 @@ class Waitingroom extends GetView<postjoinController> {
                                       ),
                                       const SizedBox(width: 10),
                                       GestureDetector(
-                                        onTap: () {
-                                          controller.bigbluebuttonsdkPlugin
-                                              .allowPendingUsers(user, "DENY");
+                                        onTap: () async {
+                                          var result = await controller.bigbluebuttonsdkPlugin
+                                              .allowPendingUsers([user], "DENY");
+                                          print('deny result');
+                                          print(result);
                                         },
                                         child: Container(
                                           height: 22,

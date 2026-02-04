@@ -261,8 +261,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Image.asset(
-                              package: "govmeeting",
-                              'assets/image/caution.png',
+                              'asset/image/caution.png',
                             ),
                             const SizedBox(width: 10),
                             const Text(

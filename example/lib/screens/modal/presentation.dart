@@ -234,8 +234,7 @@ class Presentation extends GetView<PresentationController> {
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Image.asset('assets/image/uploadcloud.png',
-                                package: "govmeeting", height: 70),
+                            Image.asset('asset/image/uploadcloud.png', height: 70),
                             Text(
                               'Drag files here to upload',
                               style: TextStyle(

@@ -27,8 +27,7 @@ class Leavesession extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset(
-                  "assets/image/caution.png",
-                  package: "govmeeting",
+                  "asset/image/caution.png",
                   height: 14,
                 ),
                 const SizedBox(width: 8),

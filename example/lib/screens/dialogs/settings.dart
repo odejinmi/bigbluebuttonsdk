@@ -143,7 +143,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
               //       child: Row(
               //         children: [
               //           Image.asset(
-              //             'assets/image/layout_icon.png',
+              //             'asset/image/layout_icon.png',
               //             package: "govmeeting",
               //           ),
               //           const SizedBox(width: 10),
@@ -204,8 +204,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
                     child: Row(
                       children: [
                         Image.asset(
-                          'assets/image/person_wait.png',
-                          package: "govmeeting",
+                          'asset/image/person_wait.png',
                         ),
                         const SizedBox(width: 10),
                         const Text(
@@ -242,7 +241,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
               //       child: Row(
               //         children: [
               //           Image.asset(
-              //             'assets/image/take_spot.png',
+              //             'asset/image/take_spot.png',
               //             package: "govmeeting",
               //           ),
               //           const SizedBox(width: 10),

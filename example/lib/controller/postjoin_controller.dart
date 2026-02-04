@@ -118,6 +118,13 @@ class postjoinController extends GetxController
 
   StreamSubscription? _subscription;
 
+  var _muteAll = false.obs;
+  set muteAll(value) => _muteAll.value = value;
+  get muteAll => _muteAll.value;
+
+  var _muteAllExceptPresenter = false.obs;
+  set muteAllExceptPresenter(value) => _muteAllExceptPresenter.value = value;
+  get muteAllExceptPresenter => _muteAllExceptPresenter.value;
   @override
   void onInit() {
     // Initialize TabController

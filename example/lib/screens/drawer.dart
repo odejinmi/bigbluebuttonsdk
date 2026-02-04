@@ -21,8 +21,6 @@ class DrawerComp extends StatefulWidget {
 
 class _DrawerCompState extends State<DrawerComp> {
 
-  var muteAll = false;
-  var muteAllExceptPresenter = false;
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -72,15 +70,15 @@ class _DrawerCompState extends State<DrawerComp> {
                 children: [
                   ListTile(
                       leading: const Icon(Icons.radio_button_checked, size: 20),
-                      title: const Text(
-                        'Start Recording',
+                      title: Text(
+                        '${!postjoincontroller.bigbluebuttonsdkPlugin.isrecording? 'Start' : 'Stop'} Recording',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
                         ),
                       ),
-                      onTap: () {
-                        postjoincontroller.bigbluebuttonsdkPlugin
+                      onTap: () async {
+                        var result = await postjoincontroller.bigbluebuttonsdkPlugin
                             .toggleRecording();
                         Navigator.pop(context);
                       }),
@@ -88,7 +86,7 @@ class _DrawerCompState extends State<DrawerComp> {
                 ],
               ),
             // ListTile(
-            //   leading: Image.asset('assets/image/change_layout_icon.png',package: "govmeeting",),
+            //   leading: Image.asset('asset/image/change_layout_icon.png',package: "govmeeting",),
             //   title: const Text('Change Layout', style: TextStyle(
             //       fontWeight: FontWeight.w500,
             //       fontSize: 14,),),
@@ -96,7 +94,7 @@ class _DrawerCompState extends State<DrawerComp> {
             //   onTap: () {},
             // ),
             // ListTile(
-            //   leading: Image.asset('assets/image/fullscreen_icon.png',package: "govmeeting",),
+            //   leading: Image.asset('asset/image/fullscreen_icon.png',package: "govmeeting",),
             //   title: const Text('Go Fullscreen', style: TextStyle(
             //       fontWeight: FontWeight.w500,
             //       fontSize: 14,),),
@@ -187,7 +185,7 @@ class _DrawerCompState extends State<DrawerComp> {
               ListTile(
                 leading: const Icon(Icons.mic_off_outlined, size: 20),
                 title: Text(
-                  '${muteAll?"Unmute New Users":"Mute All & New Users"}',
+                  '${postjoincontroller.muteAll?"Unmute New Users":"Mute All & New Users"}',
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -196,10 +194,7 @@ class _DrawerCompState extends State<DrawerComp> {
                 onTap: () async {
                   var result = await postjoincontroller.bigbluebuttonsdkPlugin.muteallusers();
                   if(result != null){
-                    muteAll = !muteAll;
-                    setState(() {
-
-                    });
+                    postjoincontroller.muteAll = !postjoincontroller.muteAll;
                   }
                 },
               ),

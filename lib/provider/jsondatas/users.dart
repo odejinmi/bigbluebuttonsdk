@@ -36,6 +36,11 @@ class Users {
   currentuser(var json) {
     if (json["msg"] == "added") {
       _service.myDetails = Participant.fromJson(json);
+      for (var element in _service.participant) {
+        if (element.fields!.userId == _service.myDetails!.fields!.userId) {
+          element.fields!.name = "${element.fields!.name} (YOU)";
+        }
+      }
       _service.setusermobile();
     } else if (json["msg"] == "changed") {
       _service.myDetails = Participant.fromJson(
@@ -70,6 +75,10 @@ class Users {
 
   void addparticipant(var json) {
     Participant data = participantFromJson(jsonEncode(json));
+    if (_service.myDetails != null &&
+        data.fields!.userId == _service.myDetails!.fields!.userId) {
+      data.fields!.name = "${data.fields!.name} (YOU)";
+    }
     if (json["fields"]["breakoutProps"] != null) {
       var list = _service.participant.where((v) {
         return v.id == data.id || v.fields!.userId == data.fields!.userId;
@@ -111,6 +120,15 @@ class Users {
       }
       _service.participant[index] = Participant.fromJson(
           _service.mergeData(json, _service.participant[index].toJson()));
+
+      if (_service.myDetails != null &&
+          _service.participant[index].fields!.userId ==
+              _service.myDetails!.fields!.userId) {
+        if (!_service.participant[index].fields!.name!.contains("(YOU)")) {
+          _service.participant[index].fields!.name =
+              "${_service.participant[index].fields!.name} (YOU)";
+        }
+      }
     }
   }
 

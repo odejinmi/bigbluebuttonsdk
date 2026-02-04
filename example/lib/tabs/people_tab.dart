@@ -285,6 +285,7 @@ class PeopleTab extends GetView<postjoinController> {
                                                     ],
                                                   ),
                                                 ),
+                                                if (logic.myDetails!.fields!.userId != controller.bigbluebuttonsdkPlugin.mydetails!.fields!.userId)
                                                 PopupMenuItem(
                                                   value: 3,
                                                   onTap: () {},

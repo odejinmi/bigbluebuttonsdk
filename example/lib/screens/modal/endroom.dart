@@ -56,9 +56,8 @@ class Endroom extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.asset(
-                            "assets/image/endroomforall.png",
+                            "asset/image/endroomforall.png",
                             height: 23,
-                            package: "govmeeting",
                           ),
                           const SizedBox(width: 12),
                           const Expanded(
@@ -121,9 +120,8 @@ class Endroom extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.asset(
-                            "assets/image/leave_icon2.png",
+                            "asset/image/leave_icon2.png",
                             height: 23,
-                            package: "govmeeting",
                           ),
                           const SizedBox(width: 12),
                           const Expanded(

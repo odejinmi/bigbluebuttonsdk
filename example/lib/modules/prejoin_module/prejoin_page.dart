@@ -55,7 +55,7 @@ class prejoinPage extends GetView<prejoinController> {
 
                     // Image.asset(
                     // package: "govmeeting",
-                    //   "assets/image/Video Tile.jpg",
+                    //   "asset/image/Video Tile.jpg",
                     //   fit: BoxFit.cover,
                     //   frameBuilder: (context, child, frame, _) {
                     //     if (frame == null) {

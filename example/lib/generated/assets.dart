@@ -26,24 +26,24 @@ class Assets {
   static const String backgroundimagesWorldMap =
       'assets/backgroundimages/world-map.png';
   static const String fontsInterRegular = 'assets/fonts/Inter-Regular.ttf';
-  static const String imageAkanji2 = 'assets/image/akanji2.png';
-  static const String imageCaution = 'assets/image/caution.png';
+  static const String imageAkanji2 = 'asset/image/akanji2.png';
+  static const String imageCaution = 'asset/image/caution.png';
   static const String imageChangeLayoutIcon =
-      'assets/image/change_layout_icon.png';
-  static const String imageEndroomforall = 'assets/image/endroomforall.png';
-  static const String imageFullscreenIcon = 'assets/image/fullscreen_icon.png';
-  static const String imageGovsupportLogo = 'assets/image/govsupport_logo.png';
-  static const String imageLayoutIcon = 'assets/image/layout_icon.png';
-  static const String imageLeaveIcon = 'assets/image/leave_icon.png';
-  static const String imageLeaveIcon2 = 'assets/image/leave_icon2.png';
-  static const String imageMuteExcept = 'assets/image/mute_except.png';
-  static const String imagePersonWait = 'assets/image/person_wait.png';
-  static const String imagePollsIcon = 'assets/image/polls_icon.png';
-  static const String imageShareLink = 'assets/image/share_link.png';
+      'asset/image/change_layout_icon.png';
+  static const String imageEndroomforall = 'asset/image/endroomforall.png';
+  static const String imageFullscreenIcon = 'asset/image/fullscreen_icon.png';
+  static const String imageGovsupportLogo = 'asset/image/govsupport_logo.png';
+  static const String imageLayoutIcon = 'asset/image/layout_icon.png';
+  static const String imageLeaveIcon = 'asset/image/leave_icon.png';
+  static const String imageLeaveIcon2 = 'asset/image/leave_icon2.png';
+  static const String imageMuteExcept = 'asset/image/mute_except.png';
+  static const String imagePersonWait = 'asset/image/person_wait.png';
+  static const String imagePollsIcon = 'asset/image/polls_icon.png';
+  static const String imageShareLink = 'asset/image/share_link.png';
   static const String imageShareScreenIcon =
-      'assets/image/share_screen_icon.png';
-  static const String imageTakeSpot = 'assets/image/take_spot.png';
-  static const String imageUploadcloud = 'assets/image/uploadcloud.png';
-  static const String imageVideoTile = 'assets/image/Video Tile.jpg';
-  static const String imageYellowHandIcon = 'assets/image/yellow_hand_icon.png';
+      'asset/image/share_screen_icon.png';
+  static const String imageTakeSpot = 'asset/image/take_spot.png';
+  static const String imageUploadcloud = 'asset/image/uploadcloud.png';
+  static const String imageVideoTile = 'asset/image/Video Tile.jpg';
+  static const String imageYellowHandIcon = 'asset/image/yellow_hand_icon.png';
 }

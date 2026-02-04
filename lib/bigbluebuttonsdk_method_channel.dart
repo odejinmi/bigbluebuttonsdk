@@ -289,10 +289,15 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     // "{"msg":"method","id":"499","method":"allowPendingUsers","params":[[{"name":"ODEJINMI TOLULOPE","intId":"w_usontnyslc26","role":"VIEWER","avatar":"https://konn3ct.com/assets/images/konn3ctIcon.png","guest":false,"authenticated":true,"_id":"y7tgajM35toQgB74Q"}],"ALLOW"]}"
     List<dynamic> participants = [];
     participant.forEach((element) {
+      var fields = element["fields"];
       participants.add(
-        '{"name":"${element["fields"]["name"]}","intId":"${element["fields"]["intId"]}","role":"${element["fields"]["role"]}","avatar":"${element["fields"]["avatar"]}","guest":${element["fields"]["guest"]},"authenticated":${element["fields"]["authenticated"]},"_id":"${element["id"]}"}',
+        '{"approved":${fields['approved']},"denied":${fields['denied']},"name":"${fields["name"]}","intId":"${fields["intId"]}","role":"${fields["role"]}","avatar":"${fields["avatar"]}","guest":${fields["guest"]},"color":${fields['color']},"authenticated":${fields["authenticated"]},"registeredOn":${fields['registeredOn']},"meetingId": ${fields['meetingId']},"loginTime":${fields['loginTime']},"privateGuestLobbyMessage":"","_id":"${element["id"]}"}',
       );
     });
+    // "{\"msg\":\"method\",\"id\":\"283\",\"method\":\"allowPendingUsers\",
+    // \"params\":[[{\"approved\":false,\"denied\":false,\"intId\":\"w_zcldyznmvpnn\",\"name\":\"dadsfasfsf\",\"role\":\"VIEWER\",\"guest\":false,\"avatar\":\"https://ui-avatars.com/api/?name=dadsfasfsf&background=random&color=fff&size=200\",\"color\":\"#5e35b1\",\"authenticated\":true,\"registeredOn\":1770154837269,\"meetingId\":\"61836be70a218223ef793d14ac25f328a2c7a1a5-1770154707461\",\"loginTime\":1770154837269,\"privateGuestLobbyMessage\":\"\",\"_id\":\"sx4mZnWfDoxegWdAh\"}],\"ALLOW\"]}"
+    // "{\"msg\":\"method\",\"id\":\"571\",\"method\":\"allowPendingUsers\",
+    // \"params\":[[{\"approved\":false,\"denied\":false,\"intId\":\"w_7mstloqtjfpa\",\"name\":\"hbjbkjbzxjk\",\"role\":\"VIEWER\",\"guest\":false,\"avatar\":\"https://ui-avatars.com/api/?name=hbjbkjbzxjk&background=random&color=fff&size=200\",\"color\":\"#4a148c\",\"authenticated\":true,\"registeredOn\":1770188657557,\"meetingId\":\"61836be70a218223ef793d14ac25f328a2c7a1a5-1770188616209\",\"loginTime\":1770188657557,\"privateGuestLobbyMessage\":\"\",\"_id\":\"jt5es9ceTrdNpuqmD\"}],\"DENY\"]}"
     return websocket.callMethod("allowPendingUsers", [participants,"$policy"]);
   }
 

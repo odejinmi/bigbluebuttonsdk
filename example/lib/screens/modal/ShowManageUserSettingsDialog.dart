@@ -107,8 +107,7 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               ),
                             ),
                             secondary: Image.asset(
-                              'assets/image/mute_except.png',
-                              package: "govmeeting",
+                              'asset/image/mute_except.png',
                               color: logic.switchValueMuteExceptPresenter
                                   ? Colors.white
                                   : Colors.grey,
