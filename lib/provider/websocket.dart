@@ -479,6 +479,10 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
+    if(method == 'changeGuestPolicy'){
+      print('jsonToSend for allowPendingUsers');
+      print(jsonToSend);
+    }
     websocketSub(jsonToSend);
 
     return completer.future;
@@ -568,14 +572,14 @@ class Websocket extends GetxController implements WebSocketService {
 
   Map<String, dynamic> formatToIceServers(Map<String, dynamic> data) {
     return {
-      "iceServers": (data["turnServers"] as List<dynamic>)
+      "iceServers": data["turnServers"] != null ?(data["turnServers"] as List<dynamic>)
           .where((server) => !server["url"].toString().contains(":443"))
           .map((server) => {
                 "urls": server["url"],
                 "username": server["username"],
                 "credential": server["password"]
               })
-          .toList(),
+          .toList() : {},
     };
   }
 

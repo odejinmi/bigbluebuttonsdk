@@ -61,8 +61,6 @@ class Waitingroom extends GetView<postjoinController> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  controller.guestpermission = "ASK_MODERATOR";
-                                  print("ASK_MODERATOR");
                                   controller.bigbluebuttonsdkPlugin
                                       .changeGuestPolicy("ASK_MODERATOR");
                                 },
@@ -76,7 +74,7 @@ class Waitingroom extends GetView<postjoinController> {
                                     left: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: controller.guestpermission ==
+                                    color: logic.meetingResponse?.fields.usersProp.guestPolicy ==
                                             "ASK_MODERATOR"
                                         ? Colors.white.withOpacity(0.2)
                                         : Colors.transparent,
@@ -97,8 +95,6 @@ class Waitingroom extends GetView<postjoinController> {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  controller.guestpermission = "Always Accept";
-                                  print("ALWAYS_ACCEPT");
                                   controller.bigbluebuttonsdkPlugin
                                       .changeGuestPolicy("ALWAYS_ACCEPT");
                                 },
@@ -112,8 +108,8 @@ class Waitingroom extends GetView<postjoinController> {
                                     left: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: controller.guestpermission ==
-                                            "Always Accept"
+                                    color: logic.meetingResponse?.fields.usersProp.guestPolicy ==
+                                            "ALWAYS_ACCEPT"
                                         ? Colors.white.withOpacity(0.2)
                                         : Colors.transparent,
                                     borderRadius: const BorderRadius.all(
@@ -136,7 +132,7 @@ class Waitingroom extends GetView<postjoinController> {
                           const SizedBox(height: 20),
                           const Divider(),
                           const SizedBox(height: 20),
-                          if(controller.guestpermission != "Always Accept")
+                          if(logic.meetingResponse?.fields.usersProp.guestPolicy != "ALWAYS_ACCEPT")
                           Column(
                             children: [
                               Row(

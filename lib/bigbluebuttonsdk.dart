@@ -7,6 +7,7 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 import 'bigbluebuttonsdk_platform_interface.dart';
 import 'utils/chatmodel.dart';
 import 'utils/meetingdetails.dart';
+import 'utils/meetingresponse.dart';
 import 'utils/participant.dart';
 
 export 'package:flutter_webrtc/flutter_webrtc.dart';
@@ -286,6 +287,10 @@ class Bigbluebuttonsdk {
 
   get isrecording {
     return BigbluebuttonsdkPlatform.instance.isrecording;
+  }
+
+  MeetingResponse? get meetingResponse {
+    return BigbluebuttonsdkPlatform.instance.meetingResponse;
   }
 
   get recordingtime {

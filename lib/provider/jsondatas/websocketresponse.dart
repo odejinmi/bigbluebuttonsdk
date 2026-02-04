@@ -11,6 +11,7 @@ import 'package:bigbluebuttonsdk/utils/presentationmodel.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:get/get.dart';
 
+import '../../utils/sound_manager.dart';
 import 'chats.dart';
 
 class WebSocketResponse {
@@ -70,6 +71,7 @@ class WebSocketResponse {
   }
 
   Future<void> _handleGroupChatMsg(Map<String, dynamic> json) async {
+    SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/message.mp3');
     Chats(_service).addmessages(json);
   }
 
@@ -89,6 +91,12 @@ class WebSocketResponse {
   Future<void> _handleGuestUsers(Map<String, dynamic> json) async {
     switch (json["msg"]) {
       case "added":
+        print("waiting room json response");
+        print(json);
+        if(json['fields']['denied'] == true || json['fields']['approved'] == true ){
+          return;
+        }
+        SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/waiting_room.mp3');
         _service.waitingParticipant.add(json);
         break;
       case "changed":

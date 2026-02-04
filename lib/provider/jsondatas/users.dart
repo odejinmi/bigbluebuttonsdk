@@ -5,6 +5,7 @@ import 'package:bigbluebuttonsdk/provider/jsondatas/chats.dart';
 import 'package:get/get.dart';
 
 import '../../../utils/participant.dart';
+import '../../utils/sound_manager.dart';
 import '../DirectSocketIOStreamer.dart';
 import '../audiowebsocket.dart';
 import '../remotescreenshare.dart';
@@ -19,6 +20,9 @@ class Users {
   Users(this._service);
 
   jsonresponse(var json) {
+    if(json['fields']['raiseHand'] != null){
+      SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/finger-snaps.mp3');
+    }
     if (json["msg"] == "added") {
       addparticipant(json);
     } else if (json["msg"] == "removed") {

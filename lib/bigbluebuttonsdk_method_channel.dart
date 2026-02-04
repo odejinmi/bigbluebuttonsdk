@@ -17,6 +17,7 @@ import 'bigbluebuttonsdk.dart' as navigator;
 import 'bigbluebuttonsdk.dart';
 import 'bigbluebuttonsdk_platform_interface.dart';
 import 'exceptions.dart';
+import 'utils/meetingresponse.dart';
 
 /// An implementation of [BigbluebuttonsdkPlatform] that uses method channels.
 class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
@@ -303,6 +304,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Future<Map<String, dynamic>> changeGuestPolicy(String policy) {
+    // "{\"msg\":\"changed\",\"collection\":\"meetings\",\"id\":\"oNauXeTWaWvw5ADD2\",\"fields\":{\"usersProp\":{\"allowModsToEjectCameras\":false,\"allowModsToUnmuteUsers\":false,\"allowPromoteGuestToModerator\":false,\"authenticatedGuest\":true,\"guestPolicy\":\"ASK_MODERATOR\",\"maxUserConcurrentAccesses\":3,\"maxUsers\":250,\"meetingLayout\":\"CUSTOM_LAYOUT\",\"userCameraCap\":3,\"webcamsOnlyForModerator\":false}}}"
+    // "{\"msg\":\"changed\",\"collection\":\"meetings\",\"id\":\"oNauXeTWaWvw5ADD2\",\"fields\":{\"usersProp\":{\"allowModsToEjectCameras\":false,\"allowModsToUnmuteUsers\":false,\"allowPromoteGuestToModerator\":false,\"authenticatedGuest\":true,\"guestPolicy\":\"ALWAYS_ACCEPT\",\"maxUserConcurrentAccesses\":3,\"maxUsers\":250,\"meetingLayout\":\"CUSTOM_LAYOUT\",\"userCameraCap\":3,\"webcamsOnlyForModerator\":false}}}"
     return websocket.callMethod("changeGuestPolicy", [policy]);
   }
 
@@ -465,9 +468,9 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     return websocket.callMethod("stopUserTyping", []);
   }
 
-  // @override
-  // // TODO: implement availableLanguages
-  // get availableLanguages => websocket.meetingResponse!.fields.meetingProp.metadata!.availableLanguages;
+  @override
+  // TODO: implement availableLanguages
+  MeetingResponse? get meetingResponse => websocket.meetingResponse;
 
   @override
   // TODO: implement mydetails

@@ -6,6 +6,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'bigbluebuttonsdk.dart';
 import 'bigbluebuttonsdk_method_channel.dart';
+import 'utils/meetingresponse.dart';
 
 abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   /// Constructs a BigbluebuttonsdkPlatform.
@@ -275,6 +276,10 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   }
 
   get talking {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  MeetingResponse? get meetingResponse {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  audioplayers_linux
   bigbluebuttonsdk
   emoji_picker_flutter
   flutter_timezone

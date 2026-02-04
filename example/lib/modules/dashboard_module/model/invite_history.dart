@@ -85,6 +85,59 @@ class InviteHistoryPage extends StatelessWidget {
                   ],
                 ),
                 isThreeLine: true,
+                onTap: (){
+                  Get.dialog(
+                      AlertDialog(
+                        // backgroundColor: Color(0xFF3E8466),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Spacer(),
+                                InkWell(
+                                    child: Icon(Icons.close),
+                                  onTap: (){
+                                      Get.back();
+                                  },
+                                ),
+                              ],
+                            ),
+                           Text(
+                              invite.title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              'On $formattedDate at $formattedTime',
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            Text(
+                              'Room: ${invite.roomname}',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            const SizedBox(height: 8.0),
+                            Text(
+                              'Guests: ${invite.guest}',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ],
+                        )
+                      )
+                  );
+                },
               ),
             );
           },
