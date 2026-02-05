@@ -51,7 +51,13 @@ class DashboardPage extends GetView<DashboardController> {
                 color: Colors.white,
               ),
               onPressed: () {
-                Get.offAllNamed(Routes.LOGIN);
+                Get.defaultDialog(
+                  content: Text('Do you want to Logout?'),
+                  onCancel: () => Get.back(),
+                  onConfirm: () => Get.offAllNamed(Routes.LOGIN),
+                  textConfirm: 'Yes',
+                  // textCancel: 'No',
+                );
               },
             ),
           ],

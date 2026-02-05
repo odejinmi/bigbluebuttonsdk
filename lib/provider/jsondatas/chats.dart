@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../utils/chatmodel.dart';
 import '../../../utils/participant.dart';
 import '../../../utils/typingmodel.dart';
+import '../../utils/sound_manager.dart';
 
 class Chats {
   final WebSocketService _service;
@@ -34,6 +35,7 @@ class Chats {
       _service.chatMessages.add(chatMessage);
     }
     if (chatMessage.senderName != _service.meetingDetails!.fullname) {
+      SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/message.mp3');
       Get.snackbar(
           "${chatMessage.chatId == "MAIN-PUBLIC-GROUP-CHAT" ? 'Public' : 'Private'} message from ${chatMessage.senderName}",
           chatMessage.message);

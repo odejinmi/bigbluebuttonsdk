@@ -24,25 +24,13 @@ class twofactorauthenticationPage
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         // Header
-                        Text(
-                          '1Government Cloud',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Towards the Digitalization of the Public Service',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Theme.of(context).primaryColor,
-                          ),
+                        Image.asset(
+                          'asset/image/1govcloud.png',
+                          width: 239,
                         ),
                         const SizedBox(height: 60),
 
@@ -94,7 +82,7 @@ class twofactorauthenticationPage
                               const Text(
                                 'Log in to your GovOTP app to generate a code , then enter the code below.',
                                 style: TextStyle(
-                                  fontSize: 13,
+                                  fontSize: 16,
                                   fontWeight: FontWeight.w500,
                                 ),
                                 textAlign: TextAlign.center,
@@ -214,7 +202,7 @@ class twofactorauthenticationPage
                             const Text(
                               "Don't have the OTP yet?",
                               style: TextStyle(
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

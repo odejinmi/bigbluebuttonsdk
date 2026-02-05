@@ -129,8 +129,6 @@ class InviteHistoryPage extends StatelessWidget {
                             const SizedBox(height: 8.0),
                             Text(
                               'Guests: ${invite.guest}',
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(fontSize: 12),
                             ),
                           ],

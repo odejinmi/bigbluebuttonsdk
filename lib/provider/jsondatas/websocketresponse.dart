@@ -71,7 +71,6 @@ class WebSocketResponse {
   }
 
   Future<void> _handleGroupChatMsg(Map<String, dynamic> json) async {
-    SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/message.mp3');
     Chats(_service).addmessages(json);
   }
 
