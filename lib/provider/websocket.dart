@@ -479,9 +479,9 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
-    if(method == 'changeGuestPolicy'){
+    if(method == 'allowPendingUsers'){
       print('jsonToSend for allowPendingUsers');
-      print(jsonToSend);
+      print(jsonEncode(jsonToSend));
     }
     websocketSub(jsonToSend);
 

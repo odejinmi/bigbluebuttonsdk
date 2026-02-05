@@ -19,8 +19,6 @@ class SoundManager {
     await _player.stop(); // Stop previous sound if any
     try {
       final data = await rootBundle.load(assetPath);
-      print("assets data");
-      print(data);
       await _player.play(BytesSource(data.buffer.asUint8List()));
     } catch (e) {
       print("SoundManager: Error playing asset $assetPath: $e");

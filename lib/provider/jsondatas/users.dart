@@ -20,7 +20,7 @@ class Users {
   Users(this._service);
 
   jsonresponse(var json) {
-    if(json['fields']['raiseHand'] != null){
+    if(json['fields'] != null && json['fields']['raiseHand'] != null){
       SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/finger-snaps.mp3');
     }
     if (json["msg"] == "added") {

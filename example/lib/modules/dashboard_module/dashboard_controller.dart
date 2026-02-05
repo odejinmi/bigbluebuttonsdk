@@ -1,3 +1,4 @@
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
@@ -16,6 +17,7 @@ import '../../utils/InviteHistory.dart' as invite_history_model;
 import '../../utils/Meetinghistory.dart';
 import '../../utils/Roomlistparser.dart';
 import '../../utils/strings.dart';
+import 'model/internal_user.dart';
 
 class DashboardController extends GetxController {
   var appVersion = ''.obs;
@@ -41,6 +43,7 @@ class DashboardController extends GetxController {
 
   var recordingList = [].obs;
   var inviteHistory = Rx<invite_history_model.InviteHistory?>(null);
+  var internalUsers = <InternalUser>[].obs;
 
   final _govmeetingPlugin = Govmeeting();
   final _appLinks = AppLinks();
@@ -95,6 +98,21 @@ class DashboardController extends GetxController {
       historyList =
           meetinghistoryparserFromJson(json.encode(cmddetails['data']));
       // _region = cmddetails['data'];
+    } else {
+      if (cmddetails['message'] != "No internet connection") {
+        // showCommonError(cmddetails['message'], context);
+      }
+    }
+  }
+  Future<void> _fetchinternaluser() async {
+    // isLoading.value = true;
+
+    var cmddetails = await Diorequest().get("app/1gov/internal-users", token: token);
+
+    // print(cmddetails);
+    isLoading.value = false;
+    if (cmddetails['success']) {
+      internalUsers.value = internalUserFromJson(json.encode(cmddetails['data']['intUsers']));
     } else {
       if (cmddetails['message'] != "No internet connection") {
         // showCommonError(cmddetails['message'], context);
@@ -270,6 +288,7 @@ class DashboardController extends GetxController {
       _fetchinviteHistory(),
       fetchRecordings(),
       _fetchmeetingHistory(),
+      _fetchinternaluser(),
     ]);
   }
 

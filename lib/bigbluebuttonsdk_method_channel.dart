@@ -292,7 +292,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     participant.forEach((element) {
       var fields = element["fields"];
       participants.add(
-        '{"approved":${fields['approved']},"denied":${fields['denied']},"name":"${fields["name"]}","intId":"${fields["intId"]}","role":"${fields["role"]}","avatar":"${fields["avatar"]}","guest":${fields["guest"]},"color":${fields['color']},"authenticated":${fields["authenticated"]},"registeredOn":${fields['registeredOn']},"meetingId": ${fields['meetingId']},"loginTime":${fields['loginTime']},"privateGuestLobbyMessage":"","_id":"${element["id"]}"}',
+        {"approved":fields['approved'],"denied":fields['denied'],"intId":fields["intId"],"name":fields["name"],"role":fields["role"],"guest":fields["guest"],"avatar":fields["avatar"],"color":fields['color'],"authenticated":fields["authenticated"],"registeredOn":fields['registeredOn'],"meetingId": fields['meetingId'],"loginTime":fields['loginTime'],"privateGuestLobbyMessage":"","_id":element["id"]},
       );
     });
     // "{\"msg\":\"method\",\"id\":\"283\",\"method\":\"allowPendingUsers\",
