@@ -13,7 +13,7 @@ class Chats {
   Chats(this._service);
 
   Future<Map<String, dynamic>> createGroupChat({required Participant participant}) {
-    return _service.callMethod("createGroupChat", [jsonEncode(participant.fields?.toJson())]);
+    return _service.callMethod("createGroupChat", [participant.fields?.toJson()]);
   }
 
   void addmessages(var json) {

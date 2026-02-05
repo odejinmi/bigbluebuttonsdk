@@ -479,8 +479,8 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
-    if(method == 'allowPendingUsers'){
-      print('jsonToSend for allowPendingUsers');
+    if(method == 'createGroupChat'){
+      print('jsonToSend for createGroupChat');
       print(jsonEncode(jsonToSend));
     }
     websocketSub(jsonToSend);
