@@ -35,7 +35,7 @@ class EmptyTab extends GetView<DashboardController> {
                       ),
                       Row(
                         children: [
-                          const Text("Meetings"),
+                          Text(meetings),
                           const SizedBox(
                             width: 10,
                           ),
@@ -53,8 +53,8 @@ class EmptyTab extends GetView<DashboardController> {
                           ? loadingWidget2
                           : Expanded(
                               child: controller.originList.isEmpty
-                                  ? const Emptytransaction(
-                                      desc: "Your rooms is empty",
+                                  ? Emptytransaction(
+                                      desc: yourRoomsIsEmpty,
                                     )
                                   : SingleChildScrollView(
                                       physics: const ClampingScrollPhysics(),
@@ -77,17 +77,16 @@ class EmptyTab extends GetView<DashboardController> {
                                                   );
                                                 } else {
                                                   if (await Permission
-                                                              .microphone
-                                                              .request()
-                                                              .isGranted &&
-                                                          await Permission
-                                                              .camera
-                                                              .request()
-                                                              .isGranted //&&
-                                                      //await Permission.storage
-                                                      //  .request()
-                                                      //        .isGranted
-                                                      ) {
+                                                          .microphone
+                                                          .request()
+                                                          .isGranted &&
+                                                      await Permission.camera
+                                                          .request()
+                                                          .isGranted &&
+                                                      await Permission
+                                                          .systemAlertWindow
+                                                          .request()
+                                                          .isGranted) {
                                                     controller.Meetingstart(
                                                       controller.originList[i]
                                                           .toJson(),
@@ -163,11 +162,7 @@ class EmptyTab extends GetView<DashboardController> {
                 );
               } else {
                 if (await Permission.microphone.request().isGranted &&
-                        await Permission.camera.request().isGranted //&&
-                    //await Permission.storage
-                    //  .request()
-                    //        .isGranted
-                    ) {
+                    await Permission.camera.request().isGranted) {
                   controller.Meetingstart(
                     name.toJson(),
                     // context
@@ -189,8 +184,8 @@ class EmptyTab extends GetView<DashboardController> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: const Text(
-              "Create New Meeting",
+            title: Text(
+              createNewMeeting,
               textAlign: TextAlign.center,
             ),
             content: TextFormField(
@@ -198,7 +193,7 @@ class EmptyTab extends GetView<DashboardController> {
               controller: controller.meetingController.value,
               decoration: InputDecoration(
                 fillColor: Colors.white,
-                hintText: "Enter meeting name",
+                hintText: enterMeetingName,
                 hintStyle: TextStyle(
                     color: Theme.of(context).primaryColor,
                     fontSize: 14,
@@ -213,16 +208,16 @@ class EmptyTab extends GetView<DashboardController> {
             ),
             actions: <Widget>[
               ElevatedButton(
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(color: Colors.red),
+                child: Text(
+                  cancel,
+                  style: const TextStyle(color: Colors.red),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               ElevatedButton(
-                child: const Text("Create"),
+                child: Text(create),
                 onPressed: () {
                   controller.createMeeting();
                   Navigator.pop(context);
@@ -235,11 +230,12 @@ class EmptyTab extends GetView<DashboardController> {
 
   void _showScheduleMeetingDialog(
       BuildContext context, Roomlistparser roomData) {
-
     showDialog(
         context: context,
         builder: (context) {
-          return ShowScheduleMeeting(roomData: roomData,);
+          return ShowScheduleMeeting(
+            roomData: roomData,
+          );
         });
   }
 }

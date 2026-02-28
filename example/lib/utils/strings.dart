@@ -14,6 +14,13 @@ String entermeetingurl =
     'https://${baseurl}bigbluebutton/api/enter?sessionToken=';
 String token = "1075|v7DDQRBn0s5ri6p7KrAP2xBjsoB2UpIlHXnaNtyZ";
 
+String meetings = 'Meetings';
+String yourRoomsIsEmpty = 'Your rooms is empty';
+String createNewMeeting = 'Create New Meeting';
+String enterMeetingName = 'Enter meeting name';
+String cancel = 'Cancel';
+String create = 'Create';
+
 // https://konnectsandbox.convergenceondemand.com/conferencing/ajoinroom
 String generateInitials(String fullName) {
   // Trim and check if the fullName is empty
