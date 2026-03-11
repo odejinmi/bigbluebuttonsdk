@@ -215,7 +215,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     websocket.websocketSub([
       '{"msg":"sub","id":"2UY6dlRwTcfS48xlP","name":"current-poll","params":[false,true]}',
     ]);
-    return websocket.callMethod("startPoll", [{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,"${question}",false,jsonEncode(options)]);
+    return websocket.callMethod("startPoll", [{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,"${question}",false,options]);
   }
 
   @override
@@ -487,6 +487,13 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   // TODO: implement ispolling
   get ispolling => websocket.isPolling;
+
+  @override
+  // TODO: implement isrecording
+  set ispolling(value) {
+    websocket.isPolling = value;
+  }
+
 
   @override
   // TODO: implement isrecording

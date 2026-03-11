@@ -83,7 +83,7 @@ class MockBigbluebuttonsdkPlatform
 
   @override
   // TODO: implement isscreensharing
-  get isscreensharing => throw UnimplementedError();
+  Never get isscreensharing => throw UnimplementedError();
 
   @override
   // TODO: implement isvideo
@@ -136,7 +136,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  setemojistatus() {
+  void setemojistatus() {
     // TODO: implement setemojistatus
     throw UnimplementedError();
   }
@@ -270,7 +270,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  startcaption() {
+  void startcaption() {
     // TODO: implement startcaption
     throw UnimplementedError();
   }
@@ -282,7 +282,7 @@ class MockBigbluebuttonsdkPlatform
   }
 
   @override
-  stopcaption() {
+  void stopcaption() {
     // TODO: implement stopcaption
     throw UnimplementedError();
   }

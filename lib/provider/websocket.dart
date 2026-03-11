@@ -479,7 +479,7 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
-    if(method == 'createGroupChat'){
+    if(method == 'startPoll'){
       print('jsonToSend for createGroupChat');
       print(jsonEncode(jsonToSend));
     }

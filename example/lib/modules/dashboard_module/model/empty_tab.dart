@@ -155,7 +155,7 @@ class EmptyTab extends GetView<DashboardController> {
           ),
           ElevatedButton(
             onPressed: () async {
-              if (Platform.isIOS) {
+              if (!Platform.isAndroid) {
                 controller.Meetingstart(
                   name.toJson(),
                   // context

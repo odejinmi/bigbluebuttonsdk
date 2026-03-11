@@ -17,7 +17,7 @@ class Pullquestionandanswer extends GetView<PullController> {
       child: Obx(
         () {
           var list = controller.bigbluebuttonsdkPlugin.participant.where((v) {
-            return v.fields!.userId! == json["requester"];
+            return v.fields!.userId! == json["fields"]["requester"];
           }).toList();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,

@@ -184,8 +184,6 @@ class postjoinController extends GetxController
     );
     bigbluebuttonsdkPlugin.Startroom(
         leavemeeting: (value) {
-          print("You are leaving $value");
-          print(value);
           if(isleaving.toString().isEmpty){
             isleaving = value;
           }
@@ -197,8 +195,6 @@ class postjoinController extends GetxController
           Get.back(result: isleaving);
         },
         externalvideomeetings: (value) {
-          print("response data");
-          print(value);
           showDialog(
             barrierDismissible: false,
             context: Get.context!,
@@ -209,23 +205,28 @@ class postjoinController extends GetxController
           );
         },
         polls: (value) {
-          if(value){
+          // if(value){
+          //   print("object");
+          //   print(value);
             // pullcontroller.pullresult = response;
             // final currentId = response["id"];
             // if (!pullcontroller.ispulling &&
             //     currentId != pullcontroller.lastPollId) {
             //   pullcontroller.ispulling = true;
             //   pullcontroller.lastPollId = currentId;
-              Get.bottomSheet(Pullquestionandanswer(json: value))
+            if (Get.isBottomSheetOpen == true) {
+              Get.back();
+            }
+            Get.bottomSheet(Pullquestionandanswer(json: value))
                   .then((value) {
                 pullcontroller.ispulling = false;
                 pullcontroller.lastPollId = "";
               });
             // }
-          }else{
-            pullcontroller.ispulling = false;
-            pullcontroller.lastPollId = "";
-          }
+          // }else{
+          //   pullcontroller.ispulling = false;
+          //   pullcontroller.lastPollId = "";
+          // }
         },
         currentpoll: (value) {
           pullcontroller.pullresult = value;
