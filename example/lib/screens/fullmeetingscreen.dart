@@ -117,6 +117,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                   SizedBox(
                     width: screenWidth * 0.02,
                   ),
+                  if (logic.meetingResponse?.fields.lockSettingsProps
+                      .disablePublicChat == false)
                   GestureDetector(
                       onTap: () {
                         if (controller.scaffoldKey.currentState!.isDrawerOpen) {

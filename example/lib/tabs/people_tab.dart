@@ -285,7 +285,7 @@ class PeopleTab extends GetView<postjoinController> {
                                                     ],
                                                   ),
                                                 ),
-                                                if (logic.myDetails!.fields!.userId != participant.fields!.userId)
+                                                if (logic.myDetails!.fields!.userId != participant.fields!.userId && logic.meetingResponse?.fields.lockSettingsProps.disablePrivateChat == false)
                                                 PopupMenuItem(
                                                   value: 3,
                                                   onTap: () {},

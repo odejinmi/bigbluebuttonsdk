@@ -1,4 +1,5 @@
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
+import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -12,8 +13,10 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<SwitchController>(
-      builder: (logic) => Scaffold(
+    return GetBuilder<Websocket>(
+      builder: (logic) {
+        LockSettingsProps? lockSettingsProps = logic.meetingResponse?.fields.lockSettingsProps;
+        return Scaffold(
         backgroundColor: Colors.transparent,
         body: Align(
           alignment: Alignment.bottomCenter,
@@ -63,14 +66,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Mute all users',
                               style: TextStyle(
-                                color: logic.switchValueMuteAllUsers
+                                color: lockSettingsProps?.disableMic == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.person_add_alt,
-                              color: logic.switchValueMuteAllUsers
+                              color: lockSettingsProps?.disableMic == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -88,9 +91,8 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValueMuteAllUsers,
+                            value: lockSettingsProps?.disableMic == true,
                             onChanged: (newValue) {
-                              logic.switchValueMuteAllUsers = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 disableMic: newValue,
                               );
@@ -101,14 +103,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Mute all users except presenter',
                               style: TextStyle(
-                                color: logic.switchValueMuteExceptPresenter
+                                color: lockSettingsProps?.disableNotes == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Image.asset(
                               'asset/image/mute_except.png',
-                              color: logic.switchValueMuteExceptPresenter
+                              color: lockSettingsProps?.disableNotes == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -126,9 +128,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValueMuteExceptPresenter,
+                            value: lockSettingsProps?.disableNotes == true,
                             onChanged: (newValue) {
-                              logic.switchValueMuteExceptPresenter = newValue;
+                              // logic.switchValueMuteExceptPresenter = newValue;
                             },
                           ),
                           const Divider(),
@@ -136,14 +138,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Lock viewers',
                               style: TextStyle(
-                                color: logic.switchValueLockViewers
+                                color: lockSettingsProps?.lockOnJoin == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.lock_open,
-                              color: logic.switchValueLockViewers
+                              color: lockSettingsProps?.lockOnJoin == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -161,9 +163,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValueLockViewers,
+                            value: lockSettingsProps?.lockOnJoin == true,
                             onChanged: (newValue) {
-                              logic.switchValueLockViewers = newValue;
+                              // logic.switchValueLockViewers = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 lockOnJoin: newValue,
                               );
@@ -174,14 +176,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Disable Camera',
                               style: TextStyle(
-                                color: logic.switchValuediasblecamera
+                                color: lockSettingsProps?.disableCam == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.video_camera_back_sharp,
-                              color: logic.switchValuediasblecamera
+                              color: lockSettingsProps?.disableCam == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -199,9 +201,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValuediasblecamera,
+                            value: lockSettingsProps?.disableCam == true,
                             onChanged: (newValue) {
-                              logic.switchValuediasblecamera = newValue;
+                              // logic.switchValuediasblecamera = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 disableCam: newValue,
                               );
@@ -212,14 +214,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Diable Public Chat',
                               style: TextStyle(
-                                color: logic.switchValuediasablepublicchat
+                                color: lockSettingsProps?.disablePublicChat == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.lock_open,
-                              color: logic.switchValuediasablepublicchat
+                              color: lockSettingsProps?.disablePublicChat == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -237,9 +239,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValuediasablepublicchat,
+                            value: lockSettingsProps?.disablePublicChat == true,
                             onChanged: (newValue) {
-                              logic.switchValuediasablepublicchat = newValue;
+                              // logic.switchValuediasablepublicchat = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 disablePublicChat: newValue,
                               );
@@ -250,14 +252,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Disable Private Chat',
                               style: TextStyle(
-                                color: logic.switchValuedisableprivatechat
+                                color: lockSettingsProps?.disablePrivateChat == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.lock_open,
-                              color: logic.switchValuedisableprivatechat
+                              color: lockSettingsProps?.disablePrivateChat == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -275,9 +277,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValuedisableprivatechat,
+                            value: lockSettingsProps?.disablePrivateChat == true,
                             onChanged: (newValue) {
-                              logic.switchValuedisableprivatechat = newValue;
+                              // logic.switchValuedisableprivatechat = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 disablePrivateChat: newValue,
                               );
@@ -288,14 +290,14 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                             title: Text(
                               'Hide Participant List',
                               style: TextStyle(
-                                color: logic.switchValuehideparticipantslist
+                                color: lockSettingsProps?.hideUserList == true
                                     ? Colors.white
                                     : Colors.grey,
                               ),
                             ),
                             secondary: Icon(
                               Icons.lock_open,
-                              color: logic.switchValuehideparticipantslist
+                              color: lockSettingsProps?.hideUserList == true
                                   ? Colors.white
                                   : Colors.grey,
                             ),
@@ -313,9 +315,9 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                               102,
                               1,
                             ),
-                            value: logic.switchValuehideparticipantslist,
+                            value: lockSettingsProps?.hideUserList == true,
                             onChanged: (newValue) {
-                              logic.switchValuehideparticipantslist = newValue;
+                              // logic.switchValuehideparticipantslist = newValue;
                               controller.bigbluebuttonsdkPlugin.locksettings(
                                 hideUserList: newValue,
                               );
@@ -336,7 +338,7 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
             ),
           ),
         ),
-      ),
+      );},
     );
   }
 }

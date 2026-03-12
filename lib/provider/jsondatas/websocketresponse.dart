@@ -9,6 +9,7 @@ import 'package:bigbluebuttonsdk/utils/diorequest.dart';
 import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:bigbluebuttonsdk/utils/presentationmodel.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../utils/sound_manager.dart';
@@ -41,6 +42,7 @@ class WebSocketResponse {
     "breakouts": _handleBreakouts,
     "annotations": _handleAnnotations,
     "meetings": _handleMeetings,
+    "notifications": _handleNotifications,
   };
 
   Future<void> response(Map<String, dynamic> json) async {
@@ -327,6 +329,24 @@ class WebSocketResponse {
     } else if (json["msg"] == "added") {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
       // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+    }
+  }
+
+  Future<void> _handleNotifications(Map<String, dynamic> json) async {
+    if (json["msg"] == "added") {
+      final fields = json["fields"];
+      if (fields != null) {
+        String title = fields["notificationType"]?.toString().capitalizeFirst ?? "Notification";
+        String message = fields["messageDescription"] ?? fields["messageId"] ?? "";
+
+        Get.snackbar(
+          title,
+          message,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Get.theme.primaryColorLight,
+          icon: fields["icon"] != null ? const Icon(Icons.notifications) : null,
+        );
+      }
     }
   }
 
