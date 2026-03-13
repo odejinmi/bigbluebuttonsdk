@@ -45,16 +45,16 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('callMethod() has not been implemented.');
   }
 
-  Startroom(
-      {required ValueChanged leavemeeting,
-        required ValueChanged externalvideomeetings,
-        required ValueChanged polls,
-        required ValueChanged breakouts,
-        required ValueChanged currentpoll}) {
+  void Startroom(
+      {ValueChanged? leavemeeting,
+        ValueChanged? externalvideomeetings,
+        ValueChanged? polls,
+        ValueChanged? breakouts,
+        ValueChanged? currentpoll}) {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }
 
-  initialize(
+  void initialize(
       {required String baseurl,
       required String webrtctoken,
       required Meetingdetails meetingdetails}) {
@@ -98,7 +98,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  whiteboard() {
+  Widget whiteboard() {
     throw UnimplementedError('whiteboard() has not been implemented.');
   }
 
@@ -114,7 +114,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  makepresentationdefault({required var presentation}) {
+  void makepresentationdefault({required var presentation}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -142,7 +142,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  uploadpresenter({
+  void uploadpresenter({
     required PlatformFile filename,
   }) {
     throw UnimplementedError('initialize() has not been implemented.');
@@ -160,7 +160,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  starvirtual({required Uint8List backgroundimage}) {
+  void starvirtual({required Uint8List backgroundimage}) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -168,15 +168,15 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startcamera() {
+  void startcamera() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  stopscreenshare() {
+  void stopscreenshare() {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  startscreenshare(bool audio) {
+  void startscreenshare(bool audio) {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -184,16 +184,16 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  switchVideoQuality(
+  void switchVideoQuality(
       {required int width, /*int height,*/ required int frameRate}) {
     throw UnimplementedError('switchVideoQuality() has not been implemented.');
   }
 
-  switchcamera({required String deviceid}) {
+  void switchcamera({required String deviceid}) {
     throw UnimplementedError('switchcamera() has not been implemented.');
   }
 
-  switchmicrophone({required String deviceid}) {
+  void switchmicrophone({required String deviceid}) {
     throw UnimplementedError('switchmicrophone() has not been implemented.');
   }
 
@@ -231,7 +231,7 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get participant {
+  dynamic get participant {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -239,23 +239,23 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
   //   throw UnimplementedError('initialize() has not been implemented.');
   // }
 
-  get mydetails {
+  dynamic get mydetails {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get isWebsocketRunning {
+  dynamic get isWebsocketRunning {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get reason {
+  dynamic get reason {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get polljson {
+  dynamic get polljson {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get ispolling {
+  dynamic get ispolling {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -263,19 +263,19 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get isrecording {
+  dynamic get isrecording {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get recordingtime {
+  dynamic get recordingtime {
     throw UnimplementedError('recordingtime() has not been implemented.');
   }
 
-  get pollanalyseparser {
+  dynamic get pollanalyseparser {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get talking {
+  dynamic get talking {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
@@ -283,19 +283,19 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get isvideo {
+  dynamic get isvideo {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get chatMessages {
+  dynamic get chatMessages {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get presentationmodel {
+  dynamic get presentationmodel {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  get ishowecinema {
+  dynamic get ishowecinema {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 

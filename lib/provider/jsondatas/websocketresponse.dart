@@ -9,7 +9,6 @@ import 'package:bigbluebuttonsdk/utils/diorequest.dart';
 import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:bigbluebuttonsdk/utils/presentationmodel.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../utils/sound_manager.dart';
@@ -42,7 +41,6 @@ class WebSocketResponse {
     "breakouts": _handleBreakouts,
     "annotations": _handleAnnotations,
     "meetings": _handleMeetings,
-    "notifications": _handleNotifications,
   };
 
   Future<void> response(Map<String, dynamic> json) async {
@@ -169,7 +167,7 @@ class WebSocketResponse {
     });
   }
 
-  _convertToSeconds(String time) {
+  int _convertToSeconds(String time) {
     final parts = time.split(':');
     final hours = int.parse(parts[0]);
     final minutes = int.parse(parts[1]);
@@ -193,13 +191,13 @@ class WebSocketResponse {
   }
 
   Future<void> _handlePolls(Map<String, dynamic> json) async {
+    print("object");
+    print(json);
     if (json["msg"] == "added") {
-      if (_service.pollJson["id"] == json["id"]) return;
       _service.isPolling = true;
       _service.pollJson = json;
       _service.polls(json);
-    } else if (json["msg"] == "removed") {
-      _service.isPolling = false;
+    } else if (json["msg"] == "removed"){
       _service.polls(json);
     }
   }
@@ -302,11 +300,21 @@ class WebSocketResponse {
   Future<void> _handleBreakouts(Map<String, dynamic> json) async {
     if (json["msg"] == "added") {
       _service.breakoutRoom.add(json);
-      _service.breakouts();
+      _service.breakouts(json);
       // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"breakoutId\":\"65ad68093588dfa5eb0de0b177c6df044143072d-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"42b94a09c8d622ea635fbe02dd7ba106220403c4-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 2)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":2,\"shortName\":\"Room 2\",\"timeRemaining\":0}}"]
       // a["{\"msg\":\"added\",\"collection\":\"breakouts\",\"id\":\"EGWZpi2v44R8KempF\",\"fields\":{\"breakoutId\":\"f24a3b915ad0f42a729728a397851c07cff5431e-1728837792661\",\"captureNotes\":false,\"captureSlides\":false,\"externalId\":\"0982362fd72cbad57966fb5b681c0cf741617f37-1728837792661\",\"freeJoin\":true,\"isDefaultName\":true,\"joinedUsers\":[],\"name\":\"tolu (Room 1)\",\"parentMeetingId\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"sendInviteToModerators\":false,\"sequence\":1,\"shortName\":\"Room 1\",\"timeRemaining\":0}}"]
     } else if (json["msg"] == "changed") {
       // a["{\"msg\":\"changed\",\"collection\":\"breakouts\",\"id\":\"CraaKzdLpfoBSsecA\",\"fields\":{\"timeRemaining\":890}}"]
+      final existing = _service.breakoutRoom
+          .where((v) => v is Map && v["id"] == json["id"])
+          .toList();
+      if (existing.isNotEmpty) {
+        _service.mergeData(json, existing.first);
+      }
+      _service.breakouts(json);
+    } else if (json["msg"] == "removed") {
+      _service.breakoutRoom.removeWhere((v) => v is Map && v["id"] == json["id"]);
+      _service.breakouts(json);
     }
   }
 
@@ -329,24 +337,6 @@ class WebSocketResponse {
     } else if (json["msg"] == "added") {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
       // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
-    }
-  }
-
-  Future<void> _handleNotifications(Map<String, dynamic> json) async {
-    if (json["msg"] == "added") {
-      final fields = json["fields"];
-      if (fields != null) {
-        String title = fields["notificationType"]?.toString().capitalizeFirst ?? "Notification";
-        String message = fields["messageDescription"] ?? fields["messageId"] ?? "";
-
-        Get.snackbar(
-          title,
-          message,
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Get.theme.primaryColorLight,
-          icon: fields["icon"] != null ? const Icon(Icons.notifications) : null,
-        );
-      }
     }
   }
 

@@ -52,6 +52,9 @@ abstract class WebSocketService {
   MeetingResponse? get meetingResponse;
   set meetingResponse(MeetingResponse? value);
 
+  NotificationSettingsProps get notificationSettingsProps;
+  set notificationSettingsProps(NotificationSettingsProps value);
+
   List<Participant> get talking;
   set talking(List<Participant> value);
 

@@ -487,3 +487,53 @@ class WelcomeProp {
         'welcomeMsgTemplate': welcomeMsgTemplate,
       };
 }
+
+class NotificationSettingsProps {
+  final bool? joined;
+  final bool? leave;
+  final bool? newMessage;
+  final bool? handRaise;
+  final bool? error;
+
+  NotificationSettingsProps({
+    this.joined,
+    this.leave,
+    this.newMessage,
+    this.handRaise,
+    this.error,
+  });
+
+  NotificationSettingsProps copyWith({
+    bool? joined,
+    bool? leave,
+    bool? newMessage,
+    bool? handRaise,
+    bool? error,
+  }) {
+    return NotificationSettingsProps(
+      joined: joined ?? this.joined,
+      leave: leave ?? this.leave,
+      newMessage: newMessage ?? this.newMessage,
+      handRaise: handRaise ?? this.handRaise,
+      error: error ?? this.error,
+    );
+  }
+
+  factory NotificationSettingsProps.fromJson(Map<String, dynamic> json) {
+    return NotificationSettingsProps(
+      joined: json['joined'],
+      leave: json['leave'],
+      newMessage: json['newMessage'],
+      handRaise: json['handRaise'],
+      error: json['error'],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'joined': joined,
+    'leave': leave,
+    'newMessage': newMessage,
+    'handRaise': handRaise,
+    'error': error,
+  };
+}

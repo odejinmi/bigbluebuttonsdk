@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
@@ -48,16 +49,22 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.getPlatformVersion();
   }
 
-  Startroom(
-      {required ValueChanged leavemeeting,
-        required ValueChanged externalvideomeetings,
-        required ValueChanged polls,
-        required ValueChanged breakouts,
-        required ValueChanged currentpoll}) {
-    BigbluebuttonsdkPlatform.instance.Startroom(leavemeeting: leavemeeting,externalvideomeetings: externalvideomeetings, polls: polls, currentpoll: currentpoll, breakouts: breakouts);
+  void Startroom(
+      {ValueChanged? leavemeeting,
+        ValueChanged? externalvideomeetings,
+        ValueChanged? polls,
+        ValueChanged? breakouts,
+        ValueChanged? currentpoll}) {
+    BigbluebuttonsdkPlatform.instance.Startroom(
+      leavemeeting: leavemeeting,
+      externalvideomeetings: externalvideomeetings,
+      polls: polls,
+      currentpoll: currentpoll,
+      breakouts: breakouts,
+    );
   }
 
-  initialize(
+  void initialize(
       {required String baseurl,
       required String webrtctoken,
       required Meetingdetails meetingdetails}) {
@@ -147,7 +154,7 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.createGroupChat(participant: participant);
   }
 
-  uploadpresenter({
+  void uploadpresenter({
     required PlatformFile filename,
   }) {
     BigbluebuttonsdkPlatform.instance.uploadpresenter(filename: filename);
@@ -161,17 +168,17 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.lowerHand();
   }
 
-  switchVideoQuality(
+  void switchVideoQuality(
       {required int width, /*int height,*/ required int frameRate}) {
     BigbluebuttonsdkPlatform.instance
         .switchVideoQuality(width: width, frameRate: frameRate);
   }
 
-  switchVideocamera({required String deviceid}) {
+  void switchVideocamera({required String deviceid}) {
     BigbluebuttonsdkPlatform.instance.switchcamera(deviceid: deviceid);
   }
 
-  switchmicrophone({required String deviceid}) {
+  void switchmicrophone({required String deviceid}) {
     BigbluebuttonsdkPlatform.instance.switchmicrophone(deviceid: deviceid);
   }
 
@@ -184,7 +191,7 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.nextpresentation(page: page);
   }
 
-  makepresentationdefault({required var presentation}) {
+  void makepresentationdefault({required var presentation}) {
     BigbluebuttonsdkPlatform.instance
         .makepresentationdefault(presentation: presentation);
   }
@@ -193,19 +200,19 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.mutemyself();
   }
 
-  stopcamera() {
+  void stopcamera() {
     BigbluebuttonsdkPlatform.instance.stopcamera();
   }
 
-  startcamera() {
+  void startcamera() {
     BigbluebuttonsdkPlatform.instance.startcamera();
   }
 
-  stopscreenshare() {
+  void stopscreenshare() {
     BigbluebuttonsdkPlatform.instance.stopscreenshare();
   }
 
-  startscreenshare(bool audio) {
+  void startscreenshare(bool audio) {
     BigbluebuttonsdkPlatform.instance.startscreenshare(audio);
   }
 
@@ -246,7 +253,7 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.endroom();
   }
 
-  starvirtual({required Uint8List backgroundimage}) {
+  void starvirtual({required Uint8List backgroundimage}) {
     BigbluebuttonsdkPlatform.instance
         .starvirtual(backgroundimage: backgroundimage);
   }
@@ -257,7 +264,7 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.getchatMessages(chatid: chatid);
   }
 
-  get participant {
+  dynamic get participant {
     return BigbluebuttonsdkPlatform.instance.participant;
   }
 
@@ -265,19 +272,19 @@ class Bigbluebuttonsdk {
   //   return BigbluebuttonsdkPlatform.instance.availableLanguages;
   // }
 
-  get mydetails {
+  dynamic get mydetails {
     return BigbluebuttonsdkPlatform.instance.mydetails;
   }
 
-  get isWebsocketRunning {
+  dynamic get isWebsocketRunning {
     return BigbluebuttonsdkPlatform.instance.isWebsocketRunning;
   }
 
-  get polljson {
+  dynamic get polljson {
     return BigbluebuttonsdkPlatform.instance.polljson;
   }
 
-  get ispolling {
+  dynamic get ispolling {
     return BigbluebuttonsdkPlatform.instance.ispolling;
   }
 
@@ -285,7 +292,7 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.ispolling = value;
   }
 
-  get isrecording {
+  dynamic get isrecording {
     return BigbluebuttonsdkPlatform.instance.isrecording;
   }
 
@@ -293,35 +300,35 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.meetingResponse;
   }
 
-  get recordingtime {
+  dynamic get recordingtime {
     return BigbluebuttonsdkPlatform.instance.recordingtime;
   }
 
-  get pollanalyseparser {
+  dynamic get pollanalyseparser {
     return BigbluebuttonsdkPlatform.instance.pollanalyseparser;
   }
 
-  get talking {
+  dynamic get talking {
     return BigbluebuttonsdkPlatform.instance.talking;
   }
 
-  get isvideo {
+  dynamic get isvideo {
     return BigbluebuttonsdkPlatform.instance.isvideo;
   }
 
-  get chatMessages {
+  dynamic get chatMessages {
     return BigbluebuttonsdkPlatform.instance.chatMessages;
   }
 
-  get reason {
+  dynamic get reason {
     return BigbluebuttonsdkPlatform.instance.reason;
   }
 
-  get ishowecinema {
+  dynamic get ishowecinema {
     return BigbluebuttonsdkPlatform.instance.ishowecinema;
   }
 
-  get presentationmodel {
+  dynamic get presentationmodel {
     return BigbluebuttonsdkPlatform.instance.presentationmodel;
   }
 
@@ -340,4 +347,69 @@ class Bigbluebuttonsdk {
   Stream<String> get stream {
     return BigbluebuttonsdkPlatform.instance.stream;
   }
+
+  Stream<BigbluebuttonsdkEvent> get events => stream
+      .map(BigbluebuttonsdkEvent.tryParse)
+      .where((event) => event != null)
+      .cast<BigbluebuttonsdkEvent>();
+
+  Stream<BigbluebuttonsdkEvent> get leaveMeetingEvents => events.where((e) {
+        if (e.collection == 'current-user') {
+          return e.fields?['loggedOut'] == true;
+        }
+        if (e.collection == 'meetings') {
+          return e.fields?['meetingEnded'] == true;
+        }
+        return false;
+      });
+
+  Stream<BigbluebuttonsdkEvent> get externalVideoMeetingEvents =>
+      events.where((e) => e.collection == 'external-video-meetings');
+
+  Stream<BigbluebuttonsdkEvent> get pollEvents =>
+      events.where((e) => e.collection == 'polls');
+
+  Stream<BigbluebuttonsdkEvent> get currentPollEvents =>
+      events.where((e) => e.collection == 'current-poll');
+
+  Stream<BigbluebuttonsdkEvent> get breakoutEvents =>
+      events.where((e) => e.collection == 'breakouts');
+}
+
+class BigbluebuttonsdkEvent {
+  final Map<String, dynamic> raw;
+
+  BigbluebuttonsdkEvent(this.raw);
+
+  String? get msg => raw['msg']?.toString();
+  String? get collection => raw['collection']?.toString();
+  String? get id => raw['id']?.toString();
+  Map<String, dynamic>? get fields {
+    final value = raw['fields'];
+    if (value is Map<String, dynamic>) return value;
+    if (value is Map) return value.map((k, v) => MapEntry(k.toString(), v));
+    return null;
+  }
+
+  static BigbluebuttonsdkEvent? tryParse(String value) {
+    try {
+      final decoded = jsonDecode(value);
+      if (decoded is Map<String, dynamic>) return BigbluebuttonsdkEvent(decoded);
+      if (decoded is Map) {
+        return BigbluebuttonsdkEvent(
+          decoded.map((k, v) => MapEntry(k.toString(), v)),
+        );
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Map<String, dynamic> toJson() => {
+    'msg': msg,
+    'collection': collection,
+    'id' : id,
+    'fields': fields
+  };
 }

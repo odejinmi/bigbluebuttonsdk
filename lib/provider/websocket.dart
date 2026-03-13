@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as dev;
 
 import 'package:bigbluebuttonsdk/provider/jsondatas/WebSocketService.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
@@ -72,7 +71,7 @@ class Websocket extends GetxController implements WebSocketService {
   set isWebsocketRunning(bool value) => _isWebsocketRunning.value = value;
 
   @override
-  List<Participant> get participant => _participant.value;
+  List<Participant> get participant => _participant;
   @override
   set participant(List<Participant> value) => _participant.value = value;
 
@@ -82,13 +81,13 @@ class Websocket extends GetxController implements WebSocketService {
   set meetingResponse(MeetingResponse? value) => _meetingResponse.value = value;
 
   @override
-  List<dynamic> get waitingParticipant => _waitingParticipant.value;
+  List<dynamic> get waitingParticipant => _waitingParticipant;
   @override
   set waitingParticipant(List<dynamic> value) =>
       _waitingParticipant.value = value;
 
   @override
-  List<Participant> get talking => _talking.value;
+  List<Participant> get talking => _talking;
   @override
   set talking(List<Participant> value) => _talking.value = value;
 
@@ -104,7 +103,7 @@ class Websocket extends GetxController implements WebSocketService {
       _remoteRTCVideoRenderer.value = value;
 
   @override
-  List<dynamic> get breakoutRoom => _breakoutRoom.value;
+  List<dynamic> get breakoutRoom => _breakoutRoom;
   @override
   set breakoutRoom(List<dynamic> value) => _breakoutRoom.value = value;
 
@@ -130,18 +129,18 @@ class Websocket extends GetxController implements WebSocketService {
   set platformFile(PlatformFile value) => _platformFile.value = value;
 
   @override
-  List<Presentationmodel> get presentationModel => _presentationModel.value;
+  List<Presentationmodel> get presentationModel => _presentationModel;
   @override
   set presentationModel(List<Presentationmodel> value) =>
       _presentationModel.value = value;
 
   @override
-  List<dynamic> get slidePosition => _slidePosition.value;
+  List<dynamic> get slidePosition => _slidePosition;
   @override
   set slidePosition(List<dynamic> value) => _slidePosition.value = value;
 
   @override
-  List<dynamic> get slides => _slides.value;
+  List<dynamic> get slides => _slides;
   @override
   set slides(List<dynamic> value) => _slides.value = value;
 
@@ -156,7 +155,7 @@ class Websocket extends GetxController implements WebSocketService {
   set isPolling(bool value) => _isPolling.value = value;
 
   @override
-  Map<String, dynamic> get pollJson => _pollJson.value;
+  Map<String, dynamic> get pollJson => _pollJson;
   @override
   set pollJson(Map<String, dynamic> value) => _pollJson.value = value;
 
@@ -208,12 +207,12 @@ class Websocket extends GetxController implements WebSocketService {
   set mediaWebsocketUrl(String value) => _mediaWebsocketUrl.value = value;
 
   @override
-  Map<String, dynamic> get stunServer => _stunServer.value;
+  Map<String, dynamic> get stunServer => _stunServer;
   @override
   set stunServer(Map<String, dynamic> value) => _stunServer.value = value;
 
   @override
-  List<ChatMessage> get chatMessages => _chatMessages.value;
+  List<ChatMessage> get chatMessages => _chatMessages;
   @override
   set chatMessages(List<ChatMessage> value) => _chatMessages.value = value;
 
@@ -370,13 +369,21 @@ class Websocket extends GetxController implements WebSocketService {
     userId = json["id"];
     if (json["fields"].containsKey("loggedOut") &&
         json["fields"]["loggedOut"] == true) {
-      isLeave = true;
+      if (!isLeave) {
+        isLeave = true;
+        leavemeeting(reason);
+        stopWebsocket();
+      }
     }
   }
 
   void _handleCurrentUserRemoval(Map<String, dynamic> json) {
     userId = json["id"];
-    isLeave = true;
+    if (!isLeave) {
+      isLeave = true;
+      leavemeeting(reason);
+      stopWebsocket();
+    }
   }
 
   void _handleWebSocketDone() {
@@ -524,6 +531,7 @@ class Websocket extends GetxController implements WebSocketService {
       }
       WakelockPlus.disable();
       stopall();
+      leavemeeting(reason);
       var json = {
         "msg": "changed",
         "collection": "current-user",
@@ -535,36 +543,34 @@ class Websocket extends GetxController implements WebSocketService {
     }
   }
 
-  @override
-  var _externalvideomeetings;
+  var _externalvideomeetings = (dynamic _) {};
   @override
   set externalvideomeetings (value) => _externalvideomeetings = value;
   @override
   get externalvideomeetings => _externalvideomeetings;
 
- @override
-  var _leavemeeting;
+
+  var _leavemeeting = (dynamic _) {};
  @override
   set leavemeeting (value) => _leavemeeting = value;
  @override
   get leavemeeting => _leavemeeting;
 
-  @override
-  var _polls;
+
+  var _polls = (dynamic _) {};
   @override
   set polls (value) => _polls = value;
   @override
   get polls => _polls;
 
-  @override
-  var _currentpoll;
+
+  var _currentpoll = (dynamic _) {};
   @override
   set currentpoll (value) => _currentpoll = value;
   @override
   get currentpoll => _currentpoll;
 
- @override
-  var _breakouts;
+  var _breakouts = (dynamic _) {};
   @override
   set breakouts (value) => _breakouts = value;
   @override
@@ -617,7 +623,7 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   void makePresentationDefault({required dynamic presentation}) {
     websocketSub([
-      jsonEncode({"msg":"sub","id":"${generateRandomId(17)}","name":"presentation-upload-token","params":["DEFAULT_PRESENTATION_POD","undefined","${presentation["id"]}"]})
+      jsonEncode({"msg":"sub","id":generateRandomId(17),"name":"presentation-upload-token","params":["DEFAULT_PRESENTATION_POD","undefined","${presentation["id"]}"]})
     ]);
     websocketSub([
       jsonEncode({"msg":"method","id":"962","method":"setUsedToken","params":["${presentation["fields"]["authzToken"]}"]})
@@ -633,51 +639,51 @@ class Websocket extends GetxController implements WebSocketService {
      jsonEncode( {"msg":"method","id":"1","method":"userChangedLocalSettings","params":[{"application":{"animations":true,"chatAudioAlerts":false,"chatPushAlerts":false,"userJoinAudioAlerts":false,"userJoinPushAlerts":false,"userLeaveAudioAlerts":false,"userLeavePushAlerts":false,"raiseHandAudioAlerts":true,"raiseHandPushAlerts":true,"guestWaitingAudioAlerts":true,"guestWaitingPushAlerts":true,"paginationEnabled":true,"pushLayoutToEveryone":false,"fallbackLocale":"en","overrideLocale":null,"locale":"en-US"},"audio":{"inputDeviceId":"undefined","outputDeviceId":"undefined"},"dataSaving":{"viewParticipantsWebcams":true,"viewScreenshare":true}}]})
     ]);
     websocketSub([
-     jsonEncode({"msg":"method","id":"2","method":"validateAuthToken","params":["${meetingDetails!.meetingId}","${meetingDetails!.internalUserId}","${meetingDetails!.authToken}","${meetingDetails!.externUserId}"]})
+     jsonEncode({"msg":"method","id":"2","method":"validateAuthToken","params":[(meetingDetails!.meetingId),(meetingDetails!.internalUserId),(meetingDetails!.authToken),(meetingDetails!.externUserId)]})
     ]);
     mainSub(type);
   }
 
   void mainSub(String type) {
     final subscriptions = [
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"meteor_autoupdate_clientVersions","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"auth-token-validation","params":[{"meetingId":"${meetingDetails!.meetingId}","userId":"${meetingDetails!.internalUserId}"}]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"current-user","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"meetings","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"polls","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"presentations","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"slides","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"slide-positions","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"captions","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"voiceUsers","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"voiceUsers","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"whiteboard-multi-user","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"screenshare","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"group-chat","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"presentation-pods","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users-settings","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"guestUser","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users-infos","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"note","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"meeting-time-remaining","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"local-settings","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users-typing","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"record-meetings","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"video-streams","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"connection-status","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"voice-call-states","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"external-video-meetings","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"meetings","params":["MODERATOR"]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users","params":["MODERATOR"]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"breakouts","params":["MODERATOR"]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"guestUser","params":["MODERATOR"]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"annotations","params":[]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"stream-cursor-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["message",{"useCollection":false,"args":[]}]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["removed",{"useCollection":false,"args":[]}]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["added",{"useCollection":false,"args":[]}]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"group-chat-msg","params":[[]]},
-      {"msg":"$type","id":"${generateRandomId(17)}","name":"users-persistent-data","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"meteor_autoupdate_clientVersions","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"auth-token-validation","params":[{"meetingId":meetingDetails!.meetingId,"userId":meetingDetails!.internalUserId}]},
+      {"msg":type,"id":generateRandomId(17),"name":"current-user","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"users","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"meetings","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"polls","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"presentations","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"slides","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"slide-positions","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"captions","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"voiceUsers","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"voiceUsers","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"whiteboard-multi-user","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"screenshare","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"group-chat","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"presentation-pods","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"users-settings","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"guestUser","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"users-infos","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"note","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"meeting-time-remaining","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"local-settings","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"users-typing","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"record-meetings","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"video-streams","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"connection-status","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"voice-call-states","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"external-video-meetings","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"meetings","params":["MODERATOR"]},
+      {"msg":type,"id":generateRandomId(17),"name":"users","params":["MODERATOR"]},
+      {"msg":type,"id":generateRandomId(17),"name":"breakouts","params":["MODERATOR"]},
+      {"msg":type,"id":generateRandomId(17),"name":"guestUser","params":["MODERATOR"]},
+      {"msg":type,"id":generateRandomId(17),"name":"annotations","params":[]},
+      {"msg":type,"id":generateRandomId(17),"name":"stream-cursor-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["message",{"useCollection":false,"args":[]}]},
+      {"msg":type,"id":generateRandomId(17),"name":"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["removed",{"useCollection":false,"args":[]}]},
+      {"msg":type,"id":generateRandomId(17),"name":"stream-annotations-8d507a70979aefb79db859b2d8cdea86c19ee151-1684392490996","params":["added",{"useCollection":false,"args":[]}]},
+      {"msg":type,"id":generateRandomId(17),"name":"group-chat-msg","params":[[]]},
+      {"msg":type,"id":generateRandomId(17),"name":"users-persistent-data","params":[]},
     ];
 
     for (final subscription in subscriptions) {
@@ -696,4 +702,12 @@ class Websocket extends GetxController implements WebSocketService {
     stopWebSocketPing();
     timer?.cancel();
   }
+
+  final _notificationSettingsProps = NotificationSettingsProps(joined: true, leave: true, newMessage: true, handRaise: true, error: true).obs;
+  @override
+  NotificationSettingsProps get notificationSettingsProps => _notificationSettingsProps.value;
+  @override
+  set notificationSettingsProps(NotificationSettingsProps value) => _notificationSettingsProps.value = value;
+
+
 }

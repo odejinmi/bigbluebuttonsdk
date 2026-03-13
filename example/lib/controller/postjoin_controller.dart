@@ -348,6 +348,176 @@ class postjoinController extends GetxController
           );
         }
     );
+
+    // final sub = bigbluebuttonsdkPlugin.events.listen((e) {
+    //   if (e.collection == 'current-user' && e.fields?['loggedOut'] == true) {
+    //       if(isleaving.toString().isEmpty){
+    //         isleaving = value;
+    //       }
+    //       // {msg: changed, collection: current-user, id: zpSwyR4fx29EfkvSv, fields: {loggedOut: true}}
+    //       //     {msg: changed, collection: meetings, id: QBbf7iqSYXcSuz23B, fields: {meetingEnded: true, meetingEndedBy: w_tirr8ianrx6x, meetingEndedReason: ENDED_AFTER_USER_LOGGED_OUT}}
+    //
+    //
+    //           // {"msg":"changed","collection":"meetings","id":"YxSfTK6XyPseW62Ti","fields":{"meetingEnded":true,"meetingEndedBy":"w_cqfbqdc3mmxi","meetingEndedReason":"ENDED_AFTER_USER_LOGGED_OUT"}}
+    //       Get.back(result: isleaving);
+    //   }
+    //   if (e.collection == 'external-video-meetings') {
+    //       showDialog(
+    //         barrierDismissible: false,
+    //         context: Get.context!,
+    //         builder: (BuildContext context) => ShowVideoScreen(
+    //           videoLink: value,
+    //           ishowecinema: bigbluebuttonsdkPlugin.ishowecinema,
+    //         ),
+    //       );
+    //   }
+    //   if (e.collection == 'polls') {
+    //
+    //       // if(value){
+    //       //   print("object");
+    //       //   print(value);
+    //         // pullcontroller.pullresult = response;
+    //         // final currentId = response["id"];
+    //         // if (!pullcontroller.ispulling &&
+    //         //     currentId != pullcontroller.lastPollId) {
+    //         //   pullcontroller.ispulling = true;
+    //         //   pullcontroller.lastPollId = currentId;
+    //         if (Get.isBottomSheetOpen == true) {
+    //           Get.back();
+    //         }
+    //         Get.bottomSheet(Pullquestionandanswer(json: e.toJson()))
+    //               .then((value) {
+    //             pullcontroller.ispulling = false;
+    //             pullcontroller.lastPollId = "";
+    //           });
+    //         // }
+    //       // }else{
+    //       //   pullcontroller.ispulling = false;
+    //       //   pullcontroller.lastPollId = "";
+    //       // }
+    //   }
+    //   if (e.collection == 'current-poll') {
+    //     //   pullcontroller.pullresult = value;
+    //     //   Get.bottomSheet(Pollsresult()).then((value) {
+    //     //     Future.delayed(const Duration(seconds: 3), () {
+    //     //       pullcontroller.pullresult = {};
+    //     //     });
+    //     //   });
+    //   }
+    //   if (e.collection == 'breakouts') {
+    //
+    //     //   Get.dialog(
+    //     //     Scaffold(
+    //     //       // backgroundColor: const Color.fromRGBO(0, 0, 0, 0.76),
+    //     //       body: Center(
+    //     //         child: Container(
+    //     //           width: 360,
+    //     //           height: 664,
+    //     //           decoration: const BoxDecoration(
+    //     //             color: Color.fromRGBO(62, 132, 102, 1),
+    //     //             borderRadius: BorderRadius.all(Radius.circular(16)),
+    //     //           ),
+    //     //           child: Padding(
+    //     //             padding: const EdgeInsets.symmetric(horizontal: 25),
+    //     //             child: Column(
+    //     //               // mainAxisAlignment: MainAxisAlignment.spaceAround,
+    //     //               children: [
+    //     //                 Text(
+    //     //                   'DURATIONS',
+    //     //                   style: TextStyle(
+    //     //                     color: Colors.white,
+    //     //                     fontSize: 16,
+    //     //                     fontFamily: 'Inter',
+    //     //                     fontWeight: FontWeight.w500,
+    //     //                     height: 0.08,
+    //     //                     letterSpacing: 0.10,
+    //     //                   ),
+    //     //                 ),
+    //     //                 Container(
+    //     //                   decoration: ShapeDecoration(
+    //     //                     shape: RoundedRectangleBorder(
+    //     //                       side: BorderSide(
+    //     //                         width: 1,
+    //     //                         color: Color(0xFF5D957E),
+    //     //                       ),
+    //     //                       borderRadius: BorderRadius.circular(5),
+    //     //                     ),
+    //     //                   ),
+    //     //                   child: Row(
+    //     //                     mainAxisSize: MainAxisSize.min,
+    //     //                     mainAxisAlignment: MainAxisAlignment.center,
+    //     //                     crossAxisAlignment: CrossAxisAlignment.center,
+    //     //                     children: [
+    //     //                       Text(
+    //     //                         '14:39',
+    //     //                         style: TextStyle(
+    //     //                           color: Colors.white.withOpacity(
+    //     //                             0.9800000190734863,
+    //     //                           ),
+    //     //                           fontSize: 30,
+    //     //                           fontFamily: 'Inter',
+    //     //                           fontWeight: FontWeight.w500,
+    //     //                           height: 0.02,
+    //     //                           letterSpacing: 0.10,
+    //     //                         ),
+    //     //                       ),
+    //     //                     ],
+    //     //                   ),
+    //     //                 ),
+    //     //                 Row(
+    //     //                   children: [
+    //     //                     Expanded(
+    //     //                       child: Column(
+    //     //                         children: [
+    //     //                           Text(
+    //     //                             'Room 1 (0)',
+    //     //                             style: TextStyle(
+    //     //                               color: Colors.white,
+    //     //                               fontSize: 15,
+    //     //                               fontFamily: 'Inter',
+    //     //                               fontWeight: FontWeight.w600,
+    //     //                             ),
+    //     //                           ),
+    //     //                           Text(
+    //     //                             'View',
+    //     //                             textAlign: TextAlign.right,
+    //     //                             style: TextStyle(
+    //     //                               color: Colors.white,
+    //     //                               fontSize: 13,
+    //     //                               fontFamily: 'Inter',
+    //     //                               fontWeight: FontWeight.w500,
+    //     //                             ),
+    //     //                           ),
+    //     //                         ],
+    //     //                       ),
+    //     //                     ),
+    //     //                     SizedBox(width: 20),
+    //     //                     Text(
+    //     //                       'Join room |  Join audio',
+    //     //                       textAlign: TextAlign.right,
+    //     //                       style: TextStyle(
+    //     //                         color: Colors.white,
+    //     //                         fontSize: 15,
+    //     //                         fontFamily: 'Inter',
+    //     //                         fontWeight: FontWeight.w500,
+    //     //                       ),
+    //     //                     ),
+    //     //                   ],
+    //     //                 ),
+    //     //               ],
+    //     //             ),
+    //     //           ),
+    //     //         ),
+    //     //       ),
+    //     //     ),
+    //     //     barrierDismissible: false,
+    //     //     barrierColor: Colors.transparent,
+    //     //     // barrierLabel: ' Full Screen Dialog',
+    //     //     transitionDuration: const Duration(milliseconds: 400),
+    //     //   );
+    //   }
+    // });
+
     // checkdonation();
     // Set up a timer to call checkdonation() every 10 seconds
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {

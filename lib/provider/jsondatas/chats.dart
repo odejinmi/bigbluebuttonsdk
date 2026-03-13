@@ -35,10 +35,15 @@ class Chats {
       _service.chatMessages.add(chatMessage);
     }
     if (chatMessage.senderName != _service.meetingDetails!.fullname) {
-      SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/message.mp3');
-      Get.snackbar(
-          "${chatMessage.chatId == "MAIN-PUBLIC-GROUP-CHAT" ? 'Public' : 'Private'} message from ${chatMessage.senderName}",
-          chatMessage.message);
+      if(_service.notificationSettingsProps.newMessage == true) {
+        SoundManager().playAsset(
+            'packages/bigbluebuttonsdk/assets/sounds/message.mp3');
+        Get.snackbar(
+            "${chatMessage.chatId == "MAIN-PUBLIC-GROUP-CHAT"
+                ? 'Public'
+                : 'Private'} message from ${chatMessage.senderName}",
+            chatMessage.message);
+      }
     }
   }
 
