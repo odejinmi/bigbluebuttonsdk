@@ -22,7 +22,7 @@ class DirectSocketIOStreamer extends GetxController {
   bool _isConnected = false;
   int _currentChunk = 0;
 
-  var _transcribewords = "".obs;
+  final _transcribewords = "".obs;
   set transcribewords(String value) => _transcribewords.value = value;
   String get transcribewords => _transcribewords.value;
 
@@ -32,7 +32,7 @@ class DirectSocketIOStreamer extends GetxController {
 
   static const String serverUrl = 'https://k4caption.konn3ct.ng/';
 
-  var _availableLanguages = <dynamic>[].obs;
+  final _availableLanguages = <dynamic>[].obs;
   set availableLanguages(List<dynamic> value) =>
       _availableLanguages.value = value;
   List<dynamic> get availableLanguages => _availableLanguages.value;

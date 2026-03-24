@@ -8,22 +8,21 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../utils/diorequest.dart';
 import '../../utils/strings.dart';
 
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class loginController extends GetxController {
-  var _obj = ''.obs;
+  final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
-  var _obscureText = true.obs;
+  final _obscureText = true.obs;
   set obscureText(value) => _obscureText.value = value;
-  get obscureText => _obscureText.value;
+  bool get obscureText => _obscureText.value;
 
-  var _isLoading = false.obs;
+  final _isLoading = false.obs;
   set isLoading(value) => _isLoading.value = value;
-  get isLoading => _isLoading.value;
+  bool get isLoading => _isLoading.value;
 
   var tenantId = TextEditingController();
   var username = TextEditingController();
@@ -31,13 +30,13 @@ class loginController extends GetxController {
 
   final box = GetSecureStorage();
 
-  var _biometric = true.obs;
+  final _biometric = true.obs;
   set biometric(value) => _biometric.value =value;
-  get biometric => _biometric.value;
+  bool get biometric => _biometric.value;
 
-  var _appVersion = "1.0.0".obs;
+  final _appVersion = "1.0.0".obs;
   set appVersion(value) => _appVersion.value =value;
-  get appVersion => _appVersion.value;
+  String get appVersion => _appVersion.value;
 
   @override
   void onInit() {
@@ -125,7 +124,7 @@ class loginController extends GetxController {
       } catch (e) {}
 
       if (availableBiometrics.isNotEmpty) {
-        availableBiometrics.forEach((ab) {});
+        for (var ab in availableBiometrics) {}
       } else {}
 
       bool authenticated = false;

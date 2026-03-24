@@ -51,11 +51,11 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                                     ? Colors.white
                                     : Colors.grey,
                               )),
-                          activeColor: Colors.white,
+                          activeThumbColor: Colors.white,
                           thumbColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           inactiveThumbColor: Colors.white,
-                          trackColor: const MaterialStatePropertyAll(
+                          trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1)),
                           inactiveTrackColor:
                               const Color.fromRGBO(62, 132, 102, 1),
@@ -78,11 +78,11 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                               color: controller.switchValueAudioOnly
                                   ? Colors.white
                                   : Colors.grey),
-                          activeColor: Colors.white,
+                          activeThumbColor: Colors.white,
                           thumbColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           inactiveThumbColor: Colors.white,
-                          trackColor: const MaterialStatePropertyAll(
+                          trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1)),
                           inactiveTrackColor:
                               const Color.fromRGBO(62, 132, 102, 1),
@@ -112,7 +112,7 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                             style: TextStyle(color: Colors.white)),
                         trailing: Radio(
                           fillColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           activeColor: Colors.white,
                           value: 1,
                           groupValue: controller.selectedRadioValue,
@@ -131,7 +131,7 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                             style: TextStyle(color: Colors.white)),
                         trailing: Radio(
                           fillColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           activeColor: Colors.white,
                           value: 2,
                           groupValue: controller.selectedRadioValue,
@@ -150,7 +150,7 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                             style: TextStyle(color: Colors.white)),
                         trailing: Radio(
                           fillColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           activeColor: Colors.white,
                           value: 3,
                           groupValue: controller.selectedRadioValue,
@@ -169,7 +169,7 @@ class ShowLayoutSettingsDialog extends GetView<SwitchController> {
                             style: TextStyle(color: Colors.white)),
                         trailing: Radio(
                           fillColor:
-                              const MaterialStatePropertyAll(Colors.white),
+                              const WidgetStatePropertyAll(Colors.white),
                           activeColor: Colors.white,
                           value: 4,
                           groupValue: controller.selectedRadioValue,

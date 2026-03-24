@@ -46,7 +46,7 @@ class _CinemaState extends State<Cinema> {
                         icon: const Icon(Icons.arrow_back_ios),
                         iconSize: 24,
                         color: Colors.white,
-                        style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(62, 132, 102, 1)))
+                        style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(62, 132, 102, 1)))
                     ),
                   ],
                 ),
@@ -233,7 +233,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
   }
 
   /// Show end broadcast dialog=======================================
-  _showEndBroadcastDialog() {
+  void _showEndBroadcastDialog() {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,
@@ -333,7 +333,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
                                 width: 151,
                                 decoration: const BoxDecoration(
                                   color: Color.fromRGBO(204, 82, 95, 1),
-                                  borderRadius: const BorderRadius.all(
+                                  borderRadius: BorderRadius.all(
                                     Radius.circular(8),
                                   ),
                                 ),

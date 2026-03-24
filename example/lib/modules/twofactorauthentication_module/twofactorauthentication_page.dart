@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'twofactorauthentication_controller.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class twofactorauthenticationPage
     extends GetView<twofactorauthenticationController> {
+  const twofactorauthenticationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -164,7 +165,7 @@ class twofactorauthenticationPage
                                       .map((c) => c.text)
                                       .join();
 
-                                  print('Current OTP: ${currentOtp}');
+                                  print('Current OTP: $currentOtp');
 
                                   // If the OTP is fully entered, trigger verification.
                                   if (currentOtp.length == 6) {

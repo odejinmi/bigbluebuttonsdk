@@ -10,8 +10,7 @@ import '../../controller/postjoin_controller.dart';
 class Removeuserdialog extends StatefulWidget {
   final Participant participan;
 
-  const Removeuserdialog({Key? key, required this.participan})
-      : super(key: key);
+  const Removeuserdialog({super.key, required this.participan});
 
   @override
   State<Removeuserdialog> createState() => _RemoveuserdialogState();

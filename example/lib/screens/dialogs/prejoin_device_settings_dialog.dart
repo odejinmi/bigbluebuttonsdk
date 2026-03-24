@@ -47,7 +47,7 @@ class _DeviceSettingsState extends State<DeviceSettings> {
                       icon: const Icon(Icons.arrow_back_ios), 
                       iconSize: 24,
                       color: Colors.white,
-                      style: const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(62, 132, 102, 1)))
+                      style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(62, 132, 102, 1)))
                     ),
 
                     const Text('Device Settings', 

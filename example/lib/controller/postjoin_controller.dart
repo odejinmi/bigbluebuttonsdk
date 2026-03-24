@@ -17,23 +17,22 @@ import 'DeviceSettingsController.dart';
 import 'PresentationController.dart';
 import 'PullController.dart';
 import 'SwitchController.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class postjoinController extends GetxController
     with GetSingleTickerProviderStateMixin {
   final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
   final _baseurl = ''.obs;
   set baseurl(value) => _baseurl.value = value;
-  get baseurl => _baseurl.value;
+  String get baseurl => _baseurl.value;
 
   final _amounttodonate = ''.obs;
   set amounttodonate(value) => _amounttodonate.value = value;
-  get amounttodonate => _amounttodonate.value;
+  String get amounttodonate => _amounttodonate.value;
 
   var scaffoldKey = GlobalKey<ScaffoldState>();
   // final HomeController controller = Get.put(HomeController(usersList: usersList));
@@ -42,61 +41,61 @@ class postjoinController extends GetxController
   final _captionButtonPressed =
       false.obs; // variable to track caption button visibility
   set captionButtonPressed(value) => _captionButtonPressed.value = value;
-  get captionButtonPressed => _captionButtonPressed.value;
+  bool get captionButtonPressed => _captionButtonPressed.value;
 
   final _hasUnsavedChanges = true.obs; // variable to track card visibility
   set hasUnsavedChanges(value) => _hasUnsavedChanges.value = value;
-  get hasUnsavedChanges => _hasUnsavedChanges.value;
+  bool get hasUnsavedChanges => _hasUnsavedChanges.value;
 
   final _arguments = {}.obs;
   set arguments(value) => _arguments.value = value;
-  get arguments => _arguments.value;
+  Map<dynamic, dynamic> get arguments => _arguments.value;
 
   final _donate = false.obs;
   set donate(value) => _donate.value = value;
-  get donate => _donate.value;
+  bool get donate => _donate.value;
 
   final _isLoading = false.obs;
   set isLoading(value) => _isLoading.value = value;
-  get isLoading => _isLoading.value;
+  bool get isLoading => _isLoading.value;
 
   final _check = false.obs;
   set check(value) => _check.value = value;
-  get check => _check.value;
+  bool get check => _check.value;
 
   final _isleaving = "".obs;
   set isleaving(value) => _isleaving.value = value;
-  get isleaving => _isleaving.value;
+  String get isleaving => _isleaving.value;
 
   final _iscamera = false.obs;
   set iscamera(value) => _iscamera.value = value;
-  get iscamera => _iscamera.value;
+  bool get iscamera => _iscamera.value;
 
   final _isshareaudio = false.obs;
   set isshareaudio(value) => _isshareaudio.value = value;
-  get isshareaudio => _isshareaudio.value;
+  bool get isshareaudio => _isshareaudio.value;
 
   final bigbluebuttonsdkPlugin = Bigbluebuttonsdk();
 
   final _meetingdetails = Rx<Meetingdetails?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
-  get meetingdetails => _meetingdetails.value;
+  Meetingdetails? get meetingdetails => _meetingdetails.value;
 
   final _roomdetails = {}.obs;
   set roomdetails(value) => _roomdetails.value = value;
-  get roomdetails => _roomdetails.value;
+  Map<dynamic, dynamic> get roomdetails => _roomdetails.value;
 
   final _donationdetails = [].obs;
   set donationdetails(value) => _donationdetails.value = value;
-  get donationdetails => _donationdetails.value;
+  List<dynamic> get donationdetails => _donationdetails.value;
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
-  get webrtctoken => _webrtctoken.value;
+  String get webrtctoken => _webrtctoken.value;
 
   final _guestpermission = "Always Accept".obs;
   set guestpermission(value) => _guestpermission.value = value;
-  get guestpermission => bigbluebuttonsdkPlugin.meetingResponse?.fields.usersProp.guestPolicy;
+  String? get guestpermission => bigbluebuttonsdkPlugin.meetingResponse?.fields.usersProp.guestPolicy;
 
   var chatcontroller = Get.put(ChatController());
   var deviceSettingscontroller = Get.put(DeviceSettingsController());
@@ -112,19 +111,19 @@ class postjoinController extends GetxController
 
   final _iswhiteboard = false.obs;
   set iswhiteboard(value) => _iswhiteboard.value = value;
-  get iswhiteboard => _iswhiteboard.value;
+  bool get iswhiteboard => _iswhiteboard.value;
 
   late TabController tabController;
 
   StreamSubscription? _subscription;
 
-  var _muteAll = false.obs;
+  final _muteAll = false.obs;
   set muteAll(value) => _muteAll.value = value;
-  get muteAll => _muteAll.value;
+  bool get muteAll => _muteAll.value;
 
-  var _muteAllExceptPresenter = false.obs;
+  final _muteAllExceptPresenter = false.obs;
   set muteAllExceptPresenter(value) => _muteAllExceptPresenter.value = value;
-  get muteAllExceptPresenter => _muteAllExceptPresenter.value;
+  bool get muteAllExceptPresenter => _muteAllExceptPresenter.value;
   @override
   void onInit() {
     // Initialize TabController
@@ -176,7 +175,7 @@ class postjoinController extends GetxController
     debugPrint('PiP enabled? $status');
   }
 
-  startroom() {
+  void startroom() {
     bigbluebuttonsdkPlugin.initialize(
       baseurl: baseurl,
       webrtctoken: webrtctoken,
@@ -348,176 +347,6 @@ class postjoinController extends GetxController
           );
         }
     );
-
-    // final sub = bigbluebuttonsdkPlugin.events.listen((e) {
-    //   if (e.collection == 'current-user' && e.fields?['loggedOut'] == true) {
-    //       if(isleaving.toString().isEmpty){
-    //         isleaving = value;
-    //       }
-    //       // {msg: changed, collection: current-user, id: zpSwyR4fx29EfkvSv, fields: {loggedOut: true}}
-    //       //     {msg: changed, collection: meetings, id: QBbf7iqSYXcSuz23B, fields: {meetingEnded: true, meetingEndedBy: w_tirr8ianrx6x, meetingEndedReason: ENDED_AFTER_USER_LOGGED_OUT}}
-    //
-    //
-    //           // {"msg":"changed","collection":"meetings","id":"YxSfTK6XyPseW62Ti","fields":{"meetingEnded":true,"meetingEndedBy":"w_cqfbqdc3mmxi","meetingEndedReason":"ENDED_AFTER_USER_LOGGED_OUT"}}
-    //       Get.back(result: isleaving);
-    //   }
-    //   if (e.collection == 'external-video-meetings') {
-    //       showDialog(
-    //         barrierDismissible: false,
-    //         context: Get.context!,
-    //         builder: (BuildContext context) => ShowVideoScreen(
-    //           videoLink: value,
-    //           ishowecinema: bigbluebuttonsdkPlugin.ishowecinema,
-    //         ),
-    //       );
-    //   }
-    //   if (e.collection == 'polls') {
-    //
-    //       // if(value){
-    //       //   print("object");
-    //       //   print(value);
-    //         // pullcontroller.pullresult = response;
-    //         // final currentId = response["id"];
-    //         // if (!pullcontroller.ispulling &&
-    //         //     currentId != pullcontroller.lastPollId) {
-    //         //   pullcontroller.ispulling = true;
-    //         //   pullcontroller.lastPollId = currentId;
-    //         if (Get.isBottomSheetOpen == true) {
-    //           Get.back();
-    //         }
-    //         Get.bottomSheet(Pullquestionandanswer(json: e.toJson()))
-    //               .then((value) {
-    //             pullcontroller.ispulling = false;
-    //             pullcontroller.lastPollId = "";
-    //           });
-    //         // }
-    //       // }else{
-    //       //   pullcontroller.ispulling = false;
-    //       //   pullcontroller.lastPollId = "";
-    //       // }
-    //   }
-    //   if (e.collection == 'current-poll') {
-    //     //   pullcontroller.pullresult = value;
-    //     //   Get.bottomSheet(Pollsresult()).then((value) {
-    //     //     Future.delayed(const Duration(seconds: 3), () {
-    //     //       pullcontroller.pullresult = {};
-    //     //     });
-    //     //   });
-    //   }
-    //   if (e.collection == 'breakouts') {
-    //
-    //     //   Get.dialog(
-    //     //     Scaffold(
-    //     //       // backgroundColor: const Color.fromRGBO(0, 0, 0, 0.76),
-    //     //       body: Center(
-    //     //         child: Container(
-    //     //           width: 360,
-    //     //           height: 664,
-    //     //           decoration: const BoxDecoration(
-    //     //             color: Color.fromRGBO(62, 132, 102, 1),
-    //     //             borderRadius: BorderRadius.all(Radius.circular(16)),
-    //     //           ),
-    //     //           child: Padding(
-    //     //             padding: const EdgeInsets.symmetric(horizontal: 25),
-    //     //             child: Column(
-    //     //               // mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //     //               children: [
-    //     //                 Text(
-    //     //                   'DURATIONS',
-    //     //                   style: TextStyle(
-    //     //                     color: Colors.white,
-    //     //                     fontSize: 16,
-    //     //                     fontFamily: 'Inter',
-    //     //                     fontWeight: FontWeight.w500,
-    //     //                     height: 0.08,
-    //     //                     letterSpacing: 0.10,
-    //     //                   ),
-    //     //                 ),
-    //     //                 Container(
-    //     //                   decoration: ShapeDecoration(
-    //     //                     shape: RoundedRectangleBorder(
-    //     //                       side: BorderSide(
-    //     //                         width: 1,
-    //     //                         color: Color(0xFF5D957E),
-    //     //                       ),
-    //     //                       borderRadius: BorderRadius.circular(5),
-    //     //                     ),
-    //     //                   ),
-    //     //                   child: Row(
-    //     //                     mainAxisSize: MainAxisSize.min,
-    //     //                     mainAxisAlignment: MainAxisAlignment.center,
-    //     //                     crossAxisAlignment: CrossAxisAlignment.center,
-    //     //                     children: [
-    //     //                       Text(
-    //     //                         '14:39',
-    //     //                         style: TextStyle(
-    //     //                           color: Colors.white.withOpacity(
-    //     //                             0.9800000190734863,
-    //     //                           ),
-    //     //                           fontSize: 30,
-    //     //                           fontFamily: 'Inter',
-    //     //                           fontWeight: FontWeight.w500,
-    //     //                           height: 0.02,
-    //     //                           letterSpacing: 0.10,
-    //     //                         ),
-    //     //                       ),
-    //     //                     ],
-    //     //                   ),
-    //     //                 ),
-    //     //                 Row(
-    //     //                   children: [
-    //     //                     Expanded(
-    //     //                       child: Column(
-    //     //                         children: [
-    //     //                           Text(
-    //     //                             'Room 1 (0)',
-    //     //                             style: TextStyle(
-    //     //                               color: Colors.white,
-    //     //                               fontSize: 15,
-    //     //                               fontFamily: 'Inter',
-    //     //                               fontWeight: FontWeight.w600,
-    //     //                             ),
-    //     //                           ),
-    //     //                           Text(
-    //     //                             'View',
-    //     //                             textAlign: TextAlign.right,
-    //     //                             style: TextStyle(
-    //     //                               color: Colors.white,
-    //     //                               fontSize: 13,
-    //     //                               fontFamily: 'Inter',
-    //     //                               fontWeight: FontWeight.w500,
-    //     //                             ),
-    //     //                           ),
-    //     //                         ],
-    //     //                       ),
-    //     //                     ),
-    //     //                     SizedBox(width: 20),
-    //     //                     Text(
-    //     //                       'Join room |  Join audio',
-    //     //                       textAlign: TextAlign.right,
-    //     //                       style: TextStyle(
-    //     //                         color: Colors.white,
-    //     //                         fontSize: 15,
-    //     //                         fontFamily: 'Inter',
-    //     //                         fontWeight: FontWeight.w500,
-    //     //                       ),
-    //     //                     ),
-    //     //                   ],
-    //     //                 ),
-    //     //               ],
-    //     //             ),
-    //     //           ),
-    //     //         ),
-    //     //       ),
-    //     //     ),
-    //     //     barrierDismissible: false,
-    //     //     barrierColor: Colors.transparent,
-    //     //     // barrierLabel: ' Full Screen Dialog',
-    //     //     transitionDuration: const Duration(milliseconds: 400),
-    //     //   );
-    //   }
-    // });
-
     // checkdonation();
     // Set up a timer to call checkdonation() every 10 seconds
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {

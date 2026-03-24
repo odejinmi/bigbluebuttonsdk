@@ -14,6 +14,8 @@ import '../screens/modal/removeuserdialog.dart';
 class PeopleTab extends GetView<postjoinController> {
   bool videoOn = false;
 
+  PeopleTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
@@ -391,7 +393,7 @@ class PeopleTab extends GetView<postjoinController> {
   }
 
   // =============Dialog to Roles of participants=======================
-  _showChangeRoleDialog(Participant participan) {
+  void _showChangeRoleDialog(Participant participan) {
     showGeneralDialog(
         context: Get.context!,
         barrierDismissible: false,
@@ -402,7 +404,7 @@ class PeopleTab extends GetView<postjoinController> {
         });
   }
 
-  _showRemoveUserDialog(Participant participan) {
+  void _showRemoveUserDialog(Participant participan) {
     showGeneralDialog(
         context: Get.context!,
         barrierDismissible: false,

@@ -1,8 +1,7 @@
 part of './app_pages.dart';
 
-/**
- * GetX Generator - fb.com/htngu.99
- * */
+/// GetX Generator - fb.com/htngu.99
+///
 abstract class Routes {
   static const JOINMEETING = '/join/:id'; // join page via link
   static const PREJOIN = '/prejoin'; // prejoin page

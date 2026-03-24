@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import '../../controller/PresentationController.dart';
 
 class Presentation extends GetView<PresentationController> {
-  const Presentation({Key? key}) : super(key: key);
+  const Presentation({super.key});
 
   @override
   Widget build(BuildContext context) {

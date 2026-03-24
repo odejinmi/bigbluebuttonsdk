@@ -9,7 +9,7 @@ import '../bigbluebuttonsdk.dart';
 class Screensharewebsocket extends GetxController {
   final _isWebsocketRunning = false.obs; //status of a websocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
-  get isWebsocketRunning => _isWebsocketRunning.value;
+  bool get isWebsocketRunning => _isWebsocketRunning.value;
   var websocket = Get.find<Websocket>();
 
   WebSocketChannel? channel; //initialize a websocket channel
@@ -25,19 +25,19 @@ class Screensharewebsocket extends GetxController {
   // videoRenderer for localPeer
   final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
-  get localRTCVideoRenderer => _localRTCVideoRenderer.value;
+  RTCVideoRenderer get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
-  get webrtctoken => _webrtctoken.value;
+  String get webrtctoken => _webrtctoken.value;
 
   final _mediawebsocketurl = "".obs;
   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
-  get mediawebsocketurl => _mediawebsocketurl.value;
+  String get mediawebsocketurl => _mediawebsocketurl.value;
 
-  var _meetingDetails = Rx<Meetingdetails?>(null);
+  final _meetingDetails = Rx<Meetingdetails?>(null);
   set meetingDetails(value) => _meetingDetails.value = value;
-  get meetingDetails => _meetingDetails.value;
+  Meetingdetails? get meetingDetails => _meetingDetails.value;
 
   @override
   void onInit() {

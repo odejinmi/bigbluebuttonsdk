@@ -10,6 +10,8 @@ import 'modal/leavesession.dart';
 // import 'package:govmail/tabs/people_tab.dart';
 
 class MeetingScreen extends GetView<postjoinController> {
+  const MeetingScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Obx(() {

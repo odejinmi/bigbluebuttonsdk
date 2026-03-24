@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Takespotattendance extends GetView<postjoinController> {
-  const Takespotattendance({Key? key}) : super(key: key);
+  const Takespotattendance({super.key});
 
   @override
   Widget build(BuildContext context) {

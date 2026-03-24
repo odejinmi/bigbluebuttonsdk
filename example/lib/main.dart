@@ -27,7 +27,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  final String _platformVersion = 'Unknown';
 
   @override
   void initState() {
@@ -45,14 +45,14 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF2E8B57)),
         useMaterial3: true,
         scrollbarTheme: ScrollbarThemeData(
-          thumbVisibility: MaterialStateProperty.all(true),
-          trackVisibility: MaterialStateProperty.all(true),
-          thickness: MaterialStateProperty.all(15.0),
+          thumbVisibility: WidgetStateProperty.all(true),
+          trackVisibility: WidgetStateProperty.all(true),
+          thickness: WidgetStateProperty.all(15.0),
           radius: const Radius.circular(30),
-          thumbColor: MaterialStateProperty.all(
+          thumbColor: WidgetStateProperty.all(
               const Color.fromRGBO(255, 255, 255, 0.71)),
           trackColor:
-              MaterialStateProperty.all(const Color.fromRGBO(51, 125, 93, 1)),
+              WidgetStateProperty.all(const Color.fromRGBO(51, 125, 93, 1)),
           // trackBorderColor: MaterialStateProperty.all(Colors.white),
           // minThumbLength: 60,
           mainAxisMargin: 130,

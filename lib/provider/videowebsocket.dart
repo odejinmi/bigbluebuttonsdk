@@ -9,11 +9,11 @@ import '../bigbluebuttonsdk.dart';
 class Videowebsocket extends GetxController {
   final _isWebsocketRunning = false.obs; //status of a websocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
-  get isWebsocketRunning => _isWebsocketRunning.value;
+  bool get isWebsocketRunning => _isWebsocketRunning.value;
 
   final _isvideo = false.obs; //status of a websocket
   set isvideo(value) => _isvideo.value = value;
-  get isvideo => _isvideo.value;
+  bool get isvideo => _isvideo.value;
 
   WebSocketChannel? channel; //initialize a websocket channel
   var retryLimit = 3;
@@ -22,34 +22,34 @@ class Videowebsocket extends GetxController {
   final _edSet =
       MediaDeviceInfo(label: '', deviceId: '1').obs; //status of a websocket
   set edSet(value) => _edSet.value = value;
-  get edSet => _edSet.value;
+  MediaDeviceInfo get edSet => _edSet.value;
 
   // mediaStream for localPeer
   MediaStream? _localStream;
   // list of rtcCandidates to be sent over signalling
   List<RTCIceCandidate> rtcIceCadidates = [];
 
-  var _width = 640.obs;
+  final _width = 640.obs;
   set width(value) => _width.value = value;
-  get width => _width.value;
+  int get width => _width.value;
 
-  var _frameRate = 15.obs;
+  final _frameRate = 15.obs;
   set frameRate(value) => _frameRate.value = value;
-  get frameRate => _frameRate.value;
+  int get frameRate => _frameRate.value;
 
   var websocket = Get.find<Websocket>();
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
-  get webrtctoken => _webrtctoken.value;
+  String get webrtctoken => _webrtctoken.value;
 
   final _mediawebsocketurl = "".obs;
   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
-  get mediawebsocketurl => _mediawebsocketurl.value;
+  String get mediawebsocketurl => _mediawebsocketurl.value;
 
-  var _meetingdetails = Rx<Meetingdetails?>(null);
+  final _meetingdetails = Rx<Meetingdetails?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
-  get meetingdetails => _meetingdetails.value;
+  Meetingdetails? get meetingdetails => _meetingdetails.value;
 
   @override
   void onInit() {
@@ -61,7 +61,7 @@ class Videowebsocket extends GetxController {
     getedSet();
   }
 
-  getedSet() async {
+  Future<void> getedSet() async {
     var value = await getdevices();
     edSet = value.first;
   }
@@ -72,7 +72,7 @@ class Videowebsocket extends GetxController {
       var devices = await mediaDevices.enumerateDevices();
       return devices.where((device) => device.kind == 'videoinput').toList();
     } catch (e) {
-      print('Error enumerating devices: ${e}');
+      print('Error enumerating devices: $e');
       rethrow;
     }
   }
@@ -104,7 +104,7 @@ class Videowebsocket extends GetxController {
       final stream = await mediaDevices.getUserMedia(constraints);
       return stream;
     } catch (e) {
-      print('Error creating local video stream: ${e}');
+      print('Error creating local video stream: $e');
       rethrow;
     }
   }
@@ -126,7 +126,7 @@ class Videowebsocket extends GetxController {
       });
       negotiate();
     } catch (e) {
-      print('Error in createPeerconnect: ${e}');
+      print('Error in createPeerconnect: $e');
       rethrow;
     }
   }
@@ -196,7 +196,7 @@ class Videowebsocket extends GetxController {
         await negotiate();
       }
     } catch (e) {
-      print('Error adjusting video: ${e}');
+      print('Error adjusting video: $e');
     }
   }
 
@@ -280,7 +280,7 @@ class Videowebsocket extends GetxController {
         receiveStart();
       }
     } catch (e) {
-      print('Error in negotiate: ${e}');
+      print('Error in negotiate: $e');
     }
   }
 
@@ -288,9 +288,9 @@ class Videowebsocket extends GetxController {
     try {
       // Exchange ICE candidates with the Kurento server
       await peerConnection?.addCandidate(RTCIceCandidate(candidate!, '', 0));
-      print('Received and added ICE candidate: ${candidate}');
+      print('Received and added ICE candidate: $candidate');
     } catch (e) {
-      print('Error in receiveCandidate: ${e}');
+      print('Error in receiveCandidate: $e');
     }
   }
 
@@ -304,7 +304,7 @@ class Videowebsocket extends GetxController {
           ?.setRemoteDescription(RTCSessionDescription(answer, 'answer'));
       print('Set remote description');
     } catch (e) {
-      print('Error in receiveSDP: ${e}');
+      print('Error in receiveSDP: $e');
     }
   }
 
@@ -335,7 +335,7 @@ class Videowebsocket extends GetxController {
       channel = WebSocketChannel.connect(
         Uri.parse(mediawebsocketurl), //connect to a websocket
       );
-      print('WebSocketChannel connected to: ${mediawebsocketurl}');
+      print('WebSocketChannel connected to: $mediawebsocketurl');
       var payload = {
         "id": "start",
         "type": "video",
@@ -349,7 +349,7 @@ class Videowebsocket extends GetxController {
       isWebsocketRunning = true;
       channel!.stream.listen(
         (event) {
-          print('WebSocket event: ${event}');
+          print('WebSocket event: $event');
           var e = jsonDecode(event);
           switch (e['id']) {
             case 'startResponse':
@@ -368,7 +368,7 @@ class Videowebsocket extends GetxController {
               }
               break;
             default:
-              print('WebSocket event not handled: ${e}');
+              print('WebSocket event not handled: $e');
           }
         },
         onDone: () {
@@ -376,7 +376,7 @@ class Videowebsocket extends GetxController {
           isWebsocketRunning = false;
         },
         onError: (err) {
-          print('WebSocket onError: ${err}');
+          print('WebSocket onError: $err');
           isWebsocketRunning = false;
           if (retryLimit > 0) {
             retryLimit--;
@@ -385,7 +385,7 @@ class Videowebsocket extends GetxController {
       );
       update();
     } catch (e) {
-      print('Error in videoStream: ${e}');
+      print('Error in videoStream: $e');
     }
   }
 
@@ -450,7 +450,7 @@ class Videowebsocket extends GetxController {
   }
 
   String streamID(id) =>
-      "${meetingdetails.internalUserId}${meetingdetails.authToken}${id}";
+      "${meetingdetails.internalUserId}${meetingdetails.authToken}$id";
 
   @override
   void onClose() {

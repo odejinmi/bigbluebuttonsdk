@@ -9,6 +9,8 @@ import 'model/meeting_recordings.dart';
 import 'model/newactivity.dart';
 
 class DashboardPage extends GetView<DashboardController> {
+  const DashboardPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -88,6 +90,7 @@ class DashboardPage extends GetView<DashboardController> {
               "data": controller.data.value,
             });
           },
+          backgroundColor: Colors.white,
           // child: Text(
           //   "Join Meeting",
           //   textAlign: TextAlign.center,
@@ -98,7 +101,6 @@ class DashboardPage extends GetView<DashboardController> {
             // height: 50,
             // color: Colors.green,
           ),
-          backgroundColor: Colors.white,
         ),
       ),
     );

@@ -18,7 +18,7 @@ import 'modal/share_screen_card.dart';
 import 'modal/share_screen_dialog.dart';
 
 class Fullmeetingscreen extends GetView<postjoinController> {
-  const Fullmeetingscreen({Key? key}) : super(key: key);
+  const Fullmeetingscreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +117,6 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                   SizedBox(
                     width: screenWidth * 0.02,
                   ),
-                  if (logic.meetingResponse?.fields.lockSettingsProps
-                      .disablePublicChat == false)
                   GestureDetector(
                       onTap: () {
                         if (controller.scaffoldKey.currentState!.isDrawerOpen) {
@@ -635,7 +633,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
           Positioned(
             right: 4,
             bottom: 4,
-            child: Container(
+            child: SizedBox(
               // width: 70,
               height: 32,
               child: Row(
@@ -650,8 +648,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                           borderRadius: BorderRadius.circular(36),
                         ),
                       ),
-                      child: Icon(Icons.mic_off_outlined, color: Colors.white),
                       alignment: Alignment.center,
+                      child: Icon(Icons.mic_off_outlined, color: Colors.white),
                     ),
                   if (participant.fields!.raiseHand != null &&
                       participant.fields!.raiseHand!)

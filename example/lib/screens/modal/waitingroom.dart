@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Waitingroom extends GetView<postjoinController> {
-  const Waitingroom({Key? key}) : super(key: key);
+  const Waitingroom({super.key});
 
   @override
   Widget build(BuildContext context) {

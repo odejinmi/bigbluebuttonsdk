@@ -5,7 +5,7 @@ import 'endsession.dart';
 import 'leavesession.dart';
 
 class Endroom extends StatelessWidget {
-  const Endroom({Key? key}) : super(key: key);
+  const Endroom({super.key});
 
   @override
   Widget build(BuildContext context) {

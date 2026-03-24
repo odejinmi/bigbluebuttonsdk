@@ -6,38 +6,37 @@ import '../../routes/app_pages.dart';
 import '../../utils/diorequest.dart';
 import '../../utils/strings.dart';
 
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class leftsessionController extends GetxController {
-  var _obj = ''.obs;
+  final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
-  var _meetingdetails = Rx<Map<String, dynamic>?>(null);
+  final _meetingdetails = Rx<Map<String, dynamic>?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
-  get meetingdetails => _meetingdetails.value;
+  Map<String, dynamic>? get meetingdetails => _meetingdetails.value;
 
-  var _roomdetails = {}.obs;
+  final _roomdetails = {}.obs;
   set roomdetails(value) => _roomdetails.value = value;
-  get roomdetails => _roomdetails.value;
+  Map<dynamic, dynamic> get roomdetails => _roomdetails.value;
 
   final _accesscode = "".obs;
   set accesscode(value) => _accesscode.value = value;
-  get accesscode => _accesscode.value;
+  String get accesscode => _accesscode.value;
 
   final _reason = "".obs;
   set reason(value) => _reason.value = value;
-  get reason => _reason.value;
+  String get reason => _reason.value;
 
   final _token = "".obs;
   set token(value) => _token.value = value;
-  get token => _token.value;
+  String get token => _token.value;
 
-  var _data = {}.obs;
+  final _data = {}.obs;
   set data(value) => _data.value = value;
-  get data => _data.value;
+  Map<dynamic, dynamic> get data => _data.value;
 
   @override
   void onInit() {

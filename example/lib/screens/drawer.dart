@@ -185,7 +185,7 @@ class _DrawerCompState extends State<DrawerComp> {
               ListTile(
                 leading: const Icon(Icons.mic_off_outlined, size: 20),
                 title: Text(
-                  '${postjoincontroller.muteAll?"Unmute New Users":"Mute All & New Users"}',
+                  postjoincontroller.muteAll?"Unmute New Users":"Mute All & New Users",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
@@ -193,10 +193,8 @@ class _DrawerCompState extends State<DrawerComp> {
                 ),
                 onTap: () async {
                   var result = await postjoincontroller.bigbluebuttonsdkPlugin.muteallusers();
-                  if(result != null){
-                    postjoincontroller.muteAll = !postjoincontroller.muteAll;
-                  }
-                },
+                  postjoincontroller.muteAll = !postjoincontroller.muteAll;
+                                },
               ),
 
             // if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
@@ -321,7 +319,7 @@ class _DrawerCompState extends State<DrawerComp> {
   }
 
 // =============Dialog for showing Donations=======================
-  _showDonationsDialog() {
+  void _showDonationsDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -333,7 +331,7 @@ class _DrawerCompState extends State<DrawerComp> {
   }
 
 // =============Dialog for Settings section=======================
-  _showSettingsDialog() {
+  void _showSettingsDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -344,7 +342,7 @@ class _DrawerCompState extends State<DrawerComp> {
         });
   }
 
-  _showAIChatDialog(var meetingdetails) {
+  void _showAIChatDialog(var meetingdetails) {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -355,7 +353,7 @@ class _DrawerCompState extends State<DrawerComp> {
         });
   }
 
-  _showCinemaDialog() {
+  void _showCinemaDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,

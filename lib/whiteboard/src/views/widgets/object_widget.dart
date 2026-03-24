@@ -12,10 +12,10 @@ class _ObjectWidget extends StatefulWidget {
 
   /// Creates a [_ObjectWidget] with the given [controller], [child] widget.
   const _ObjectWidget({
-    Key? key,
+    super.key,
     required this.child,
     this.interactionEnabled = true,
-  }) : super(key: key);
+  });
 
   @override
   _ObjectWidgetState createState() => _ObjectWidgetState();
@@ -104,7 +104,7 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
     super.initState();
 
     // Listen to the stream of events from the paint controller
-    WidgetsBinding.instance?.addPostFrameCallback((timestamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timestamp) {
       controllerEventSubscription =
           PainterController.of(context).events.listen((event) {
         // When an [RemoveDrawableEvent] event is received and removed drawable is the selected object
@@ -1017,11 +1017,11 @@ class _ObjectWidgetState extends State<_ObjectWidget> {
   /// A callback that is called when a transformation occurs in the [InteractiveViewer] in the widget tree.
   void onTransformUpdated() {
     setState(() {
-      final _m4storage =
+      final m4storage =
           PainterController.of(context).transformationController.value;
-      transformationScale = math.sqrt(_m4storage[8] * _m4storage[8] +
-          _m4storage[9] * _m4storage[9] +
-          _m4storage[10] * _m4storage[10]);
+      transformationScale = math.sqrt(m4storage[8] * m4storage[8] +
+          m4storage[9] * m4storage[9] +
+          m4storage[10] * m4storage[10]);
     });
   }
 }
@@ -1050,13 +1050,10 @@ class _ObjectControlBox extends StatelessWidget {
   ///
   /// By default, it will be a [BoxShape.rectangle] shape and not active.
   const _ObjectControlBox({
-    Key? key,
+    super.key,
     this.shape = BoxShape.rectangle,
     this.active = false,
-    this.inactiveColor = Colors.white,
-    this.activeColor,
-    this.shadowColor = Colors.black,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

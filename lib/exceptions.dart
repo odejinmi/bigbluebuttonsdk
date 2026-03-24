@@ -12,15 +12,15 @@ class DuploException implements Exception {
 }
 
 class AuthenticationException extends DuploException {
-  AuthenticationException(String message) : super(message);
+  AuthenticationException(String super.message);
 }
 
 class CardException extends DuploException {
-  CardException(String message) : super(message);
+  CardException(String super.message);
 }
 
 class ChargeException extends DuploException {
-  ChargeException(String? message) : super(message);
+  ChargeException(super.message);
 }
 
 class InvalidAmountException extends DuploException {
@@ -38,7 +38,7 @@ class InvalidEmailException extends DuploException {
 }
 
 class DuploSdkNotInitializedException extends DuploException {
-  DuploSdkNotInitializedException(String message) : super(message);
+  DuploSdkNotInitializedException(String super.message);
 }
 
 class ProcessingException extends ChargeException {

@@ -63,6 +63,7 @@ class ChatMessage {
     "chatId": chatId,
   };
 
+  @override
   String toString() => toJson().toString();
 }
 

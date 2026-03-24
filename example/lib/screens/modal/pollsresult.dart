@@ -8,7 +8,7 @@ import '../../controller/PullController.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Pollsresult extends GetView<PullController> {
-  const Pollsresult({Key? key}) : super(key: key);
+  const Pollsresult({super.key});
 
   String calculate(pollanalyseparser, index) {
     if (pollanalyseparser.answers[index].numVotes == null) {

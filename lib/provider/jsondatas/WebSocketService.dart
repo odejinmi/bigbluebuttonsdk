@@ -124,21 +124,21 @@ abstract class WebSocketService {
 
   var _externalvideomeetings;
   set externalvideomeetings (value) => _externalvideomeetings = value;
-  get externalvideomeetings => _externalvideomeetings;
+  dynamic get externalvideomeetings => _externalvideomeetings;
 
   var _polls;
   set polls (value) => _polls = value;
-  get polls => _polls;
+  dynamic get polls => _polls;
 
   var _currentpoll;
   set currentpoll (value) => _currentpoll = value;
-  get currentpoll => _currentpoll;
+  dynamic get currentpoll => _currentpoll;
 
   var _breakouts;
   set breakouts (value) => _breakouts = value;
-  get breakouts => _breakouts;
+  dynamic get breakouts => _breakouts;
 
   var _leavemeeting;
   set leavemeeting (value) => _leavemeeting = value;
-  get leavemeeting => _leavemeeting;
+  dynamic get leavemeeting => _leavemeeting;
 }

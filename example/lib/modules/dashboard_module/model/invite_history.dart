@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../dashboard_controller.dart';
 
 class InviteHistoryPage extends StatelessWidget {
-  const InviteHistoryPage({Key? key}) : super(key: key);
+  const InviteHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -64,29 +64,27 @@ class FlutterPainter extends StatelessWidget {
 
   /// Creates a [FlutterPainter] with the given [controller] and optional callbacks.
   const FlutterPainter(
-      {Key? key,
+      {super.key,
       required this.controller,
       this.onDrawableCreated,
       this.onDrawableDeleted,
       this.onSelectedObjectDrawableChanged,
       this.onPainterSettingsChanged})
-      : _builder = _defaultBuilder,
-        super(key: key);
+      : _builder = _defaultBuilder;
 
   /// Creates a [FlutterPainter] with the given [controller], [builder] and optional callbacks.
   ///
   /// Using this constructor, the [builder] will be called any time the [controller] updates.
   /// It is useful if you want to build UI that automatically rebuilds on updates from [controller].
   const FlutterPainter.builder(
-      {Key? key,
+      {super.key,
       required this.controller,
       required FlutterPainterBuilderCallback builder,
       this.onDrawableCreated,
       this.onDrawableDeleted,
       this.onSelectedObjectDrawableChanged,
       this.onPainterSettingsChanged})
-      : _builder = builder,
-        super(key: key);
+      : _builder = builder;
 
   @override
   Widget build(BuildContext context) {
@@ -135,13 +133,12 @@ class _FlutterPainterWidget extends StatelessWidget {
 
   /// Creates a [_FlutterPainterWidget] with the given [controller] and optional callbacks.
   const _FlutterPainterWidget(
-      {Key? key,
+      {super.key,
       required this.controller,
       this.onDrawableCreated,
       this.onDrawableDeleted,
       this.onSelectedObjectDrawableChanged,
-      this.onPainterSettingsChanged})
-      : super(key: key);
+      this.onPainterSettingsChanged});
 
   @override
   Widget build(BuildContext context) {

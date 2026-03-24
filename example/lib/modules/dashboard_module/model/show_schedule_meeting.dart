@@ -9,7 +9,7 @@ import '../dashboard_controller.dart';
 
 class ShowScheduleMeeting extends StatefulWidget {
   final Roomlistparser roomData;
-  const ShowScheduleMeeting({Key? key, required this.roomData}) : super(key: key);
+  const ShowScheduleMeeting({super.key, required this.roomData});
 
   @override
   _ShowScheduleMeetingState createState() => _ShowScheduleMeetingState();

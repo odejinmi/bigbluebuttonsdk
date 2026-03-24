@@ -211,7 +211,7 @@ class Diorequest {
     }
   }
 
-  logout() async {
+  Future<void> logout() async {
     // await getstorage().remove("token");
     Get.offAllNamed("/login");
   }

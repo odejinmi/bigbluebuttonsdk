@@ -4,19 +4,19 @@ import 'package:get/get.dart';
 
 class ChatController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  var _isEmojiVisible = false.obs; // variable to track card visibility
+  final _isEmojiVisible = false.obs; // variable to track card visibility
   set isEmojiVisible(value) => _isEmojiVisible.value = value;
-  get isEmojiVisible => _isEmojiVisible.value;
+  bool get isEmojiVisible => _isEmojiVisible.value;
 
   final bigbluebuttonsdkPlugin = Bigbluebuttonsdk();
 
-  var _chatid = "MAIN-PUBLIC-GROUP-CHAT".obs; // Initial zoom level (100%)
+  final _chatid = "MAIN-PUBLIC-GROUP-CHAT".obs; // Initial zoom level (100%)
   set chatid(value) => _chatid.value = value;
-  get chatid => _chatid.value;
+  String get chatid => _chatid.value;
 
   final _messages = <ChatMessage>[].obs;
   set messages(value) => _messages.value = value;
-  get messages => _messages;
+  RxList<ChatMessage> get messages => _messages;
 
   final messageController = TextEditingController();
 

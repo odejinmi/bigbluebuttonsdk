@@ -21,13 +21,13 @@ import 'model/internal_user.dart';
 
 class DashboardController extends GetxController {
   var appVersion = ''.obs;
-  var _obj = ''.obs;
+  final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
-  var _token = ''.obs;
+  final _token = ''.obs;
   set token(value) => _token.value = value;
-  get token => _token.value;
+  String get token => _token.value;
   
   var data = {}.obs;
 
@@ -35,7 +35,7 @@ class DashboardController extends GetxController {
   var hasError = false.obs;
   var meetingController = TextEditingController().obs;
   // ;
-  var _originList = <Roomlistparser>[].obs;
+  final _originList = <Roomlistparser>[].obs;
   set originList(value) => _originList.value = value;
   List<Roomlistparser> get originList => _originList.value;
 
@@ -213,13 +213,13 @@ class DashboardController extends GetxController {
 
   void createMeeting() async {
     isLoading.value = true;
-    var json_body = {
+    var jsonBody = {
       "name": meetingController.value.text,
       "logout_url": "",
       "welcome_message": ""
     };
     var cmddetails =
-        await Diorequest().post("create-room", json_body, token: token);
+        await Diorequest().post("create-room", jsonBody, token: token);
     meetingController.value.clear();
 
     isLoading.value = false;
@@ -249,7 +249,7 @@ class DashboardController extends GetxController {
     final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
     final DateFormat timeFormat = DateFormat('HH:mm');
 
-    var json_body = {
+    var jsonBody = {
       "room_id": roomData.id,
       "hostname": hostname,
       "fromtime": timeFormat.format(fromDateTime),
@@ -263,7 +263,7 @@ class DashboardController extends GetxController {
     };
 
     var cmddetails =
-        await Diorequest().post("app/invite", json_body, token: token);
+        await Diorequest().post("app/invite", jsonBody, token: token);
 
     isLoading.value = false;
     dev.log("Schedule meeting response: ${cmddetails.toString()}");

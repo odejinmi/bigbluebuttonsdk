@@ -62,9 +62,9 @@ class ShowNotificationSettingsDialog extends GetView<postjoinController> {
                                       : Colors.grey),
                               activeColor: Colors.white,
                               thumbColor:
-                                  const MaterialStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               inactiveThumbColor: Colors.white,
-                              trackColor: const MaterialStatePropertyAll(
+                              trackColor: const WidgetStatePropertyAll(
                                   Color.fromRGBO(93, 149, 126, 1)),
                               inactiveTrackColor:
                                   const Color.fromRGBO(62, 132, 102, 1),
@@ -84,9 +84,9 @@ class ShowNotificationSettingsDialog extends GetView<postjoinController> {
                               // secondary: Icon(Icons.room, color: Colors.white),
                               activeColor: Colors.white,
                               thumbColor:
-                                  const MaterialStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               inactiveThumbColor: Colors.white,
-                              trackColor: const MaterialStatePropertyAll(
+                              trackColor: const WidgetStatePropertyAll(
                                   Color.fromRGBO(93, 149, 126, 1)),
                               inactiveTrackColor:
                                   const Color.fromRGBO(62, 132, 102, 1),
@@ -109,9 +109,9 @@ class ShowNotificationSettingsDialog extends GetView<postjoinController> {
                                       : Colors.grey),
                               activeColor: Colors.white,
                               thumbColor:
-                                  const MaterialStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               inactiveThumbColor: Colors.white,
-                              trackColor: const MaterialStatePropertyAll(
+                              trackColor: const WidgetStatePropertyAll(
                                   Color.fromRGBO(93, 149, 126, 1)),
                               inactiveTrackColor:
                                   const Color.fromRGBO(62, 132, 102, 1),
@@ -134,11 +134,11 @@ class ShowNotificationSettingsDialog extends GetView<postjoinController> {
                                     ? Colors.white
                                     : Colors.grey,
                               ),
-                              activeColor: Colors.white,
+                              activeThumbColor: Colors.white,
                               thumbColor:
-                                  const MaterialStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               inactiveThumbColor: Colors.white,
-                              trackColor: const MaterialStatePropertyAll(
+                              trackColor: const WidgetStatePropertyAll(
                                   Color.fromRGBO(93, 149, 126, 1)),
                               inactiveTrackColor:
                                   const Color.fromRGBO(62, 132, 102, 1),
@@ -161,11 +161,11 @@ class ShowNotificationSettingsDialog extends GetView<postjoinController> {
                                     ? Colors.white
                                     : Colors.grey,
                               ),
-                              activeColor: Colors.white,
+                              activeThumbColor: Colors.white,
                               thumbColor:
-                                  const MaterialStatePropertyAll(Colors.white),
+                                  const WidgetStatePropertyAll(Colors.white),
                               inactiveThumbColor: Colors.white,
-                              trackColor: const MaterialStatePropertyAll(
+                              trackColor: const WidgetStatePropertyAll(
                                   Color.fromRGBO(93, 149, 126, 1)),
                               inactiveTrackColor:
                                   const Color.fromRGBO(62, 132, 102, 1),

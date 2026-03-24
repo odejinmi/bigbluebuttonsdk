@@ -4,26 +4,25 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../utils/diorequest.dart';
 import '../../utils/strings.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class twofactorauthenticationController extends GetxController {
-  var _obj = ''.obs;
+  final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
-  var _emailSelected = true.obs;
+  final _emailSelected = true.obs;
   set emailSelected(value) => _emailSelected.value = value;
-  get emailSelected => _emailSelected.value;
+  bool get emailSelected => _emailSelected.value;
 
-  var _argument = {}.obs;
+  final _argument = {}.obs;
   set argument(value) => _argument.value = value;
-  get argument => _argument.value;
+  Map<dynamic, dynamic> get argument => _argument.value;
 
-  var _isLoading = false.obs;
+  final _isLoading = false.obs;
   set isLoading(value) => _isLoading.value = value;
-  get isLoading => _isLoading.value;
+  bool get isLoading => _isLoading.value;
 
   List<TextEditingController> otpControllers = List.generate(
     6,

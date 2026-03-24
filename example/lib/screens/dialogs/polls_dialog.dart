@@ -8,7 +8,7 @@ import '../../controller/postjoin_controller.dart';
 
 // ====================================================================================================================
 class PollsDialog extends GetView<PullController> {
-  PollsDialog({Key? key}) : super(key: key);
+  const PollsDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

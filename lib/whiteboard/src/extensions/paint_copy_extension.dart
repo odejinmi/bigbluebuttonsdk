@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/painting.dart';
 
 import '../controllers/helpers/renderer_check/renderer_check.dart';
 

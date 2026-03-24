@@ -8,6 +8,8 @@ import '../tabs/people_tab.dart';
 import '../widget/tab_bar.dart';
 
 class ParticipantScreen extends GetView<postjoinController> {
+  const ParticipantScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);

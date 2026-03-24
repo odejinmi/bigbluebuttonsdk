@@ -7,9 +7,9 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import '../bigbluebuttonsdk.dart';
 
 class RemoteScreenShareWebSocket extends GetxController {
-  var _isWebsocketRunning = false.obs;
+  final _isWebsocketRunning = false.obs;
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
-  get isWebsocketRunning => _isWebsocketRunning.value;
+  bool get isWebsocketRunning => _isWebsocketRunning.value;
 
   WebSocketChannel? channel;
   var retryLimit = 3;
@@ -23,7 +23,7 @@ class RemoteScreenShareWebSocket extends GetxController {
   // Video renderers
   final _localRTCVideoRenderer = RTCVideoRenderer().obs;
   set localRTCVideoRenderer(value) => _localRTCVideoRenderer.value = value;
-  get localRTCVideoRenderer => _localRTCVideoRenderer.value;
+  RTCVideoRenderer get localRTCVideoRenderer => _localRTCVideoRenderer.value;
 
   // final _remoteRTCVideoRenderer = RTCVideoRenderer().obs;
   // set remoteRTCVideoRenderer(value) => _remoteRTCVideoRenderer.value = value;
@@ -31,15 +31,15 @@ class RemoteScreenShareWebSocket extends GetxController {
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
-  get webrtctoken => _webrtctoken.value;
+  String get webrtctoken => _webrtctoken.value;
 
   final _mediawebsocketurl = "".obs;
   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
-  get mediawebsocketurl => _mediawebsocketurl.value;
+  String get mediawebsocketurl => _mediawebsocketurl.value;
 
-  var _meetingdetails = Rx<Meetingdetails?>(null);
+  final _meetingdetails = Rx<Meetingdetails?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
-  get meetingdetails => _meetingdetails.value;
+  Meetingdetails? get meetingdetails => _meetingdetails.value;
 
   @override
   void onInit() {
@@ -182,7 +182,7 @@ class RemoteScreenShareWebSocket extends GetxController {
             receiveCandidate(e['candidate']['candidate']);
             break;
           case 'playStart':
-            var result2 = await peerConnection!.getRemoteStreams();
+            var result2 = peerConnection!.getRemoteStreams();
             websocket.remoteRTCVideoRenderer.srcObject = result2[0];
             // result2.forEach((sender) {
             //   print("Track remote stream: ${sender!.getTracks().length}");

@@ -7,9 +7,9 @@ class _FreeStyleWidget extends StatefulWidget {
 
   /// Creates a [_FreeStyleWidget] with the given [controller], [child] widget.
   const _FreeStyleWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   _FreeStyleWidgetState createState() => _FreeStyleWidgetState();

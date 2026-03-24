@@ -7,23 +7,23 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 
 class PullController extends GetxController
     with GetSingleTickerProviderStateMixin {
-  var _ispulling = false.obs; // variable to track card visibility
+  final _ispulling = false.obs; // variable to track card visibility
   set ispulling(value) => _ispulling.value = value;
-  get ispulling => _ispulling.value;
+  bool get ispulling => _ispulling.value;
 
-  var _selectedOption = {}.obs;
+  final _selectedOption = {}.obs;
   set selectedOption(value) => _selectedOption.value = value;
-  get selectedOption => _selectedOption.value;
+  Map<dynamic, dynamic> get selectedOption => _selectedOption.value;
 
-  var _pullresult = {}.obs;
+  final _pullresult = {}.obs;
   set pullresult(value) => _pullresult.value = value;
-  get pullresult => _pullresult.value;
+  Map<dynamic, dynamic> get pullresult => _pullresult.value;
 
   final bigbluebuttonsdkPlugin = Bigbluebuttonsdk();
 
-  var _lastPollId = "".obs;
+  final _lastPollId = "".obs;
   set lastPollId(value) => _lastPollId.value = value;
-  get lastPollId => _lastPollId.value;
+  String get lastPollId => _lastPollId.value;
 
   var question = ''.obs;
   var options = ['Option 1'].obs;

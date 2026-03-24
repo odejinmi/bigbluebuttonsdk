@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EndRecordingDialog extends StatelessWidget {
-  EndRecordingDialog({super.key});
+  const EndRecordingDialog({super.key});
 
 
   @override

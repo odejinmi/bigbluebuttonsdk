@@ -12,7 +12,7 @@ import '../whiteboard/flutter_painter.dart';
 
 
 class FlutterPainterExample extends StatefulWidget {
-  const FlutterPainterExample({Key? key}) : super(key: key);
+  const FlutterPainterExample({super.key});
 
   @override
   _FlutterPainterExampleState createState() => _FlutterPainterExampleState();
@@ -600,8 +600,7 @@ class _FlutterPainterExampleState extends State<FlutterPainterExample> {
 class RenderedImageDialog extends StatelessWidget {
   final Future<Uint8List?> imageFuture;
 
-  const RenderedImageDialog({Key? key, required this.imageFuture})
-      : super(key: key);
+  const RenderedImageDialog({super.key, required this.imageFuture});
 
   @override
   Widget build(BuildContext context) {
@@ -630,8 +629,7 @@ class RenderedImageDialog extends StatelessWidget {
 class SelectStickerImageDialog extends StatelessWidget {
   final List<String> imagesLinks;
 
-  const SelectStickerImageDialog({Key? key, this.imagesLinks = const []})
-      : super(key: key);
+  const SelectStickerImageDialog({super.key, this.imagesLinks = const []});
 
   @override
   Widget build(BuildContext context) {

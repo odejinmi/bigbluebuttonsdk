@@ -7,6 +7,8 @@ import '../../../utils/strings.dart';
 import '../dashboard_controller.dart';
 
 class Newactivity extends StatelessWidget {
+  const Newactivity({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

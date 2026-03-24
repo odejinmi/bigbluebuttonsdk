@@ -10,6 +10,8 @@ import 'annotations.dart';
 import 'main.dart';
 
 class Whiteboard extends GetView<Whiteboardcontroller> {
+  const Whiteboard({super.key});
+
 
   @override
   Widget build(BuildContext context) {

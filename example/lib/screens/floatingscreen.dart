@@ -7,6 +7,8 @@ import '../controller/postjoin_controller.dart';
 import 'String.dart';
 
 class Floatingscreen extends GetView<postjoinController> {
+  const Floatingscreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = MediaQuery.of(context).size;
@@ -156,7 +158,7 @@ class Floatingscreen extends GetView<postjoinController> {
           Positioned(
             right: 4,
             top: 4,
-            child: Container(
+            child: SizedBox(
               width: 70,
               height: 32,
               child: Stack(
@@ -175,9 +177,9 @@ class Floatingscreen extends GetView<postjoinController> {
                             borderRadius: BorderRadius.circular(36),
                           ),
                         ),
+                        alignment: Alignment.center,
                         child:
                             Icon(Icons.mic_off_outlined, color: Colors.white),
-                        alignment: Alignment.center,
                       ),
                     ),
                   ),
@@ -193,9 +195,9 @@ class Floatingscreen extends GetView<postjoinController> {
                           borderRadius: BorderRadius.circular(32),
                         ),
                       ),
+                      alignment: Alignment.center,
                       child:
                           Icon(Icons.more_vert_outlined, color: Colors.white),
-                      alignment: Alignment.center,
                     ),
                   ),
                   participant.fields!.raiseHand != null &&
@@ -212,12 +214,12 @@ class Floatingscreen extends GetView<postjoinController> {
                                 borderRadius: BorderRadius.circular(32),
                               ),
                             ),
+                            alignment: Alignment.center,
                             child: const Icon(
                               Icons.back_hand,
                               color: Colors.yellow,
                               size: 30,
                             ),
-                            alignment: Alignment.center,
                           ),
                         )
                       : const SizedBox(),
@@ -259,13 +261,13 @@ class ProfileAvatar extends StatelessWidget {
   final Participant participant;
 
   const ProfileAvatar({
-    Key? key,
+    super.key,
     required this.participant,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: 95,
       height: 95,
       child: Stack(

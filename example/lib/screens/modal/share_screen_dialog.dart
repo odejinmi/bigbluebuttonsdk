@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../controller/postjoin_controller.dart';
 
 class ShareScreenDialog extends StatelessWidget {
-  const ShareScreenDialog({Key? key}) : super(key: key);
+  const ShareScreenDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

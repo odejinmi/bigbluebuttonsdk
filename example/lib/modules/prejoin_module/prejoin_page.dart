@@ -6,11 +6,12 @@ import 'package:get/get.dart';
 
 import '../../utils/strings.dart';
 import 'prejoin_controller.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class prejoinPage extends GetView<prejoinController> {
+  const prejoinPage({super.key});
+
   @override //1234
   Widget build(BuildContext context) {
     controller.formKey = GlobalKey<FormState>();
@@ -192,7 +193,7 @@ class prejoinPage extends GetView<prejoinController> {
                                   size: 32,
                                 ),
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(
+                                    backgroundColor: WidgetStatePropertyAll(
                                         controller.isaudio
                                             ? Color(0xffB9C9C2)
                                             : Color(0xff21714B)))),
@@ -219,7 +220,7 @@ class prejoinPage extends GetView<prejoinController> {
                                   size: 32,
                                 ),
                                 style: ButtonStyle(
-                                    backgroundColor: MaterialStatePropertyAll(
+                                    backgroundColor: WidgetStatePropertyAll(
                                         !controller.isvideo
                                             ? Color(0xffB9C9C2)
                                             : Color(0xff21714B))))
@@ -449,7 +450,7 @@ class prejoinPage extends GetView<prejoinController> {
     );
   }
 
-  settingsDialog() {
+  void settingsDialog() {
     Get.dialog(
       Scaffold(
         // backgroundColor: const Color.fromRGBO(0, 0, 0, 0.76),

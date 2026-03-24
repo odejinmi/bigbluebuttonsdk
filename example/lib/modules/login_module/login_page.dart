@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 
 import '../../routes/app_pages.dart';
 import 'login_controller.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class loginPage extends GetView<loginController> {
+  const loginPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -174,7 +175,7 @@ class loginPage extends GetView<loginController> {
         ),
       ),
       bottomNavigationBar: Obx(
-            () => Container(
+            () => SizedBox(
           height: 50,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -191,10 +192,10 @@ class loginPage extends GetView<loginController> {
         onPressed: () {
           Get.toNamed(Routes.PREJOIN);
         },
+        backgroundColor: Colors.white,
         child: Image.asset(
           "asset/image/join_meet.png",
         ),
-        backgroundColor: Colors.white,
       ),
     );
   }

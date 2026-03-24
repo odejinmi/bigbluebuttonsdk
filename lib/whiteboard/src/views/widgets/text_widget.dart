@@ -7,9 +7,9 @@ class _TextWidget extends StatefulWidget {
 
   /// Creates a [_TextWidget] with the given [controller] and [child] widget.
   const _TextWidget({
-    Key? key,
+    super.key,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
   _TextWidgetState createState() => _TextWidgetState();
@@ -29,7 +29,7 @@ class _TextWidgetState extends State<_TextWidget> {
     super.initState();
 
     // Listen to the stream of events from the paint controller
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       controllerEventSubscription =
           PainterController.of(context).events.listen((event) {
         // When an [AddTextPainterEvent] event is received, create a new text drawable
@@ -152,11 +152,11 @@ class EditTextWidget extends StatefulWidget {
   final bool isNew;
 
   const EditTextWidget({
-    Key? key,
+    super.key,
     required this.controller,
     required this.drawable,
     this.isNew = false,
-  }) : super(key: key);
+  });
 
   @override
   EditTextWidgetState createState() => EditTextWidgetState();
@@ -192,7 +192,7 @@ class EditTextWidgetState extends State<EditTextWidget>
     textFieldNode.addListener(focusListener);
 
     // Requests focus for the focus node after the first frame is rendered
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       textFieldNode.requestFocus();
     });
 
@@ -202,13 +202,13 @@ class EditTextWidgetState extends State<EditTextWidget>
     // Add this object as an observer for widget bindings
     //
     // This is used to check the bottom view insets (the keyboard size on mobile)
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     // Remove this object from being an observer
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
 
     // Stop listening to the focus node
     textFieldNode.removeListener(focusListener);
@@ -276,7 +276,7 @@ class EditTextWidgetState extends State<EditTextWidget>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    final value = WidgetsBinding.instance?.window.viewInsets.bottom;
+    final value = WidgetsBinding.instance.window.viewInsets.bottom;
 
     // If the previous value of bottom view insets is larger than the current value,
     // the keyboard is closing, so lose focus from the focus node

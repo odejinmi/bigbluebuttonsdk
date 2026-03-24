@@ -14,7 +14,7 @@ class Whiteboardcontroller extends GetxController {
 
   var websocket = Get.find<Websocket>();
 
-  nextpresentation({required String page}) {
+  void nextpresentation({required String page}) {
     websocket.websocketSub([
       "{\"msg\":\"method\",\"id\":\"33\",\"method\":\"switchSlide\",\"params\":[$page,\"DEFAULT_PRESENTATION_POD\"]}"
     ]);
@@ -28,78 +28,78 @@ class Whiteboardcontroller extends GetxController {
     }
   }
 
-  var _zoomLevel = 1.0.obs; // Initial zoom level (100%)
+  final _zoomLevel = 1.0.obs; // Initial zoom level (100%)
   set zoomLevel(value) => _zoomLevel.value = value;
-  get zoomLevel => _zoomLevel.value;
+  double get zoomLevel => _zoomLevel.value;
 
   void zoomIn() {
     zoomLevel += 0.1; // Increase zoom level
     if (zoomLevel > 2.0) zoomLevel = 2.0; // Maximum 200% zoom
   }
 
-  get zoomPercentage => (zoomLevel * 100).toInt();
+  dynamic get zoomPercentage => (zoomLevel * 100).toInt();
 
   void zoomOut() {
     zoomLevel -= 0.1; // Decrease zoom level
     if (zoomLevel < 0.5) zoomLevel = 0.5; // Minimum 50% zoom
   }
 
-  var _slideposition = 1.obs; // Initial zoom level (100%)
+  final _slideposition = 1.obs; // Initial zoom level (100%)
   set slideposition(value) => _slideposition.value = value;
-  get slideposition => _slideposition.value;
+  int get slideposition => _slideposition.value;
 
-  var _pointerPosition = Rx<List<double>?>(null);
+  final _pointerPosition = Rx<List<double>?>(null);
   set pointerPosition(value) => _pointerPosition.value = value;
   List<double>? get pointerPosition => _pointerPosition.value;
 
-  var _pathse = <Annotations>[].obs;
+  final _pathse = <Annotations>[].obs;
   set pathse(List<Annotations> value) => _pathse.value = value;
   List<Annotations> get pathse => _pathse.value;
 
-  var _currentPathPoints = <List<double>>[].obs;
+  final _currentPathPoints = <List<double>>[].obs;
   set currentPathPoints(List<List<double>> value) =>
       _currentPathPoints.value = value;
   List<List<double>> get currentPathPoints => _currentPathPoints.value;
 
-  var _currentColor = Colors.black.obs;
+  final _currentColor = Colors.black.obs;
   set currentColor(value) => _currentColor.value = value;
-  get currentColor => _currentColor.value;
+  Color get currentColor => _currentColor.value;
 
-  var _currentStrokeWidth = 6.0.obs;
+  final _currentStrokeWidth = 6.0.obs;
   set currentStrokeWidth(value) => _currentStrokeWidth.value = value;
-  get currentStrokeWidth => _currentStrokeWidth.value;
+  double get currentStrokeWidth => _currentStrokeWidth.value;
 
-  var _currentMode = "draw".obs;
+  final _currentMode = "draw".obs;
   set currentMode(value) => _currentMode.value = value;
-  get currentMode => _currentMode.value;
+  String get currentMode => _currentMode.value;
 
-  var _startPoint = Rx<Offset?>(null);
+  final _startPoint = Rx<Offset?>(null);
   set startPoint(value) => _startPoint.value = value;
-  get startPoint => _startPoint.value;
+  Offset? get startPoint => _startPoint.value;
 
-  var _eraserRadius = 20.0.obs;
+  final _eraserRadius = 20.0.obs;
   set eraserRadius(value) => _eraserRadius.value = value;
-  get eraserRadius => _eraserRadius.value;
+  double get eraserRadius => _eraserRadius.value;
 
-  var _textPosition = Rx<Offset?>(null);
+  final _textPosition = Rx<Offset?>(null);
   set textPosition(value) => _textPosition.value = value;
-  get textPosition => _textPosition.value;
+  Offset? get textPosition => _textPosition.value;
 
-  var _currentText = "".obs;
+  final _currentText = "".obs;
   set currentText(value) => _currentText.value = value;
-  get currentText => _currentText.value;
+  String get currentText => _currentText.value;
 
-  var _actions = <DrawAction>[].obs;
+  final _actions = <DrawAction>[].obs;
   set actions(value) => _actions.value = value;
-  get actions => _actions.value;
+  List<DrawAction> get actions => _actions.value;
 
-  var _undoStack = <List<DrawAction>>[].obs;
+  final _undoStack = <List<DrawAction>>[].obs;
   set undoStack(value) => _undoStack.value = value;
-  get undoStack => _undoStack.value;
+  List<dynamic> get undoStack => _undoStack.value;
 
-  var _redoStack = <List<DrawAction>>[].obs;
+  final _redoStack = <List<DrawAction>>[].obs;
   set redoStack(value) => _redoStack.value = value;
-  get redoStack => _redoStack.value;
+  List<dynamic> get redoStack => _redoStack.value;
 
   void erase({Offset? position, String? id}) {
     if (position != null) {
@@ -185,7 +185,7 @@ class Whiteboardcontroller extends GetxController {
   }
 
   void addTextEntry() {
-    if (_currentText.isNotEmpty && _textPosition != null) {
+    if (_currentText.isNotEmpty) {
       saveToUndoStack();
       actions.add(DrawAction.text(currentText, textPosition!));
       currentText = "";

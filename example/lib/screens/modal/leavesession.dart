@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Leavesession extends StatelessWidget {
-  const Leavesession({Key? key}) : super(key: key);
+  const Leavesession({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class Leavesession extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Container(
+            SizedBox(
               height: 48,
               width: Get.width,
               child: Row(

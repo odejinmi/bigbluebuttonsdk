@@ -13,7 +13,7 @@ import '../dashboard_controller.dart';
 import 'show_schedule_meeting.dart';
 
 class EmptyTab extends GetView<DashboardController> {
-  const EmptyTab({Key? key}) : super(key: key);
+  const EmptyTab({super.key});
 
   @override
   Widget build(BuildContext context) {

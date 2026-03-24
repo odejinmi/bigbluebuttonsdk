@@ -8,9 +8,9 @@ import '../bigbluebuttonsdk.dart';
 // import 'Speechtotext.dart';
 
 class Audiowebsocket extends GetxController {
-  var _isWebsocketRunning = false.obs; // Status of the WebSocket
+  final _isWebsocketRunning = false.obs; // Status of the WebSocket
   set isWebsocketRunning(value) => _isWebsocketRunning.value = value;
-  get isWebsocketRunning => _isWebsocketRunning.value;
+  bool get isWebsocketRunning => _isWebsocketRunning.value;
 
   WebSocketChannel? channel; // Initialize a WebSocket channel
   var retryLimit = 3;
@@ -24,19 +24,19 @@ class Audiowebsocket extends GetxController {
 
   final _webrtctoken = "".obs;
   set webrtctoken(value) => _webrtctoken.value = value;
-  get webrtctoken => _webrtctoken.value;
+  String get webrtctoken => _webrtctoken.value;
 
   final _mediawebsocketurl = "".obs;
   set mediawebsocketurl(value) => _mediawebsocketurl.value = value;
-  get mediawebsocketurl => _mediawebsocketurl.value;
+  String get mediawebsocketurl => _mediawebsocketurl.value;
 
-  var _meetingdetails = Rx<Meetingdetails?>(null);
+  final _meetingdetails = Rx<Meetingdetails?>(null);
   set meetingdetails(value) => _meetingdetails.value = value;
-  get meetingdetails => _meetingdetails.value;
+  Meetingdetails? get meetingdetails => _meetingdetails.value;
 
-  var _deviceid = "".obs;
+  final _deviceid = "".obs;
   set deviceid(value) => _deviceid.value = value;
-  get deviceid => _deviceid.value;
+  String get deviceid => _deviceid.value;
   var websocket = Get.find<Websocket>();
   var speechtotext = Get.find<DirectSocketIOStreamer>();
 
@@ -56,9 +56,9 @@ class Audiowebsocket extends GetxController {
     });
     getaudiospeakerdevices().then((devices) {
       print('Available speakers:');
-      devices.forEach((device) {
+      for (var device in devices) {
         print('${device.label} - ${device.deviceId}');
-      });
+      }
     });
   }
 

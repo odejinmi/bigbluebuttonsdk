@@ -6,7 +6,7 @@ import '../../controller/postjoin_controller.dart';
 import '../../utils/diorequest.dart';
 
 class Activedonation extends StatelessWidget {
-  const Activedonation({Key? key}) : super(key: key);
+  const Activedonation({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -150,12 +150,12 @@ class Activedonation extends StatelessWidget {
     //   return;
     // }
 
-    var json_body;
-    json_body = {
+    Map<String, int> jsonBody;
+    jsonBody = {
       "status": 0
     };
 
-    var cmddetails = await Diorequest().patch("k4/donation/${postjoincontroller.donationdetails[0]["room_id"]}",json_body);
+    var cmddetails = await Diorequest().patch("k4/donation/${postjoincontroller.donationdetails[0]["room_id"]}",jsonBody);
     // var cmddetails = await Diorequest().get("start-a-room/$id");
 
 

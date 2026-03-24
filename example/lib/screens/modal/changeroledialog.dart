@@ -9,8 +9,7 @@ import '../../controller/postjoin_controller.dart';
 class Changeroledialog extends StatefulWidget {
   final Participant participan;
 
-  const Changeroledialog({Key? key, required this.participan})
-    : super(key: key);
+  const Changeroledialog({super.key, required this.participan});
 
   @override
   _ChangeroledialogState createState() => _ChangeroledialogState();

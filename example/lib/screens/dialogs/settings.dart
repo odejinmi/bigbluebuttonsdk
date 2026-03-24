@@ -274,7 +274,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
   //   );
   // }
   //
-  showNotificationSettingsDialog() {
+  void showNotificationSettingsDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -285,7 +285,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
         });
   }
 
-  showManageUserSettingsDialog() {
+  void showManageUserSettingsDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -296,7 +296,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
         });
   }
 
-  showLayoutSettingsDialog() {
+  void showLayoutSettingsDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,
@@ -307,7 +307,7 @@ class _SettingsFlowState extends State<SettingsFlow> {
         });
   }
 
-  showWaitingRoomSettingsDialog() {
+  void showWaitingRoomSettingsDialog() {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,

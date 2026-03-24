@@ -4,11 +4,12 @@ import 'package:get/get.dart';
 import '../../routes/app_pages.dart';
 import 'leftsession_controller.dart';
 
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class leftsessionPage extends GetView<leftsessionController> {
+  const leftsessionPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

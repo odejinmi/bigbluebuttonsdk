@@ -24,15 +24,15 @@ class _DonationsDialogState extends State<DonationsDialog> {
 
   void validateMeeting() async {
     isLoading = true;
-    var json_body;
-    json_body = {
+    Map<String, dynamic> jsonBody;
+    jsonBody = {
       "name": donationNameController.text,
       "type": _selectedValue,
       "amount": donationamountController.text,
       "id": controller.roomdetails['id']
     };
 
-    var cmddetails = await Diorequest().post("k4/donation", json_body);
+    var cmddetails = await Diorequest().post("k4/donation", jsonBody);
 
     isLoading = false;
 
@@ -134,9 +134,9 @@ class _DonationsDialogState extends State<DonationsDialog> {
                               }),
                               activeColor: Colors.white,
                               fillColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.disabled)) {
+                                  WidgetStateProperty.resolveWith<Color>(
+                                      (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.disabled)) {
                                   return Colors.white;
                                 }
                                 return Colors.white;
@@ -154,9 +154,9 @@ class _DonationsDialogState extends State<DonationsDialog> {
                               }),
                               activeColor: Colors.white,
                               fillColor:
-                                  MaterialStateProperty.resolveWith<Color>(
-                                      (Set<MaterialState> states) {
-                                if (states.contains(MaterialState.disabled)) {
+                                  WidgetStateProperty.resolveWith<Color>(
+                                      (Set<WidgetState> states) {
+                                if (states.contains(WidgetState.disabled)) {
                                   return Colors.white;
                                 }
                                 return Colors.white;

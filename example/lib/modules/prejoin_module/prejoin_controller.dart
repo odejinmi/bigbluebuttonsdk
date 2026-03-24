@@ -8,34 +8,33 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../main.dart';
 import '../../routes/app_pages.dart';
 import '../../utils/strings.dart';
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 class prejoinController extends GetxController {
   final _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  get obj => _obj.value;
+  String get obj => _obj.value;
 
   final _roomdetails = {}.obs;
   set roomdetails(value) => _roomdetails.value = value;
-  get roomdetails => _roomdetails.value;
+  Map<dynamic, dynamic> get roomdetails => _roomdetails.value;
 
   final _ismuted = false.obs;
   set ismuted(value) => _ismuted.value = value;
-  get ismuted => _ismuted.value;
+  bool get ismuted => _ismuted.value;
 
   final _isLoading = false.obs;
   set isLoading(value) => _isLoading.value = value;
-  get isLoading => _isLoading.value;
+  bool get isLoading => _isLoading.value;
 
   final _accesscode = false.obs;
   set accesscode(value) => _accesscode.value = value;
-  get accesscode => _accesscode.value;
+  bool get accesscode => _accesscode.value;
 
   final _username = "".obs;
   set username(value) => _username.value = value;
-  get username => _username.value;
+  String get username => _username.value;
 
   var usernameController = TextEditingController();
   var emailController = TextEditingController();
@@ -48,34 +47,34 @@ class prejoinController extends GetxController {
 
   final _cameracontroller = Rx<CameraController?>(null);
   set cameracontroller(value) => _cameracontroller.value = value;
-  get cameracontroller => _cameracontroller.value;
+  CameraController? get cameracontroller => _cameracontroller.value;
 
   final _cameras = <CameraDescription>[].obs;
   set cameras(value) => _cameras.value = value;
-  get cameras => _cameras.value;
+  List<CameraDescription> get cameras => _cameras.value;
 
   // late List<CameraDescription> _cameras;
   Future<void>? initializeControllerFuture;
 
-  var _isvideo = false.obs;
+  final _isvideo = false.obs;
   set isvideo(value) => _isvideo.value = value;
-  get isvideo => _isvideo.value;
+  bool get isvideo => _isvideo.value;
 
-  var _isaudio = true.obs;
+  final _isaudio = true.obs;
   set isaudio(value) => _isaudio.value = value;
-  get isaudio => _isaudio.value;
+  bool get isaudio => _isaudio.value;
 
   final _iswaiting = false.obs;
   set iswaiting(value) => _iswaiting.value = value;
-  get iswaiting => _iswaiting.value;
+  bool get iswaiting => _iswaiting.value;
 
-  var _token = ''.obs;
+  final _token = ''.obs;
   set token(value) => _token.value = value;
-  get token => _token.value;
+  String get token => _token.value;
 
-  var _data = {}.obs;
+  final _data = {}.obs;
   set data(value) => _data.value = value;
-  get data => _data.value;
+  Map<dynamic, dynamic> get data => _data.value;
 
   // Helper method to get correct aspect ratio
   double getAspectRatio(var context) {
@@ -273,11 +272,11 @@ class prejoinController extends GetxController {
 
   void checkingMeeting() async {
     isLoading = true;
-    var json_body = {
+    var jsonBody = {
       "name": meetingidController.value.text,
     };
 
-    var cmddetails = await Diorequest().post("app/validate-meeting", json_body);
+    var cmddetails = await Diorequest().post("app/validate-meeting", jsonBody);
 
     if (cmddetails['success']) {
       roomdetails = cmddetails['data'];

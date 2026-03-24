@@ -77,10 +77,14 @@ class RemoveDrawableAction extends ControllerAction<bool, bool> {
   ControllerAction? merge$(ControllerAction previousAction) {
     if (previousAction is AddDrawablesAction &&
         previousAction.drawables.length == 1 &&
-        previousAction.drawables.first == drawable) return null;
+        previousAction.drawables.first == drawable) {
+      return null;
+    }
     if (previousAction is InsertDrawablesAction &&
         previousAction.drawables.length == 1 &&
-        previousAction.drawables.first == drawable) return null;
+        previousAction.drawables.first == drawable) {
+      return null;
+    }
     return super.merge$(previousAction);
   }
 }

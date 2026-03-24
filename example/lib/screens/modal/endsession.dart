@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Endsession extends StatelessWidget {
-  const Endsession({Key? key}) : super(key: key);
+  const Endsession({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class Endsession extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: double.infinity,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -65,7 +65,7 @@ class Endsession extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Container(
+            SizedBox(
               height: 48,
               width: Get.width,
               child: Row(

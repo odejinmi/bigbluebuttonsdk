@@ -77,12 +77,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -114,12 +114,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -149,12 +149,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -187,12 +187,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -225,12 +225,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -263,12 +263,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -301,12 +301,12 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
                                   ? Colors.white
                                   : Colors.grey,
                             ),
-                            activeColor: Colors.white,
-                            thumbColor: const MaterialStatePropertyAll(
+                            activeThumbColor: Colors.white,
+                            thumbColor: const WidgetStatePropertyAll(
                               Colors.white,
                             ),
                             inactiveThumbColor: Colors.white,
-                            trackColor: const MaterialStatePropertyAll(
+                            trackColor: const WidgetStatePropertyAll(
                               Color.fromRGBO(93, 149, 126, 1),
                             ),
                             inactiveTrackColor: const Color.fromRGBO(
@@ -338,7 +338,7 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
             ),
           ),
         ),
-      );},
+      ),
     );
   }
 }

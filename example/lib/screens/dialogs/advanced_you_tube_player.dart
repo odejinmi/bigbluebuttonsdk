@@ -12,13 +12,13 @@ class AdvancedYouTubePlayer extends StatefulWidget {
   final int startSeconds;
 
   const AdvancedYouTubePlayer({
-    Key? key,
+    super.key,
     required this.videoId,
     this.autoPlay = false,
     this.showControls = true,
     this.loop = false,
     this.startSeconds = 0,
-  }) : super(key: key);
+  });
 
   @override
   State<AdvancedYouTubePlayer> createState() => _AdvancedYouTubePlayerState();

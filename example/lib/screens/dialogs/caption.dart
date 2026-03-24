@@ -90,7 +90,7 @@ class _CaptionDialogState extends State<CaptionDialog> {
   }
 
 
-  showCaptionLanguageDialog() {
+  void showCaptionLanguageDialog() {
     showGeneralDialog(
         context: context,
         barrierDismissible: false,

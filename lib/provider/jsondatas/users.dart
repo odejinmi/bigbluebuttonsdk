@@ -19,7 +19,7 @@ class Users {
   final WebSocketService _service;
   Users(this._service);
 
-  jsonresponse(var json) {
+  void jsonresponse(var json) {
     if(json['fields'] != null && json['fields']['raiseHand'] == true){
       SoundManager().playAsset('packages/bigbluebuttonsdk/assets/sounds/finger-snaps.mp3');
     }
@@ -37,7 +37,7 @@ class Users {
     } else {}
   }
 
-  currentuser(var json) {
+  void currentuser(var json) {
     if (json["msg"] == "added") {
       _service.myDetails = Participant.fromJson(json);
       for (var element in _service.participant) {
@@ -124,7 +124,7 @@ class Users {
     }
   }
 
-  ChangeUserProperties(var json) {
+  void ChangeUserProperties(var json) {
     // Find the index of the participant in the original list
     var index = _service.participant.indexWhere((v) {
       return v.fields!.userId == json["fields"]["userId"] || v.id == json["id"];

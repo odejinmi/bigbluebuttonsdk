@@ -2,9 +2,8 @@
 
 import 'dart:math';
 
-/**
- * GetX Template Generator - fb.com/htngu.99
- * */
+/// GetX Template Generator - fb.com/htngu.99
+///
 
 void logLongText(String text, {int chunkSize = 1000}) {
   final pattern = RegExp(

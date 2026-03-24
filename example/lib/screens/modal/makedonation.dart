@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../../controller/postjoin_controller.dart';
 
 class Makedonation extends StatelessWidget {
-  const Makedonation({Key? key}) : super(key: key);
+  const Makedonation({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +226,7 @@ class Makedonation extends StatelessWidget {
                     ],
                   ) ,
                   SizedBox(height: 20),
-                  Container(
+                  SizedBox(
                     width: 325,
                     height: 24,
                     child: Row(
