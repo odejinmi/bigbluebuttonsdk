@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as dev;
@@ -10,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:app_links/app_links.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:get_secure_storage/get_secure_storage.dart';
 
 import '../../main.dart';
 import '../../routes/app_pages.dart';
@@ -21,13 +21,14 @@ import 'model/internal_user.dart';
 
 class DashboardController extends GetxController {
   var appVersion = ''.obs;
-  final _obj = ''.obs;
+  var _obj = ''.obs;
   set obj(value) => _obj.value = value;
-  String get obj => _obj.value;
+  get obj => _obj.value;
+  final box = GetSecureStorage();
 
-  final _token = ''.obs;
+  var _token = ''.obs;
   set token(value) => _token.value = value;
-  String get token => _token.value;
+  get token => _token.value;
   
   var data = {}.obs;
 
@@ -43,7 +44,6 @@ class DashboardController extends GetxController {
 
   var recordingList = [].obs;
   var inviteHistory = Rx<invite_history_model.InviteHistory?>(null);
-  var internalUsers = <InternalUser>[].obs;
 
   final _govmeetingPlugin = Govmeeting();
   final _appLinks = AppLinks();
@@ -104,26 +104,11 @@ class DashboardController extends GetxController {
       }
     }
   }
-  Future<void> _fetchinternaluser() async {
-    // isLoading.value = true;
-
-    var cmddetails = await Diorequest().get("app/1gov/internal-users", token: token);
-
-    // print(cmddetails);
-    isLoading.value = false;
-    if (cmddetails['success']) {
-      internalUsers.value = internalUserFromJson(json.encode(cmddetails['data']['intUsers']));
-    } else {
-      if (cmddetails['message'] != "No internet connection") {
-        // showCommonError(cmddetails['message'], context);
-      }
-    }
-  }
 
   Future<void> _fetchHistory() async {
     isLoading.value = true;
 
-    var cmddetails = await Diorequest().get("list-rooms", token: token);
+    var cmddetails = await Diorequest().get("list-rooms");
 
     isLoading.value = false;
     if (cmddetails['success']) {
@@ -138,7 +123,7 @@ class DashboardController extends GetxController {
   Future<void> _fetchinviteHistory() async {
     isLoading.value = true;
 
-    var cmddetails = await Diorequest().get("app/invites", token: token);
+    var cmddetails = await Diorequest().get("app/invites");
 
     isLoading.value = false;
     if (cmddetails['success']) {
@@ -154,7 +139,7 @@ class DashboardController extends GetxController {
     isLoading.value = true;
 
     var cmddetails =
-        await Diorequest().get("start-a-room/${room['id']}", token: token);
+    await Diorequest().get("start-a-room/${room['id']}",);
 
     isLoading.value = false;
     print(cmddetails);
@@ -180,7 +165,7 @@ class DashboardController extends GetxController {
     print(webtoken);
     try {
       var cmddetails =
-          await Diorequest().get("$entermeetingurl$webtoken", token: token);
+          await Diorequest().get("$entermeetingurl$webtoken");
       print(cmddetails);
       if (cmddetails["response"]["returncode"] == "SUCCESS") {
         var result = await _govmeetingPlugin.startmeeting(
@@ -213,13 +198,13 @@ class DashboardController extends GetxController {
 
   void createMeeting() async {
     isLoading.value = true;
-    var jsonBody = {
+    var json_body = {
       "name": meetingController.value.text,
       "logout_url": "",
       "welcome_message": ""
     };
     var cmddetails =
-        await Diorequest().post("create-room", jsonBody, token: token);
+    await Diorequest().post("create-room", json_body);
     meetingController.value.clear();
 
     isLoading.value = false;
@@ -233,7 +218,7 @@ class DashboardController extends GetxController {
       }
     }
   }
-  
+
   void scheduleMeeting({
     required Roomlistparser roomData,
     required String title,
@@ -249,7 +234,7 @@ class DashboardController extends GetxController {
     final DateFormat dateFormat = DateFormat('yyyy-MM-dd');
     final DateFormat timeFormat = DateFormat('HH:mm');
 
-    var jsonBody = {
+    var json_body = {
       "room_id": roomData.id,
       "hostname": hostname,
       "fromtime": timeFormat.format(fromDateTime),
@@ -263,7 +248,7 @@ class DashboardController extends GetxController {
     };
 
     var cmddetails =
-        await Diorequest().post("app/invite", jsonBody, token: token);
+    await Diorequest().post("app/invite", json_body);
 
     isLoading.value = false;
     dev.log("Schedule meeting response: ${cmddetails.toString()}");
@@ -288,13 +273,12 @@ class DashboardController extends GetxController {
       _fetchinviteHistory(),
       fetchRecordings(),
       _fetchmeetingHistory(),
-      _fetchinternaluser(),
     ]);
   }
 
   Future<void> fetchRecordings() async {
     isLoading.value = true;
-    var cmddetails = await Diorequest().get("rooms-recordings", token: token);
+    var cmddetails = await Diorequest().get("rooms-recordings");
 
     isLoading.value = false;
 

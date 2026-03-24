@@ -11,4 +11,6 @@ abstract class Routes {
   static const DASHBOARD = '/dashboard'; // Dashboard page
   static const TWOFACTORAUTHENTICATION =
       '/twofactorauthentication'; // twofactorauthentication page
+  static const SHOWSCHEDULEMEETING = '/showschedulemeeting'; // Showschedulemeeting page
+  static const INDERNERUSER = '/inderneruser'; // inderneruser page
 }
