@@ -214,11 +214,38 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   }
 
   @override
-  Future<Map<String, dynamic>> startpoll({required String question, required List options}) {
+  Future<Map<String, dynamic>> startpoll({required String question, required List options}) async {
     websocket.websocketSub([
       '{"msg":"sub","id":"2UY6dlRwTcfS48xlP","name":"current-poll","params":[false,true]}',
     ]);
-    return websocket.callMethod("startPoll", [{"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},"CUSTOM","${websocket.myDetails!.fields!.userId!}/1",false,question,false,options]);
+    // Use a collection for to build the list of user IDs from the participants
+    var result = websocket.callMethod("startPoll", [
+      {"YesNo":"YN","YesNoAbstention":"YNA","TrueFalse":"TF","Letter":"A-","A2":"A-2","A3":"A-3","A4":"A-4","A5":"A-5","Custom":"CUSTOM","Response":"R-"},
+      "CUSTOM",
+      "${websocket.myDetails!.fields!.userId!}/1",
+      false,
+      question,
+      false,
+      options
+    ]);
+    var response = await result;
+    websocket.polls({
+      "msg": "added",
+      "collection": "polls",
+      "id": response["id"],
+      "fields": {
+        "meetingId": websocket.meetingDetails?.meetingId,
+        "requester": websocket.myDetails?.fields?.userId,
+        "users": [for (var p in websocket.participant) p.fields?.userId],
+        "question": question,
+        "pollType": "CUSTOM",
+        "secretPoll": false,
+        "id": "public/${DateTime.now().millisecondsSinceEpoch}",
+        "isMultipleResponse": false,
+        "answers": options.asMap().entries.map((e) => {"id": e.key, "key": e.value}).toList(),
+      }
+    });
+    return result;
   }
 
   @override
@@ -488,9 +515,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   // TODO: implement reason
   get reason => websocket.reason;
-  @override
-  // TODO: implement ispolling
-  get ispolling => websocket.isPolling;
 
   @override
   // TODO: implement isrecording

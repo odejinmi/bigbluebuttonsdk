@@ -284,14 +284,6 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.polljson;
   }
 
-  dynamic get ispolling {
-    return BigbluebuttonsdkPlatform.instance.ispolling;
-  }
-
-  set ispolling(value) {
-    return BigbluebuttonsdkPlatform.instance.ispolling = value;
-  }
-
   dynamic get isrecording {
     return BigbluebuttonsdkPlatform.instance.isrecording;
   }

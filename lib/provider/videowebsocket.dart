@@ -450,7 +450,7 @@ class Videowebsocket extends GetxController {
   }
 
   String streamID(id) =>
-      "${meetingdetails.internalUserId}${meetingdetails.authToken}$id";
+      "${meetingdetails?.internalUserId}${meetingdetails?.authToken}$id";
 
   @override
   void onClose() {

@@ -114,8 +114,8 @@ class RemoteScreenShareWebSocket extends GetxController {
       "id": "subscriberAnswer",
       "type": "screenshare",
       "role": "recv",
-      "voiceBridge": meetingdetails.voicebridge,
-      "callerName": meetingdetails.internalUserId,
+      "voiceBridge": meetingdetails?.voicebridge,
+      "callerName": meetingdetails?.internalUserId,
       "answer": newAnswer.sdp!
     });
     // print("Answer: ${newAnswer.sdp}");
@@ -159,10 +159,10 @@ class RemoteScreenShareWebSocket extends GetxController {
       "id": "start",
       "type": "screenshare",
       "role": "recv",
-      "internalMeetingId": meetingdetails.meetingId,
-      "voiceBridge": meetingdetails.voicebridge,
-      "userName": meetingdetails.fullname,
-      "callerName": meetingdetails.internalUserId,
+      "internalMeetingId": meetingdetails?.meetingId,
+      "voiceBridge": meetingdetails?.voicebridge,
+      "userName": meetingdetails?.fullname,
+      "callerName": meetingdetails?.internalUserId,
       "hasAudio": false,
       "contentType": "camera"
     };

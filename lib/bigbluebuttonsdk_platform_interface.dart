@@ -255,14 +255,6 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
-  dynamic get ispolling {
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-
-  set ispolling(value) {
-    throw UnimplementedError('initialize() has not been implemented.');
-  }
-
   dynamic get isrecording {
     throw UnimplementedError('initialize() has not been implemented.');
   }

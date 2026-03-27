@@ -486,10 +486,6 @@ class Websocket extends GetxController implements WebSocketService {
         "params": params,
       })
     ];
-    if(method == 'startPoll'){
-      print('jsonToSend for createGroupChat');
-      print(jsonEncode(jsonToSend));
-    }
     websocketSub(jsonToSend);
 
     return completer.future;
@@ -543,34 +539,34 @@ class Websocket extends GetxController implements WebSocketService {
     }
   }
 
-  var _externalvideomeetings = (dynamic _) {};
+  var _externalvideomeetings;
   @override
   set externalvideomeetings (value) => _externalvideomeetings = value;
   @override
   get externalvideomeetings => _externalvideomeetings;
 
 
-  var _leavemeeting = (dynamic _) {};
+  var _leavemeeting ;
  @override
   set leavemeeting (value) => _leavemeeting = value;
  @override
   get leavemeeting => _leavemeeting;
 
 
-  var _polls = (dynamic _) {};
+  var _polls ;
   @override
   set polls (value) => _polls = value;
   @override
   get polls => _polls;
 
 
-  var _currentpoll = (dynamic _) {};
+  var _currentpoll ;
   @override
   set currentpoll (value) => _currentpoll = value;
   @override
   get currentpoll => _currentpoll;
 
-  var _breakouts = (dynamic _) {};
+  var _breakouts;
   @override
   set breakouts (value) => _breakouts = value;
   @override

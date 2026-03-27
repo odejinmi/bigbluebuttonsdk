@@ -65,9 +65,9 @@ class Whiteboardcontroller extends GetxController {
   set currentColor(value) => _currentColor.value = value;
   Color get currentColor => _currentColor.value;
 
-  final _currentStrokeWidth = 6.0.obs;
+  final _currentStrokeWidth = 6.obs;
   set currentStrokeWidth(value) => _currentStrokeWidth.value = value;
-  double get currentStrokeWidth => _currentStrokeWidth.value;
+  int get currentStrokeWidth => _currentStrokeWidth.value;
 
   final _currentMode = "draw".obs;
   set currentMode(value) => _currentMode.value = value;
@@ -247,7 +247,7 @@ class Whiteboardcontroller extends GetxController {
       fields: Fields(
           annotationInfo: AnnotationInfo(
               point: points,
-              style: Style(scale: currentStrokeWidth, color: currentColor),
+              style: Style(scale: currentStrokeWidth),
               type: currentMode)),
     ));
   }

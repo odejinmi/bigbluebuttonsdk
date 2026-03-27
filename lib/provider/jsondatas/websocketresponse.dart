@@ -195,11 +195,11 @@ class WebSocketResponse {
     print(json);
     if (json["msg"] == "added") {
       _service.isPolling = true;
-      _service.pollJson = json;
-      _service.polls(json);
-    } else if (json["msg"] == "removed"){
-      _service.polls(json);
+      // _service.pollJson = json;
+    // } else if (json["msg"] == "removed"){
+    //   _service.polls(json);
     }
+    _service.polls(json);
   }
 
   Future<void> _handleCurrentPoll(Map<String, dynamic> json) async {
