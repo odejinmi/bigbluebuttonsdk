@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:bigbluebuttonsdk/provider/jsondatas/WebSocketService.dart';
@@ -319,6 +320,7 @@ class WebSocketResponse {
   }
 
   static Future<void> _handleAnnotations(Map<String, dynamic> json) async {
+    dev.log(jsonEncode(json));
     var whiteboard = Get.find<Whiteboardcontroller>();
     whiteboard.parsedata(json);
   }

@@ -4,7 +4,6 @@ import 'dart:developer' as dev;
 
 import 'package:bigbluebuttonsdk/utils/diorequest.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:app_links/app_links.dart';
 import 'package:intl/intl.dart';
@@ -17,26 +16,24 @@ import '../../utils/InviteHistory.dart' as invite_history_model;
 import '../../utils/Meetinghistory.dart';
 import '../../utils/Roomlistparser.dart';
 import '../../utils/strings.dart';
-import 'model/internal_user.dart';
 
 class DashboardController extends GetxController {
   var appVersion = ''.obs;
   var _obj = ''.obs;
   set obj(value) => _obj.value = value;
   get obj => _obj.value;
-  final box = GetSecureStorage();
 
   var _token = ''.obs;
   set token(value) => _token.value = value;
   get token => _token.value;
-  
+
   var data = {}.obs;
 
   var isLoading = false.obs;
   var hasError = false.obs;
   var meetingController = TextEditingController().obs;
   // ;
-  final _originList = <Roomlistparser>[].obs;
+  var _originList = <Roomlistparser>[].obs;
   set originList(value) => _originList.value = value;
   List<Roomlistparser> get originList => _originList.value;
 
@@ -51,6 +48,7 @@ class DashboardController extends GetxController {
   List<Meetinghistoryparser> historyList = [];
   StreamSubscription? _sub;
 
+  final box = GetSecureStorage();
   @override
   void onInit() {
     super.onInit();
@@ -108,7 +106,7 @@ class DashboardController extends GetxController {
   Future<void> _fetchHistory() async {
     isLoading.value = true;
 
-    var cmddetails = await Diorequest().get("list-rooms");
+    var cmddetails = await Diorequest().get("list-rooms", token: token);
 
     isLoading.value = false;
     if (cmddetails['success']) {
@@ -123,7 +121,7 @@ class DashboardController extends GetxController {
   Future<void> _fetchinviteHistory() async {
     isLoading.value = true;
 
-    var cmddetails = await Diorequest().get("app/invites");
+    var cmddetails = await Diorequest().get("app/invites", token: token);
 
     isLoading.value = false;
     if (cmddetails['success']) {
@@ -139,7 +137,7 @@ class DashboardController extends GetxController {
     isLoading.value = true;
 
     var cmddetails =
-    await Diorequest().get("start-a-room/${room['id']}",);
+    await Diorequest().get("start-a-room/${room['id']}", token: token);
 
     isLoading.value = false;
     print(cmddetails);
@@ -165,7 +163,7 @@ class DashboardController extends GetxController {
     print(webtoken);
     try {
       var cmddetails =
-          await Diorequest().get("$entermeetingurl$webtoken");
+      await Diorequest().get("$entermeetingurl$webtoken", token: token);
       print(cmddetails);
       if (cmddetails["response"]["returncode"] == "SUCCESS") {
         var result = await _govmeetingPlugin.startmeeting(
@@ -204,7 +202,7 @@ class DashboardController extends GetxController {
       "welcome_message": ""
     };
     var cmddetails =
-    await Diorequest().post("create-room", json_body);
+    await Diorequest().post("create-room", json_body, token: token);
     meetingController.value.clear();
 
     isLoading.value = false;
@@ -248,7 +246,7 @@ class DashboardController extends GetxController {
     };
 
     var cmddetails =
-    await Diorequest().post("app/invite", json_body);
+    await Diorequest().post("app/invite", json_body, token: token);
 
     isLoading.value = false;
     dev.log("Schedule meeting response: ${cmddetails.toString()}");
@@ -278,7 +276,7 @@ class DashboardController extends GetxController {
 
   Future<void> fetchRecordings() async {
     isLoading.value = true;
-    var cmddetails = await Diorequest().get("rooms-recordings");
+    var cmddetails = await Diorequest().get("rooms-recordings", token: token);
 
     isLoading.value = false;
 

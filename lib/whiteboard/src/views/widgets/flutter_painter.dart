@@ -174,6 +174,7 @@ class _FlutterPainterWidget extends StatelessWidget {
                           painter: Painter(
                             drawables: controller.value.drawables,
                             background: controller.value.background,
+                            scale: controller.virtualCanvasSize,
                           ),
                         ),
                       ),

@@ -181,27 +181,27 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                           return RTCVideoView(logic.remoteRTCVideoRenderer);
                         }
                       } else if (controller.iswhiteboard) {
-                        controller.presentationcontroller.slideposition =
-                        logic.currentSlide["fields"]["num"];
-                        if (logic.presentationModel.isNotEmpty &&
-                            controller.presentationcontroller.selecttoupload
-                                .name.isEmpty) {
-                          var selectedFile = logic.presentationModel.where((v) {
-                            return v.fields!.current == true;
-                          }).toList();
-
-                          if (selectedFile.isNotEmpty) {
-                            controller.presentationcontroller.selecttoupload =
-                                PlatformFile(
-                                  name: selectedFile.last.fields!.name!,
-                                  size: 0,
-                                );
-                          } else {
-                            // Handle case where no item is found, if necessary
-                            print(
-                                "No presentation model with current == true found.");
-                          }
-                        }
+                        // controller.presentationcontroller.slideposition =
+                        // logic.currentSlide["fields"]["num"];
+                        // if (logic.presentationModel.isNotEmpty &&
+                        //     controller.presentationcontroller.selecttoupload
+                        //         .name.isEmpty) {
+                        //   var selectedFile = logic.presentationModel.where((v) {
+                        //     return v.fields!.current == true;
+                        //   }).toList();
+                        //
+                        //   if (selectedFile.isNotEmpty) {
+                        //     controller.presentationcontroller.selecttoupload =
+                        //         PlatformFile(
+                        //           name: selectedFile.last.fields!.name!,
+                        //           size: 0,
+                        //         );
+                        //   } else {
+                        //     // Handle case where no item is found, if necessary
+                        //     print(
+                        //         "No presentation model with current == true found.");
+                        //   }
+                        // }
                         // controller
                         //     .selecttoupload = PlatformFile(name: logic.presentationmodel.where((v){return v.fields!.current == true;}).toList()[0].fields.name, size: 0);
                         return controller.bigbluebuttonsdkPlugin.whiteboard();

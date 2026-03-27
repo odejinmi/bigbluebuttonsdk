@@ -93,9 +93,6 @@ class postjoinController extends GetxController
   set webrtctoken(value) => _webrtctoken.value = value;
   String get webrtctoken => _webrtctoken.value;
 
-  final _guestpermission = "Always Accept".obs;
-  set guestpermission(value) => _guestpermission.value = value;
-  String? get guestpermission => bigbluebuttonsdkPlugin.meetingResponse?.fields.usersProp.guestPolicy;
 
   var chatcontroller = Get.put(ChatController());
   var deviceSettingscontroller = Get.put(DeviceSettingsController());
@@ -129,7 +126,6 @@ class postjoinController extends GetxController
     // Initialize TabController
     tabController = TabController(length: 2, vsync: this);
     _initPip();
-    guestpermission = bigbluebuttonsdkPlugin.meetingResponse?.fields.usersProp.guestPolicy ?? "Always Accept";
     super.onInit();
   }
 

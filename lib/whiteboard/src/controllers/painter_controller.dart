@@ -45,6 +45,16 @@ class PainterController extends ValueNotifier<PainterControllerValue> {
   /// However, you can use it to grab information about the transformations.
   final TransformationController transformationController;
 
+  Size? _virtualCanvasSize;
+
+  Size? get virtualCanvasSize => _virtualCanvasSize;
+
+  set virtualCanvasSize(Size? value) {
+    if (_virtualCanvasSize == value) return;
+    _virtualCanvasSize = value;
+    notifyListeners();
+  }
+
   /// Create a [PainterController].
   ///
   /// The behavior of a [FlutterPainter] widget is controlled by [settings].
