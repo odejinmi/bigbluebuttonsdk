@@ -9,8 +9,6 @@ import '../../../utils/strings.dart';
 import '../dashboard_controller.dart';
 
 class MeetingRecordings extends StatelessWidget {
-  const MeetingRecordings({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +106,7 @@ class MeetingRecordings extends StatelessWidget {
                 _buildMetadataChip(Icons.people_alt,
                     '${recordingData['participants']} Participants'),
                 _buildMetadataChip(Icons.storage_rounded, '${fileSize}MB'),
-                _buildMetadataChip(Icons.timelapse, '$duration Min(s)'),
+                _buildMetadataChip(Icons.timelapse, '${duration} Min(s)'),
               ],
             ),
             const Divider(height: 32),

@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 
+import 'package:bigbluebuttonsdk_example/controller/PullController.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +12,7 @@ import 'dialogs/cinema.dart';
 import 'dialogs/donations_dialog.dart';
 import 'dialogs/polls_dialog.dart';
 import 'dialogs/settings.dart';
+import 'modal/pollsresult.dart';
 
 class DrawerComp extends StatefulWidget {
   const DrawerComp({super.key});
@@ -64,21 +66,23 @@ class _DrawerCompState extends State<DrawerComp> {
             // ),
             if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
                 postjoincontroller
-                        .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
+                    .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
                     "MODERATOR")
               Column(
                 children: [
                   ListTile(
                       leading: const Icon(Icons.radio_button_checked, size: 20),
                       title: Text(
-                        '${!postjoincontroller.bigbluebuttonsdkPlugin.isrecording? 'Start' : 'Stop'} Recording',
+                        '${!postjoincontroller.bigbluebuttonsdkPlugin
+                            .isrecording ? 'Start' : 'Stop'} Recording',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 14,
                         ),
                       ),
                       onTap: () async {
-                        var result = await postjoincontroller.bigbluebuttonsdkPlugin
+                        var result = await postjoincontroller
+                            .bigbluebuttonsdkPlugin
                             .toggleRecording();
                         Navigator.pop(context);
                       }),
@@ -180,21 +184,24 @@ class _DrawerCompState extends State<DrawerComp> {
 
             if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
                 postjoincontroller
-                        .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
+                    .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
                     "MODERATOR")
               ListTile(
                 leading: const Icon(Icons.mic_off_outlined, size: 20),
                 title: Text(
-                  postjoincontroller.muteAll?"Unmute New Users":"Mute All & New Users",
+                  postjoincontroller.muteAll
+                      ? "Unmute New Users"
+                      : "Mute All & New Users",
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 14,
                   ),
                 ),
                 onTap: () async {
-                  var result = await postjoincontroller.bigbluebuttonsdkPlugin.muteallusers();
+                  var result = await postjoincontroller.bigbluebuttonsdkPlugin
+                      .muteallusers();
                   postjoincontroller.muteAll = !postjoincontroller.muteAll;
-                                },
+                },
               ),
 
             // if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
@@ -224,32 +231,39 @@ class _DrawerCompState extends State<DrawerComp> {
             if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
                 postjoincontroller
                     .bigbluebuttonsdkPlugin.mydetails!.fields!.presenter!)
-              ListTile(
-                leading: const Icon(Icons.how_to_vote, size: 20),
-                title: const Text(
-                  'Polls',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
+              GetBuilder<PullController>(builder: (logic) {
+                return ListTile(
+                  leading: const Icon(Icons.how_to_vote, size: 20),
+                  title: const Text(
+                    'Polls',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
                   ),
-                ),
-                onTap: () {
-                  Navigator.pop(context);
-                  showGeneralDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      barrierColor: Colors.transparent,
-                      transitionDuration: const Duration(milliseconds: 400),
-                      pageBuilder: (context, animation, secondaryAnimation) {
-                        return PollsDialog();
-                      }).then((_) {
-                    // This runs after bottom sheet is dismissed
-                    var controller = postjoincontroller.pullcontroller;
-                    controller.question.value = "";
-                    controller.options.value = ['Option 1'];
-                  });
-                },
-              ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    // if(logic.pullresult.isNotEmpty){
+                    //   Get.bottomSheet(Pollsresult());
+                    // }else {
+                      showGeneralDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          barrierColor: Colors.transparent,
+                          transitionDuration: const Duration(milliseconds: 400),
+                          pageBuilder: (context, animation,
+                              secondaryAnimation) {
+                            return PollsDialog();
+                          }).then((_) {
+                        // This runs after bottom sheet is dismissed
+                        var controller = postjoincontroller.pullcontroller;
+                        controller.question.value = "";
+                        controller.options.value = ['Option 1'];
+                      });
+                    // }
+                  },
+                );
+              }),
             // ListTile(
             //   leading: const Icon(Icons.attach_money_rounded, size: 20),
             //   title: const Text(

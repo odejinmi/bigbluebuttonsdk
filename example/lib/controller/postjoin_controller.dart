@@ -179,7 +179,7 @@ class postjoinController extends GetxController
     bigbluebuttonsdkPlugin.initialize(
       baseurl: baseurl,
       webrtctoken: webrtctoken,
-      meetingdetails: meetingdetails,
+      meetingdetails: meetingdetails!,
     );
     bigbluebuttonsdkPlugin.Startroom(
         leavemeeting: (value) {
@@ -204,36 +204,24 @@ class postjoinController extends GetxController
           );
         },
         polls: (value) {
-          // if(value){
-          //   print("object");
-          //   print(value);
-            // pullcontroller.pullresult = response;
-            // final currentId = response["id"];
-            // if (!pullcontroller.ispulling &&
-            //     currentId != pullcontroller.lastPollId) {
-            //   pullcontroller.ispulling = true;
-            //   pullcontroller.lastPollId = currentId;
-            if (Get.isBottomSheetOpen == true) {
+          if (Get.isBottomSheetOpen == true) {
               Get.back();
             }
-            Get.bottomSheet(Pullquestionandanswer(json: value))
-                  .then((value) {
-                pullcontroller.ispulling = false;
-                pullcontroller.lastPollId = "";
-              });
-            // }
-          // }else{
-          //   pullcontroller.ispulling = false;
-          //   pullcontroller.lastPollId = "";
-          // }
+            if (value["msg"] == "added") {
+              pullcontroller.ispulling = true;
+              pullcontroller.pullquestionandanswer = value;
+              Get.bottomSheet(Pullquestionandanswer());
+            } else if (value["msg"] == "removed"){
+              pullcontroller.ispulling = false;
+              pullcontroller.pullresult = {};
+              if (Get.isBottomSheetOpen == true) {
+                Get.back();
+              }
+            }
         },
         currentpoll: (value) {
           pullcontroller.pullresult = value;
-          Get.bottomSheet(Pollsresult()).then((value) {
-            Future.delayed(const Duration(seconds: 3), () {
-              pullcontroller.pullresult = {};
-            });
-          });
+          Get.bottomSheet(Pollsresult());
         },
         breakouts: (value){
           Get.dialog(

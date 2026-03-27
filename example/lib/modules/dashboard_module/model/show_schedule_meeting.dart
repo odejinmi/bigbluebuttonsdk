@@ -9,7 +9,7 @@ import '../dashboard_controller.dart';
 
 class ShowScheduleMeeting extends StatefulWidget {
   final Roomlistparser roomData;
-  const ShowScheduleMeeting({super.key, required this.roomData});
+  const ShowScheduleMeeting({Key? key, required this.roomData}) : super(key: key);
 
   @override
   _ShowScheduleMeetingState createState() => _ShowScheduleMeetingState();
@@ -82,39 +82,39 @@ class _ShowScheduleMeetingState extends State<ShowScheduleMeeting> {
                 Text(
                     'Internal users (MDA users)'),
                 const SizedBox(height: 20),
-                Wrap(
-                  children: [
-                    for (var user in controller.internalUsers.value)
-                      InkWell(
-                        onTap: (){
-                          if (guestsController.text.isEmpty) {
-                            guestsController.text = '${user.email!}, ';
-                          }  else {
-                            if (!guestsController.text.contains(user.email!)) {
-                              guestsController.text +=
-                              '${ user.email!}, ';
-                            } else {
-                              guestsController.text = guestsController.text.replaceAll('${user.email!}, ', '');
-                            }
-                          }
-                          setState(() {});
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          margin: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            // border: Border.all(
-                            //   color: guestsController.text.contains(user.email!)? Colors.black.withOpacity(0.2): null,
-                            // ),
-                            color: guestsController.text.contains(user.email!)? Colors.black.withOpacity(0.2): Colors.white,
-                          ),
-                          child: Text('${user.firstname} ${user.lastname}'),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                // Wrap(
+                //   children: [
+                //     for (var user in controller.internalUsers.value)
+                //       InkWell(
+                //         onTap: (){
+                //           if (guestsController.text.isEmpty) {
+                //             guestsController.text = '${user.email!}, ';
+                //           }  else {
+                //             if (!guestsController.text.contains(user.email!)) {
+                //               guestsController.text +=
+                //               '${ user.email!}, ';
+                //             } else {
+                //               guestsController.text = guestsController.text.replaceAll('${user.email!}, ', '');
+                //             }
+                //           }
+                //           setState(() {});
+                //         },
+                //         child: Container(
+                //           padding: const EdgeInsets.all(8.0),
+                //           margin: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                //           decoration: BoxDecoration(
+                //             borderRadius: BorderRadius.circular(12),
+                //             // border: Border.all(
+                //             //   color: guestsController.text.contains(user.email!)? Colors.black.withOpacity(0.2): null,
+                //             // ),
+                //             color: guestsController.text.contains(user.email!)? Colors.black.withOpacity(0.2): Colors.white,
+                //           ),
+                //           child: Text('${user.firstname} ${user.lastname}'),
+                //         ),
+                //       ),
+                //   ],
+                // ),
+                // const SizedBox(height: 20),
                 Text(
                     'From: ${DateFormat('yyyy-MM-dd HH:mm').format(fromDateTime)}'),
                 ElevatedButton(

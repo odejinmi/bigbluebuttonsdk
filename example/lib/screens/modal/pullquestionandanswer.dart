@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -6,18 +7,18 @@ import 'package:get/get.dart';
 import '../../controller/PullController.dart';
 
 class Pullquestionandanswer extends GetView<PullController> {
-  final Map<dynamic, dynamic> json;
 
-  const Pullquestionandanswer({Key? key, required this.json}) : super(key: key);
+  const Pullquestionandanswer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    print(jsonEncode(controller.pullquestionandanswer));
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
       child: Obx(
         () {
           var list = controller.bigbluebuttonsdkPlugin.participant.where((v) {
-            return v.fields!.userId! == json["fields"]["requester"];
+            return v.fields!.userId! == controller.pullquestionandanswer["fields"]["requester"];
           }).toList();
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +104,7 @@ class Pullquestionandanswer extends GetView<PullController> {
                         Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Text(
-                            json["fields"]["question"],
+                            controller.pullquestionandanswer["fields"]["question"],
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 16,
@@ -112,13 +113,13 @@ class Pullquestionandanswer extends GetView<PullController> {
                         ),
                         const SizedBox(height: 15),
                         for (var i = 0;
-                            i < json["fields"]["answers"].length;
+                            i < controller.pullquestionandanswer["fields"]["answers"].length;
                             i++)
                           Obx(() {
                             return GestureDetector(
                               onTap: () {
                                 controller.selectedOption =
-                                    json["fields"]["answers"][i];
+                                controller.pullquestionandanswer["fields"]["answers"][i];
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(bottom: 20.0),
@@ -133,7 +134,7 @@ class Pullquestionandanswer extends GetView<PullController> {
                                     ),
                                     borderRadius: BorderRadius.circular(8),
                                     border: Border.all(
-                                      color: json["fields"]["answers"][i] ==
+                                      color: controller.pullquestionandanswer["fields"]["answers"][i] ==
                                               controller.selectedOption
                                           ? Colors.white
                                           : const Color.fromRGBO(
@@ -147,7 +148,7 @@ class Pullquestionandanswer extends GetView<PullController> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      json["fields"]["answers"][i]["key"],
+                                      controller.pullquestionandanswer["fields"]["answers"][i]["key"],
                                       style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
@@ -164,17 +165,11 @@ class Pullquestionandanswer extends GetView<PullController> {
                             if (controller.selectedOption.isNotEmpty) {
                               controller.ispulling = false;
                               controller.bigbluebuttonsdkPlugin.votepoll(
-                                poll_id: json["fields"]["id"],
+                                poll_id: controller.pullquestionandanswer["fields"]["id"],
                                 selectedOptionId:
                                     controller.selectedOption["id"].toString(),
                               );
                               Get.back();
-                              if (controller.bigbluebuttonsdkPlugin.mydetails!
-                                  .fields!.presenter!) {
-                              } else {
-                                controller.bigbluebuttonsdkPlugin.ispolling =
-                                    false;
-                              }
                             }
                           },
                           child: Padding(

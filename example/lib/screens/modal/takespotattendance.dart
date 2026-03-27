@@ -67,9 +67,9 @@ class Takespotattendance extends GetView<postjoinController> {
                     onTap: () async {
                       await generateAttendanceFile(
                         filePath: await getFilePath(
-                          'attendance_${controller.meetingdetails.confname}${DateTime.now().microsecondsSinceEpoch}.txt',
+                          'attendance_${controller.meetingdetails!.confname}${DateTime.now().microsecondsSinceEpoch}.txt',
                         ),
-                        meetingHost: controller.meetingdetails.confname,
+                        meetingHost: controller.meetingdetails!.confname,
                         meetingDateTime: DateTime.now(),
                         attendees: logic.participant
                             .map((e) => e.fields?.name)
@@ -111,9 +111,9 @@ class Takespotattendance extends GetView<postjoinController> {
                     onTap: () async {
                       await generateAttendanceFile(
                         filePath: await getFilePath(
-                          'attendance_${controller.meetingdetails.confname}${DateTime.now().microsecondsSinceEpoch}.csv',
+                          'attendance_${controller.meetingdetails!.confname}${DateTime.now().microsecondsSinceEpoch}.csv',
                         ),
-                        meetingHost: controller.meetingdetails.confname,
+                        meetingHost: controller.meetingdetails!.confname,
                         meetingDateTime: DateTime.now(),
                         attendees: logic.participant
                             .map((e) => e.fields?.name)

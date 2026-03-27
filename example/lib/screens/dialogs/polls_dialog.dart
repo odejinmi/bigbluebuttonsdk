@@ -33,9 +33,24 @@ class PollsDialog extends GetView<PullController> {
               return SingleChildScrollView(
                 child: Column(
                   children: [
-                    const Text(
-                      'Polls',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Get.back(),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                        Spacer(),
+                        const Text(
+                          'Polls',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                        Spacer(),
+                        SizedBox(width: 30,)
+                      ],
                     ),
                     const SizedBox(
                       height: 10,

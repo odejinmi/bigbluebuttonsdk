@@ -210,7 +210,7 @@ class _ChatDialogState extends State<ChatDialog> {
                         itemBuilder: (context, index) {
                           return chatMessageCard(
                             logic.getChatMessages(chatid)[index],
-                            postjoincontroller.meetingdetails,
+                            postjoincontroller.meetingdetails!,
                           );
                         },
                       );

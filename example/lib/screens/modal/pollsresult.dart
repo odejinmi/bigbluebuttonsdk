@@ -47,7 +47,6 @@ class Pollsresult extends GetView<PullController> {
               body: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    width: 400,
                     height: 510,
                     padding: const EdgeInsets.only(
                         top: 24, right: 16, bottom: 24, left: 16),

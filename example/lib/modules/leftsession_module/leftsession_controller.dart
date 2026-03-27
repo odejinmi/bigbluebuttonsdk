@@ -67,8 +67,8 @@ class leftsessionController extends GetxController {
     // isLoading = true;
     var jsonBody = {
       "id": roomdetails["id"],
-      "name": meetingdetails["fullname"],
-      "email": meetingdetails["externUserID"],
+      "name": meetingdetails!["fullname"],
+      "email": meetingdetails!["externUserID"],
       "access_code": accesscode
     };
 

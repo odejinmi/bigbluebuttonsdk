@@ -52,9 +52,9 @@ class PeopleTab extends GetView<postjoinController> {
                         InkWell(
                           onTap: () {
                             if (controller
-                                .meetingdetails.customdata.isNotEmpty) {
+                                .meetingdetails!.customdata.isNotEmpty) {
                               Clipboard.setData(ClipboardData(
-                                  text: controller.meetingdetails.customdata[0]
+                                  text: controller.meetingdetails!.customdata[0]
                                       ["meetingLink"]));
                               MotionToast.success(
                                 title: Text("Meeting Link"),
@@ -83,7 +83,7 @@ class PeopleTab extends GetView<postjoinController> {
                                       const VerticalDivider(),
                                       Expanded(
                                         child: Text(
-                                            controller.meetingdetails
+                                            controller.meetingdetails!
                                                 .customdata[0]["meetingLink"],
                                             style: TextStyle(
                                                 color: Colors.white,

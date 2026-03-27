@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
+import 'package:bigbluebuttonsdk_example/controller/PullController.dart';
 import 'package:bigbluebuttonsdk_example/screens/participants_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,8 @@ import 'drawer.dart';
 import 'modal/ShowDeviceSettingsDialog.dart';
 import 'modal/endroom.dart';
 import 'modal/leavesession.dart';
+import 'modal/pollsresult.dart';
+import 'modal/pullquestionandanswer.dart';
 import 'modal/share_screen_card.dart';
 import 'modal/share_screen_dialog.dart';
 
@@ -36,7 +39,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                controller.meetingdetails.confname,
+                controller.meetingdetails!.confname,
                 style: TextStyle(fontSize: screenWidth * 0.05),
               ),
               if (controller.bigbluebuttonsdkPlugin.isrecording)
@@ -65,7 +68,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                         controller.scaffoldKey.currentState!.closeEndDrawer();
                       } else {
                         if (logic.meetingResponse?.fields.lockSettingsProps
-                                .hideUserList ??
+                            .hideUserList ??
                             false) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -82,8 +85,10 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                             context: context,
                             barrierDismissible: false,
                             barrierColor: Colors.transparent,
-                            transitionDuration: const Duration(milliseconds: 400),
-                            pageBuilder: (context, animation, secondaryAnimation) {
+                            transitionDuration: const Duration(
+                                milliseconds: 400),
+                            pageBuilder: (context, animation,
+                                secondaryAnimation) {
                               return ParticipantScreen();
                             });
                         controller.tabController.animateTo(1);
@@ -100,7 +105,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                           width: screenWidth * 0.17,
                           decoration: BoxDecoration(
                               borderRadius:
-                                  const BorderRadius.all(Radius.circular(10)),
+                              const BorderRadius.all(Radius.circular(10)),
                               border: Border.all(color: Colors.black)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -123,7 +128,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                           // controller.scaffoldKey.currentState!.closeEndDrawer();
                         } else {
                           if (logic.meetingResponse?.fields.lockSettingsProps
-                                  .disablePublicChat ??
+                              .disablePublicChat ??
                               false) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -139,8 +144,10 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                               context: context,
                               barrierDismissible: false,
                               barrierColor: Colors.transparent,
-                              transitionDuration: const Duration(milliseconds: 400),
-                              pageBuilder: (context, animation, secondaryAnimation) {
+                              transitionDuration: const Duration(
+                                  milliseconds: 400),
+                              pageBuilder: (context, animation,
+                                  secondaryAnimation) {
                                 return ParticipantScreen();
                               });
                           // controller.scaffoldKey.currentState!.openEndDrawer();
@@ -175,7 +182,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                         }
                       } else if (controller.iswhiteboard) {
                         controller.presentationcontroller.slideposition =
-                            logic.currentSlide["fields"]["num"];
+                        logic.currentSlide["fields"]["num"];
                         if (logic.presentationModel.isNotEmpty &&
                             controller.presentationcontroller.selecttoupload
                                 .name.isEmpty) {
@@ -186,9 +193,9 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                           if (selectedFile.isNotEmpty) {
                             controller.presentationcontroller.selecttoupload =
                                 PlatformFile(
-                              name: selectedFile.last.fields!.name!,
-                              size: 0,
-                            );
+                                  name: selectedFile.last.fields!.name!,
+                                  size: 0,
+                                );
                           } else {
                             // Handle case where no item is found, if necessary
                             print(
@@ -227,7 +234,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
 
                                 return Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     _buildParticipantWidget(
                                         participants[firstIndex],
@@ -253,13 +260,13 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          if (controller.meetingdetails.customdata.isNotEmpty)
+                          if (controller.meetingdetails!.customdata.isNotEmpty)
                             InkWell(
                               onTap: () {
                                 if (controller
-                                    .meetingdetails.customdata.isNotEmpty) {
+                                    .meetingdetails!.customdata.isNotEmpty) {
                                   Clipboard.setData(ClipboardData(
-                                      text: controller.meetingdetails
+                                      text: controller.meetingdetails!
                                           .customdata[0]["meetingLink"]));
                                   MotionToast.success(
                                     title: Text("Meeting Link"),
@@ -277,20 +284,20 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                                   ),
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                     children: [
                                       const Icon(Icons.link,
                                           color: Colors.green),
                                       const Divider(color: Colors.white),
                                       Expanded(
                                         child: Text(
-                                            controller.meetingdetails
+                                            controller.meetingdetails!
                                                 .customdata[0]["meetingLink"],
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: screenWidth * 0.037,
                                                 overflow:
-                                                    TextOverflow.ellipsis)),
+                                                TextOverflow.ellipsis)),
                                       ),
                                     ],
                                   )),
@@ -310,7 +317,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
+                                  MainAxisAlignment.spaceEvenly,
                                   children: [
                                     const Icon(Icons.camera,
                                         color: Colors.green),
@@ -377,26 +384,26 @@ class Fullmeetingscreen extends GetView<postjoinController> {
               GetBuilder<Websocket>(builder: (logic) {
                 var participants = logic.participant;
                 return logic.remoteRTCVideoRenderer.srcObject != null ||
-                        controller.iswhiteboard
+                    controller.iswhiteboard
                     ? SizedBox(
-                        height: 150,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: participants.length,
-                            itemBuilder: (context, index) {
-                              return _buildParticipantWidget(
-                                  participants[index], 123, 123);
-                            }),
-                      )
+                  height: 150,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: participants.length,
+                      itemBuilder: (context, index) {
+                        return _buildParticipantWidget(
+                            participants[index], 123, 123);
+                      }),
+                )
                     : SizedBox();
               }),
             ],
           ),
         ),
         bottomNavigationBar: Container(
-            // height: screenHeight * 0.13,
+          // height: screenHeight * 0.13,
             padding:
-                const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
             decoration: BoxDecoration(
               color: Colors.grey[300],
               borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -422,7 +429,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                             barrierDismissible: false,
                             barrierColor: Colors.transparent,
                             transitionDuration:
-                                const Duration(milliseconds: 400),
+                            const Duration(milliseconds: 400),
                           );
                         }
                       },
@@ -437,7 +444,7 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                   InkWell(
                     onTap: () {
                       if (controller.bigbluebuttonsdkPlugin.mydetails?.fields
-                              ?.raiseHand ==
+                          ?.raiseHand ==
                           false) {
                         controller.bigbluebuttonsdkPlugin.raiseHand();
                       } else {
@@ -446,8 +453,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                     },
                     child: CircleAvatar(
                       backgroundColor: controller.bigbluebuttonsdkPlugin
-                                  .mydetails?.fields?.raiseHand ==
-                              false
+                          .mydetails?.fields?.raiseHand ==
+                          false
                           ? Color(0xffCC525F)
                           : Colors.grey[600],
                       child: const Icon(
@@ -461,10 +468,10 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                       Get.dialog(AlertDialog(
                         backgroundColor: Color(0xFF3E8466),
                         content: controller.bigbluebuttonsdkPlugin.mydetails !=
-                                    null &&
-                                controller.bigbluebuttonsdkPlugin.mydetails!
-                                        .fields!.role ==
-                                    "MODERATOR"
+                            null &&
+                            controller.bigbluebuttonsdkPlugin.mydetails!
+                                .fields!.role ==
+                                "MODERATOR"
                             ? Endroom()
                             : Leavesession(),
                       ));
@@ -485,8 +492,9 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                     children: [
                       InkWell(
                         onTap: () {
-                          if (websocket.meetingResponse?.fields.lockSettingsProps
-                                  .disableCam ??
+                          if (websocket.meetingResponse?.fields
+                              .lockSettingsProps
+                              .disableCam ??
                               false) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -518,25 +526,27 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                         ),
                       ),
                       if(controller.iscamera)
-                      InkWell(
+                        InkWell(
                           child: Icon(Icons.more_vert),
-                        onTap: (){
-                          showGeneralDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              barrierColor: Colors.transparent,
-                              transitionDuration: const Duration(milliseconds: 400),
-                              pageBuilder: (context, animation, secondaryAnimation) {
-                                return const ShowDeviceSettingsDialog();
-                              });
-                        },
-                      )
+                          onTap: () {
+                            showGeneralDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                barrierColor: Colors.transparent,
+                                transitionDuration: const Duration(
+                                    milliseconds: 400),
+                                pageBuilder: (context, animation,
+                                    secondaryAnimation) {
+                                  return const ShowDeviceSettingsDialog();
+                                });
+                          },
+                        )
                     ],
                   ),
                   InkWell(
                     onTap: () {
                       if (websocket.meetingResponse?.fields.lockSettingsProps
-                              .disableMic ??
+                          .disableMic ??
                           false) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -552,14 +562,14 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                     },
                     child: CircleAvatar(
                       backgroundColor: controller.bigbluebuttonsdkPlugin
-                                  .mydetails?.fields?.muted ==
-                              true
+                          .mydetails?.fields?.muted ==
+                          true
                           ? Color(0xffCC525F)
                           : Colors.grey[600],
                       child: Icon(
                         controller.bigbluebuttonsdkPlugin.mydetails?.fields
-                                    ?.muted ==
-                                true
+                            ?.muted ==
+                            true
                             ? Icons.mic_off
                             : Icons.mic,
                         color: Colors.white,
@@ -569,13 +579,61 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                 ],
               );
             })),
+        floatingActionButton: Obx(
+          // assignId: true,
+          () {
+            var logic = controller.pullcontroller;
+            return logic.ispulling ? InkWell(
+                onTap: () {
+                  Get.bottomSheet(Pullquestionandanswer());
+                },
+                child: Container(
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: ShapeDecoration(
+                    color: Color.fromRGBO(62, 132, 102, 1),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        width: 1,
+                        color: Color.fromRGBO(62, 132, 102, 1),
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Show Polls',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.9800000190734863),
+                          fontSize: 16,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.keyboard_arrow_down, color: Colors.white),
+                    ],
+                  ),
+                ),
+              ) : SizedBox.shrink();
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       );
     });
   }
 
   // Helper function to build the participant widget
-  Widget _buildParticipantWidget(
-      Participant participant, double width, double height) {
+  Widget _buildParticipantWidget(Participant participant, double width,
+      double height) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
       width: width,
@@ -592,43 +650,43 @@ class Fullmeetingscreen extends GetView<postjoinController> {
             alignment: Alignment.center,
             child: participant.rtcVideoRenderer != null
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: RTCVideoView(participant.rtcVideoRenderer!,
-                        objectFit:
-                            RTCVideoViewObjectFit.RTCVideoViewObjectFitCover),
-                  )
+              borderRadius: BorderRadius.circular(20),
+              child: RTCVideoView(participant.rtcVideoRenderer!,
+                  objectFit:
+                  RTCVideoViewObjectFit.RTCVideoViewObjectFitCover),
+            )
                 : Container(
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: participant.fields!.talking == true
-                            ? Colors.white
-                            : Colors.transparent,
-                        width: 3,
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: participant.fields!.talking == true
+                      ? Colors.white
+                      : Colors.transparent,
+                  width: 3,
+                ),
+              ),
+              alignment: Alignment.center,
+              child: ClipOval(
+                child: Image.network(
+                  participant.fields!.avatar!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Text(
+                      generateInitials(participant.fields!.name!),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.98),
+                        fontSize: 24,
+                        fontFamily: 'Inter',
+                        fontWeight: FontWeight.w600,
                       ),
-                    ),
-                    alignment: Alignment.center,
-                    child: ClipOval(
-                      child: Image.network(
-                        participant.fields!.avatar!,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Text(
-                            generateInitials(participant.fields!.name!),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.98),
-                              fontSize: 24,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
           Positioned(
             right: 4,

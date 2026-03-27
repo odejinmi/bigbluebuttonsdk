@@ -1036,15 +1036,15 @@ class _ObjectControlBox extends StatelessWidget {
 
   /// Color of control when it is not active.
   /// Defaults to [Colors.white].
-  final Color inactiveColor;
+  // Color inactiveColor;
 
   /// Color of control when it is active.
   /// If null is provided, the theme's accent color is used. If there is no theme, [Colors.blue] is used.
-  final Color? activeColor;
+  // Color? activeColor;
 
   /// Color of the shadow surrounding the control.
   /// Defaults to [Colors.black].
-  final Color shadowColor;
+  // Color shadowColor;
 
   /// Creates an [_ObjectControlBox] with the given [shape] and [active].
   ///
@@ -1059,15 +1059,15 @@ class _ObjectControlBox extends StatelessWidget {
   Widget build(BuildContext context) {
     ThemeData? theme = Theme.of(context);
     if (theme == ThemeData.fallback()) theme = null;
-    final activeColor = this.activeColor ?? theme?.primaryColorLight ?? Colors.blue;
+    // final activeColor = this.activeColor ?? theme?.primaryColorLight ?? Colors.blue;
     return AnimatedContainer(
       duration: _ObjectWidgetState.controlsTransitionDuration,
       decoration: BoxDecoration(
-        color: active ? activeColor : inactiveColor,
+        // color: active ? activeColor : inactiveColor,
         shape: shape,
         boxShadow: [
           BoxShadow(
-            color: shadowColor,
+            // color: shadowColor,
             blurRadius: 2,
           )
         ],

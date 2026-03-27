@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import '../dashboard_controller.dart';
 
 class InviteHistoryPage extends StatelessWidget {
-  const InviteHistoryPage({super.key});
+  const InviteHistoryPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +31,14 @@ class InviteHistoryPage extends StatelessWidget {
           itemBuilder: (context, index) {
             final invite = controller.inviteHistory.value!.data[index];
             final formattedDate =
-                DateFormat('MMM dd, yyyy').format(invite.date);
+            DateFormat('MMM dd, yyyy').format(invite.date);
             final formattedTime =
-                invite.time.substring(0, 5); // Basic time formatting
+            invite.time.substring(0, 5); // Basic time formatting
 
             return Card(
               elevation: 4.0,
               margin:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+              const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.0),
               ),
@@ -89,50 +89,50 @@ class InviteHistoryPage extends StatelessWidget {
                   Get.dialog(
                       AlertDialog(
                         // backgroundColor: Color(0xFF3E8466),
-                        content: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Row(
-                              children: [
-                                Spacer(),
-                                InkWell(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  Spacer(),
+                                  InkWell(
                                     child: Icon(Icons.close),
-                                  onTap: (){
+                                    onTap: (){
                                       Get.back();
-                                  },
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                invite.title,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
                                 ),
-                              ],
-                            ),
-                           Text(
-                              invite.title,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              'On $formattedDate at $formattedTime',
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 14,
+                              const SizedBox(height: 8.0),
+                              Text(
+                                'On $formattedDate at $formattedTime',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontSize: 14,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4.0),
-                            Text(
-                              'Room: ${invite.roomname}',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontStyle: FontStyle.italic,
+                              const SizedBox(height: 4.0),
+                              Text(
+                                'Room: ${invite.roomname}',
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                  fontStyle: FontStyle.italic,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              'Guests: ${invite.guest}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        )
+                              const SizedBox(height: 8.0),
+                              Text(
+                                'Guests: ${invite.guest}',
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ],
+                          )
                       )
                   );
                 },

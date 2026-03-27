@@ -83,7 +83,7 @@ class Govmeeting {
     pollscontroller.baseurl = baseurl;
     pollscontroller.meetingdetails =
         meetingdetailsFromJson(jsonEncode(meetingdetails));
-    await pollscontroller.startroom();
+    pollscontroller.startroom();
 
     if (camerastatus) {
       pollscontroller.bigbluebuttonsdkPlugin.startcamera();

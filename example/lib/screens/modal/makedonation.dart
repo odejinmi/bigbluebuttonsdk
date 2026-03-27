@@ -286,9 +286,9 @@ class Makedonation extends StatelessWidget {
                             // controller.checkingMeeting();
 
                               final Customer customer = Customer(
-                                  name: postjoincontroller.meetingdetails.fullname,
+                                  name: postjoincontroller.meetingdetails!.fullname,
                                   phoneNumber: '08166939205',
-                                  email: postjoincontroller.meetingdetails.externUserID
+                                  email: postjoincontroller.meetingdetails!.externUserId
                               );
                             final Flutterwave flutterwave = Flutterwave(
                                 context: context, publicKey: 'FLWPUBK_TEST-f3450fbb82c4ba25f0554ae3e518df11-X',

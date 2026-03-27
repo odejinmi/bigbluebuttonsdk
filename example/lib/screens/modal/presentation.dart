@@ -179,7 +179,7 @@ class Presentation extends GetView<PresentationController> {
                                   name: controller.toupload[i].name,
                                   current: false)),
                           controller.toupload[i].size,
-                          controller.toupload[i].path),
+                          controller.toupload[i].path!),
                   ],
                 ),
                 Container(

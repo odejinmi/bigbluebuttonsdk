@@ -19,6 +19,10 @@ class PullController extends GetxController
   set pullresult(value) => _pullresult.value = value;
   Map<dynamic, dynamic> get pullresult => _pullresult.value;
 
+  final _pullquestionandanswer = {}.obs;
+  set pullquestionandanswer(value) => _pullquestionandanswer.value = value;
+  Map<dynamic, dynamic> get pullquestionandanswer => _pullquestionandanswer;
+
   final bigbluebuttonsdkPlugin = Bigbluebuttonsdk();
 
   final _lastPollId = "".obs;
@@ -32,7 +36,7 @@ class PullController extends GetxController
     options.add('Option ${options.length + 1}');
   }
 
-  Map<String, dynamic> mergeData(Map<String, dynamic> incomingData) {
+  Map<dynamic, dynamic> mergeData(Map<String, dynamic> incomingData) {
     incomingData.forEach((key, value) {
       if (value is Map<String, dynamic> &&
           pullresult[key] is Map<String, dynamic>) {

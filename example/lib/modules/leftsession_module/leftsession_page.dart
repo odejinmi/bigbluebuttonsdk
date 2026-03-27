@@ -47,7 +47,7 @@ class leftsessionPage extends GetView<leftsessionController> {
               const SizedBox(
                 height: 20,
               ),
-              Text('Have a nice day, ${controller.meetingdetails["fullname"]}',
+              Text('Have a nice day, ${controller.meetingdetails!["fullname"]}',
                   style: TextStyle(color: Colors.white, fontSize: 16)),
               const SizedBox(
                 height: 50,
