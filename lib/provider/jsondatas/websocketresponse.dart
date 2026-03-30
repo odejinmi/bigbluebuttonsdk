@@ -10,9 +10,11 @@ import 'package:bigbluebuttonsdk/utils/diorequest.dart';
 import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:bigbluebuttonsdk/utils/presentationmodel.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../utils/sound_manager.dart';
+import '../../view/recordnotification.dart';
 import 'chats.dart';
 
 class WebSocketResponse {
@@ -42,11 +44,11 @@ class WebSocketResponse {
     "breakouts": _handleBreakouts,
     "annotations": _handleAnnotations,
     "meetings": _handleMeetings,
+    "notifications": _handleNotifications,
   };
 
   Future<void> response(Map<String, dynamic> json) async {
     _service.addEvent(jsonEncode(json));
-
     final collection = json["collection"];
     if (collection != null && _collectionHandlers.containsKey(collection)) {
       await _collectionHandlers[collection]!(json);
@@ -339,6 +341,19 @@ class WebSocketResponse {
     } else if (json["msg"] == "added") {
       _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
       // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+    }
+  }
+  Future<void> _handleNotifications(Map<String, dynamic> json) async {
+    dev.log(jsonEncode(json));
+    // {\"msg\":\"added\",\"collection\":\"notifications\",\"id\":\"jXwrqJEc3hRAuXkaL\",\"fields\":{\"type\":\"notifyAllInMeeting\",\"meetingId\":\"9089aa42a842df1f5285a26eb6b76987077d3326-1774650392102\",\"notificationType\":\"success\",\"icon\":\"record\",\"messageId\":\"app.notification.recordingStart\",\"messageDescription\":\"Notification for when the recording starts\",\"messageValues\":[]}}
+    if (json["msg"] == "changed") {
+
+    } else if (json["msg"] == "added") {
+      Get.dialog(AlertDialog(
+        backgroundColor: Color(0xFF3E8466),
+        content: Recordnotification(),
+      ));
+
     }
   }
 

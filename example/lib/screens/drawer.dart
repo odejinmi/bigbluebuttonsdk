@@ -104,20 +104,21 @@ class _DrawerCompState extends State<DrawerComp> {
             //       fontSize: 14,),),
             //   onTap: () {},
             // ),
-            // ListTile(
-            //   leading: const Icon(Icons.monitor_rounded, size: 20),
-            //   title: const Text(
-            //     'White Board',
-            //     style: TextStyle(
-            //       fontWeight: FontWeight.w500,
-            //       fontSize: 14,
-            //     ),
-            //   ),
-            //   onTap: () {
-            //     postjoincontroller.iswhiteboard =
-            //         !postjoincontroller.iswhiteboard;
-            //   },
-            // ),
+            ListTile(
+              leading: const Icon(Icons.monitor_rounded, size: 20),
+              title: Text(
+                '${postjoincontroller.iswhiteboard ? 'Close ' : ''}White Board',
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 14,
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                postjoincontroller.iswhiteboard =
+                    !postjoincontroller.iswhiteboard;
+              },
+            ),
             // if (postjoincontroller.bigbluebuttonsdkPlugin.mydetails != null &&
             //     postjoincontroller
             //         .bigbluebuttonsdkPlugin.mydetails!.fields!.presenter!)

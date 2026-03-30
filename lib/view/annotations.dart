@@ -73,6 +73,9 @@ class AnnotationInfo {
   List<double>? radius;
   Style? style;
   int? rotation;
+  double? bend;
+  Map<String, String>? decorations;
+  Map<String, Handle>? handles;
   bool? isModerator;
   bool? isComplete;
   String? parentId;
@@ -80,6 +83,7 @@ class AnnotationInfo {
   String? name;
   List<double>? point;
   List<List<double>>? points;
+  String? text;
   String? id;
   String? userId;
   String? type;
@@ -89,6 +93,9 @@ class AnnotationInfo {
     this.radius,
     this.style,
     this.rotation,
+    this.bend,
+    this.decorations,
+    this.handles,
     this.isModerator,
     this.isComplete,
     this.parentId,
@@ -96,6 +103,7 @@ class AnnotationInfo {
     this.name,
     this.point,
     this.points,
+    this.text,
     this.id,
     this.userId,
     this.type,
@@ -106,6 +114,17 @@ class AnnotationInfo {
     radius: json["radius"] == null ? [] : List<double>.from(json["radius"]!.map((x) => x?.toDouble())),
     style: json["style"] == null ? null : Style.fromJson(json["style"]),
     rotation: json["rotation"],
+    bend: (json["bend"] is num) ? (json["bend"] as num).toDouble() : null,
+    decorations: json["decorations"] == null
+        ? null
+        : Map<String, String>.from((json["decorations"] as Map).map(
+            (k, v) => MapEntry(k.toString(), v.toString()),
+          )),
+    handles: json["handles"] == null
+        ? null
+        : Map<String, Handle>.from((json["handles"] as Map).map(
+            (k, v) => MapEntry(k.toString(), Handle.fromJson(v)),
+          )),
     isModerator: json["isModerator"],
     isComplete: json["isComplete"],
     parentId: json["parentId"],
@@ -113,6 +132,7 @@ class AnnotationInfo {
     name: json["name"],
     point: json["point"] == null ? [] : List<double>.from(json["point"]!.map((x) => x?.toDouble())),
     points: json["points"] == null ? [] : List<List<double>>.from(json["points"]!.map((x) => List<double>.from(x.map((x) => x?.toDouble())))),
+    text: json["text"],
     id: json["id"],
     userId: json["userId"],
     type: json["type"],
@@ -123,6 +143,13 @@ class AnnotationInfo {
     "radius": size == null ? [] : List<dynamic>.from(radius!.map((x) => x)),
     "style": style?.toJson(),
     "rotation": rotation,
+    "bend": bend,
+    "decorations": decorations,
+    "handles": handles == null
+        ? null
+        : Map<String, dynamic>.from(handles!.map(
+            (k, v) => MapEntry(k, v.toJson()),
+          )),
     "isModerator": isModerator,
     "isComplete": isComplete,
     "parentId": parentId,
@@ -130,6 +157,7 @@ class AnnotationInfo {
     "name": name,
     "point": point == null ? [] : List<dynamic>.from(point!.map((x) => x)),
     "points": points == null ? [] : List<dynamic>.from(points!.map((x) => List<dynamic>.from(x.map((x) => x)))),
+    "text": text,
     "id": id,
     "userId": userId,
     "type": type,
@@ -139,7 +167,7 @@ class AnnotationInfo {
 class Style {
   bool? isFilled;
   String? size;
-  int? scale;
+  double? scale;
   String? color;
   String? textAlign;
   String? font;
@@ -158,7 +186,7 @@ class Style {
   factory Style.fromJson(Map<String, dynamic> json) => Style(
     isFilled: json["isFilled"],
     size: json["size"],
-    scale: json["scale"],
+    scale: (json["scale"] is num) ? (json["scale"] as num).toDouble() : null,
     color: json["color"],
     textAlign: json["textAlign"],
     font: json["font"],
@@ -174,4 +202,39 @@ class Style {
     "font": font,
     "dash": dash,
   };
+}
+
+class Handle {
+  String? id;
+  int? index;
+  List<double>? point;
+  bool? canBind;
+
+  Handle({
+    this.id,
+    this.index,
+    this.point,
+    this.canBind,
+  });
+
+  factory Handle.fromJson(dynamic json) {
+    if (json is! Map<String, dynamic>) {
+      return Handle();
+    }
+    return Handle(
+      id: json["id"],
+      index: json["index"],
+      point: json["point"] == null
+          ? null
+          : List<double>.from(json["point"].map((x) => (x as num).toDouble())),
+      canBind: json["canBind"],
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "index": index,
+        "point": point,
+        "canBind": canBind,
+      };
 }
