@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
@@ -88,16 +89,8 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     assert(() {
       if (baseurl.isEmpty) {
         throw DuploException('baseurl cannot be null or empty');
-        // } else if (!publicKey.startsWith("pk_")) {
-        //   throw DuploException(Utils.getKeyErrorMsg('public'));
-        // } else if (mainwebsocketur.isEmpty) {
-        //   throw DuploException('secretKey cannot be null or empty');
-        // } else if (!secretKey.startsWith("sk_")) {
-        //   throw DuploException(Utils.getKeyErrorMsg('secret'));
       } else if (webrtctoken.isEmpty) {
         throw DuploException('webrtctoken cannot be null or empty');
-        // } else if (!secretKey.startsWith("sk_")) {
-        //   throw DuploException(Utils.getKeyErrorMsg('secret'));
       } else {
         return true;
       }
@@ -105,11 +98,30 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
     if (sdkInitialized) return;
 
+    // Sanitize baseurl: remove protocol and trailing slashes
+    String sanitizedBaseUrl = baseurl
+        .replaceAll('https://', '')
+        .replaceAll('http://', '')
+        .split('/')
+        .firstWhere((element) => element.isNotEmpty, orElse: () => '');
+
+    if (sanitizedBaseUrl.isEmpty) {
+      sanitizedBaseUrl = baseurl;
+    }
+
+    // Generate random strings for SockJS path to avoid potential conflicts
+    final random = Random();
+    final serverId = (random.nextInt(900) + 100).toString(); // 3-digit number
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    final sessionId = List.generate(8, (index) => chars[random.nextInt(chars.length)]).join();
+
+    // Ensure it ends with a single slash if we're appending paths, 
+    // but here we are using it as the host part.
     mediawebsocketurl =
-        'wss://${baseurl}bbb-webrtc-sfu?sessionToken=$webrtctoken';
+        'wss://$sanitizedBaseUrl/bbb-webrtc-sfu?sessionToken=$webrtctoken';
     mainwebsocketurl =
-        "wss://${baseurl}html5client/sockjs/180/uspuwwsd/websocket";
-    this.baseurl = baseurl;
+        "wss://$sanitizedBaseUrl/html5client/sockjs/$serverId/$sessionId/websocket";
+    this.baseurl = sanitizedBaseUrl;
     this.webrtctoken = webrtctoken;
     this.meetingdetails = meetingdetails;
   }
@@ -203,13 +215,27 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Future<Map<String, dynamic>> sendecinema({required String videourl}) {
-    websocket.isShowECinema = true;
    return websocket.callMethod("startWatchingExternalVideo", [videourl]);
+  }
+  // "{\"msg\":\"changed\",\"collection\":\"stream-external-videos-798f861ee74f6ff83ccbc9c53b419941d0080e50-1775663614180\",\"id\":\"id\",\"fields\":{\"eventName\":\"presenterReady\",\"args\":[{\"meetingId\":\"798f861ee74f6ff83ccbc9c53b419941d0080e50-1775663614180\",\"userId\":\"w_fdvlqr0kwdgp\",\"rate\":0,\"time\":0,\"state\":0}]}}"
+
+  // "{\"msg\":\"changed\",\"collection\":\"stream-external-videos-798f861ee74f6ff83ccbc9c53b419941d0080e50-1775663614180\",\"id\":\"id\",\"fields\":{\"eventName\":\"playerUpdate\",\"args\":[{\"meetingId\":\"798f861ee74f6ff83ccbc9c53b419941d0080e50-1775663614180\",\"userId\":\"w_fdvlqr0kwdgp\",\"rate\":1,\"time\":45,\"state\":1}]}}"
+  @override
+  Future<Map<String, dynamic>> pauseplayecinema({required String status, required int time}) {
+   websocket.callMethod("emitExternalVideoEvent", [{"status":"presenterReady","playerStatus":{"state":0}}]);
+   // "{\"msg\":\"method\",\"id\":\"261\",\"method\":\"emitExternalVideoEvent\",\"params\":[{\"status\":\"play\",\"playerStatus\":{\"time\":54,\"state\":0}}]}"
+   // "{\"msg\":\"method\",\"id\":\"384\",\"method\":\"emitExternalVideoEvent\",\"params\":[{\"status\":\"stop\",\"playerStatus\":{\"time\":45,\"state\":0}}]}"
+   return websocket.callMethod("emitExternalVideoEvent", [{"status":status,"playerStatus":{"time":time,"state":0}}]);
+  }
+
+  @override
+  Future<Map<String, dynamic>> ecinematime({required int rate, required int time}) {
+    // "{\"msg\":\"method\",\"id\":\"355\",\"method\":\"emitExternalVideoEvent\",\"params\":[{\"status\":\"playerUpdate\",\"playerStatus\":{\"rate\":1,\"time\":45,\"state\":0}}]}"
+   return websocket.callMethod("startWatchingExternalVideo", [{"status":"playerUpdate","playerStatus":{"rate":rate,"time":time,"state":0}}]);
   }
 
   @override
   Future<Map<String, dynamic>> endecinema() {
-    websocket.isShowECinema = false;
    return websocket.callMethod("stopWatchingExternalVideo", []);
   }
 
@@ -544,9 +570,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   // TODO: implement presentationmodel
   get presentationmodel => websocket.presentationModel;
-  @override
-  // TODO: implement ishowecinema
-  get ishowecinema => websocket.isShowECinema;
 
   @override
   // TODO: implement stream

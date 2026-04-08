@@ -120,11 +120,11 @@ class RemoteScreenShareWebSocket extends GetxController {
     });
     // print("Answer: ${newAnswer.sdp}");
     peerConnection!.onIceCandidate = (candidate) {
-      // {"type":"video","role":"share","id":"onIceCandidate","candidate":{"candidate":"candidate:2 2 TCP 2105524478 192.168.127.27 9 typ host tcptype active","sdpMLineIndex":0,"sdpMid":"0","usernameFragment":"2124c5f8"},"cameraId":"w_8mbuxp9jzxuidf4mngvcgm0x1"}
+      // Corrected type and role for screenshare receiver ICE candidates
       websocketsub({
         "id": "onIceCandidate",
-        "type": "video",
-        "role": "share",
+        "type": "screenshare",
+        "role": "recv",
         "candidate": candidate.toMap()
       });
     };

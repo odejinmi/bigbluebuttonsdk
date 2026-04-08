@@ -27,7 +27,7 @@ class _CinemaState extends State<Cinema> {
             width: double.infinity,
             height: 350,
             padding:
-                const EdgeInsets.only(top: 10, right: 10, bottom: 20, left: 10),
+            const EdgeInsets.only(top: 10, right: 10, bottom: 20, left: 10),
             decoration: const BoxDecoration(
               color: Color.fromRGBO(62, 132, 102, 1),
               borderRadius: BorderRadius.only(
@@ -40,13 +40,15 @@ class _CinemaState extends State<Cinema> {
                   children: [
                     IconButton(
                         padding: const EdgeInsets.only(left: 10),
-                        onPressed:() {
+                        onPressed: () {
                           Navigator.pop(context);
                         },
                         icon: const Icon(Icons.arrow_back_ios),
                         iconSize: 24,
                         color: Colors.white,
-                        style: const ButtonStyle(backgroundColor: WidgetStatePropertyAll(Color.fromRGBO(62, 132, 102, 1)))
+                        style: const ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                                Color.fromRGBO(62, 132, 102, 1)))
                     ),
                   ],
                 ),
@@ -102,9 +104,9 @@ class _CinemaState extends State<Cinema> {
                     ),
                     child: const Center(
                         child: Text(
-                      'Broadcast',
-                      style: TextStyle(color: Colors.white),
-                    )),
+                          'Broadcast',
+                          style: TextStyle(color: Colors.white),
+                        )),
                   ),
                 ),
               ],
@@ -159,26 +161,34 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
     videoId = YouTubeHelper.extractVideoId(
       widget.videoLink,
     );
-    print("Extracted video ID: $videoId");
-    //     if (videoId != null) {
-    // // Use the video ID
-    //       AdvancedYouTubePlayer(videoId: videoId);
-    //     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(229, 229, 229, 1),
-      body: OrientationBuilder(
-        builder: (context, orientation) {
-          debugPrint('Device orientation: $orientation');
-          isFullscreen = orientation == Orientation.landscape;
-          return Center(
-            child: AdvancedYouTubePlayer(videoId: videoId!, autoPlay: true),
-          );
-        },
-      ),
+      body: GetBuilder<postjoinController>(builder: (logic) {
+        return OrientationBuilder(
+          builder: (context, orientation) {
+            debugPrint('Device orientation: $orientation');
+            isFullscreen = orientation == Orientation.landscape;
+            return Center(
+              child: AdvancedYouTubePlayer(
+                videoId: videoId!, autoPlay: logic
+                  .bigbluebuttonsdkPlugin
+                  .mydetails!
+                  .fields!
+                  .role ==
+                  "MODERATOR", showControls:logic
+                  .bigbluebuttonsdkPlugin
+                  .mydetails!
+                  .fields!
+                  .role ==
+                  "MODERATOR",),
+            );
+          },
+        );
+      }),
 
       /// Stop Broadcast Button
       floatingActionButton: GetBuilder<postjoinController>(
@@ -198,7 +208,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
               child: Container(
                 width: 151,
                 height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(204, 82, 95, 0.2),
                   borderRadius: BorderRadius.circular(8),
@@ -287,6 +297,7 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
                             /// Don't End Button
                             GestureDetector(
                               onTap: () {
@@ -321,7 +332,6 @@ class _ShowVideoScreenState extends State<ShowVideoScreen> {
                             /// End eCinema Button
                             GestureDetector(
                               onTap: () {
-
                                 // _enableFullscreen(true);
                                 Navigator.pop(context);
                                 Navigator.pop(context);

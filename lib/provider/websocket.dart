@@ -149,20 +149,11 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   set timer(Timer? value) => _timer.value = value;
 
-  @override
-  bool get isPolling => _isPolling.value;
-  @override
-  set isPolling(bool value) => _isPolling.value = value;
 
   @override
   Map<String, dynamic> get pollJson => _pollJson;
   @override
   set pollJson(Map<String, dynamic> value) => _pollJson.value = value;
-
-  @override
-  bool get isShowECinema => _isShowECinema.value;
-  @override
-  set isShowECinema(bool value) => _isShowECinema.value = value;
 
   @override
   bool get isChat => _isChat.value;

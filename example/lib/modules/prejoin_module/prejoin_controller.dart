@@ -272,8 +272,9 @@ class prejoinController extends GetxController {
 
   void checkingMeeting() async {
     isLoading = true;
+    var details = meetingidController.value.text.contains("https://")? meetingidController.value.text.split("/").last :meetingidController.value.text;
     var jsonBody = {
-      "name": meetingidController.value.text,
+      "name": details,
     };
 
     var cmddetails = await Diorequest().post("app/validate-meeting", jsonBody);

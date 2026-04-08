@@ -49,6 +49,8 @@ class WebSocketResponse {
 
   Future<void> response(Map<String, dynamic> json) async {
     _service.addEvent(jsonEncode(json));
+    print("jsonEncode(json)");
+    print(jsonEncode(json));
     final collection = json["collection"];
     if (collection != null && _collectionHandlers.containsKey(collection)) {
       await _collectionHandlers[collection]!(json);
@@ -180,24 +182,20 @@ class WebSocketResponse {
 
 // Add other handler methods following the same pattern...
   Future<void> _handleExternalVideoMeetings(Map<String, dynamic> json) async {
-    if (json["msg"] == "added" || json["msg"] == "changed") {
-    if (json["fields"] != null && json["fields"]["externalVideoUrl"] != null) {
-        _service.externalvideomeetings(json["fields"]["externalVideoUrl"]);
-    } else {
-      // Navigator.pop(context);
-      _service.isShowECinema = false;
-      // _service.externalvideomeetings(false);
-    }
-    } else if (json["msg"] == "removed") {
-      _service.externalvideomeetings(false);
-    }
+    // if (json["msg"] == "added" || json["msg"] == "changed") {
+    // if (json["fields"] != null && json["fields"]["externalVideoUrl"] != null) {
+        _service.externalvideomeetings(json);
+    // } else {
+    //   // Navigator.pop(context);
+    //   // _service.externalvideomeetings(false);
+    // }
+    // } else if (json["msg"] == "removed") {
+    //   _service.externalvideomeetings(false);
+    // }
   }
 
   Future<void> _handlePolls(Map<String, dynamic> json) async {
-    print("object");
-    print(json);
     if (json["msg"] == "added") {
-      _service.isPolling = true;
       // _service.pollJson = json;
     // } else if (json["msg"] == "removed"){
     //   _service.polls(json);
@@ -207,7 +205,6 @@ class WebSocketResponse {
 
   Future<void> _handleCurrentPoll(Map<String, dynamic> json) async {
     if (json["msg"] == "added") {
-      _service.isPolling = true;
       _service.pollJson = json;
       _service.pollAnalyseParser = pollanalyseparserFromJson(
         jsonEncode(json["fields"]),
@@ -339,8 +336,15 @@ class WebSocketResponse {
         _service.stopWebsocket();
       }
     } else if (json["msg"] == "added") {
-      _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
-      // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+      if(_service.meetingResponse == null) {
+        print("meeting response equal null");
+        _service.meetingResponse = meetingResponseFromJson(jsonEncode(json));
+        // a["{\"msg\":\"added\",\"collection\":\"meetings\",\"id\":\"9753e686f0a75399ca60ae03442353b4b7862ee2-1728837597302\",\"fields\":{\"timeRemaining\":0}}"]
+      }else{
+        print("meeting response not equal null");
+        _service.meetingResponse = meetingResponseFromJson(jsonEncode(
+            _service.mergeData(json, _service.meetingResponse!.toJson())));
+      }
     }
   }
   Future<void> _handleNotifications(Map<String, dynamic> json) async {

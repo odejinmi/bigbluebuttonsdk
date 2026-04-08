@@ -87,12 +87,12 @@ class Users {
       var list = _service.participant.where((v) {
         return v.id == data.id || v.fields!.userId == data.fields!.userId;
       }).toList();
-      if (_service.notificationSettingsProps.joined == true) {
+      if (_service.notificationSettingsProps.joined == true &&
+          (_service.myDetails == null ||
+              data.fields!.userId != _service.myDetails!.fields!.userId)) {
         // SoundManager().playAsset(
         //     'packages/bigbluebuttonsdk/assets/sounds/message.mp3');
-        Get.snackbar(
-            "New User joined",
-            "${data.fields!.name} joined the meeting");
+        Get.snackbar("New User joined", "${data.fields!.name} joined the meeting");
       }
       if (list.isEmpty) {
         _service.participant.add(data);
@@ -112,12 +112,12 @@ class Users {
         return v.id == json["id"];
       }).toList();
       if (list.isNotEmpty) {
-        if (_service.notificationSettingsProps?.leave == true) {
+        if (_service.notificationSettingsProps?.leave == true &&
+            (_service.myDetails == null ||
+                list[0].fields!.userId != _service.myDetails!.fields!.userId)) {
           SoundManager().playAsset(
               'packages/bigbluebuttonsdk/assets/sounds/message.mp3');
-          Get.snackbar(
-              "User left",
-              "${list[0].fields!.name} left the meeting");
+          Get.snackbar("User left", "${list[0].fields!.name} left the meeting");
         }
         _service.participant.remove(list[0]);
       }
@@ -132,8 +132,8 @@ class Users {
     if (index != -1) {
       if (json["fields"]["raiseHand"] != null &&
           json["fields"]["raiseHand"] &&
-          _service.participant[index].fields!.name! !=
-              _service.meetingDetails!.fullname) {
+          _service.participant[index].fields!.userId !=
+              _service.myDetails?.fields?.userId) {
         if (_service.notificationSettingsProps.handRaise == true) {
           Get.snackbar("Hand raise", "${_service.participant[index].fields!.name!} raised their hand");
           // SoundManager().playAsset(

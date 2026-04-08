@@ -35,14 +35,10 @@ abstract class WebSocketService {
   set slides(List<dynamic> value);
   Timer? get timer;
   set timer(Timer? value);
-  bool get isPolling;
-  set isPolling(bool value);
   Map<String, dynamic> get pollJson;
   set pollJson(Map<String, dynamic> value);
   Pollanalyseparser get pollAnalyseParser;
   set pollAnalyseParser(Pollanalyseparser value);
-  bool get isShowECinema;
-  set isShowECinema(bool value);
   bool get isRecording;
   set isRecording(bool value);
   String get recordingTime;

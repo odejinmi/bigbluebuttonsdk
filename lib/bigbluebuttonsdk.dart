@@ -128,6 +128,12 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.endecinema();
   }
 
+  Future<Map<String, dynamic>> pauseplayecinema({required String status, required int time}) {
+    return BigbluebuttonsdkPlatform.instance.pauseplayecinema(status: status, time: time);
+  }
+  Future<Map<String, dynamic>> ecinematime({required int rate, required int time}) {
+    return BigbluebuttonsdkPlatform.instance.ecinematime(rate: rate, time: time);
+  }
   Future<Map<String, dynamic>> startpoll({required String question, required List options}) {
     return BigbluebuttonsdkPlatform.instance
         .startpoll(question: question, options: options);

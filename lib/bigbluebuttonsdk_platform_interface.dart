@@ -110,6 +110,13 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  Future<Map<String, dynamic>> pauseplayecinema({required String status, required int time}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  Future<Map<String, dynamic>> ecinematime({required int rate, required int time}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
   Future<Map<String, dynamic>> endecinema() {
     throw UnimplementedError('initialize() has not been implemented.');
   }

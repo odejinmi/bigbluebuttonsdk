@@ -64,9 +64,14 @@ class Screensharewebsocket extends GetxController {
     peerConnection = await createPeerConnection(websocket.stunServer);
 
     // Get local media stream (screen sharing)
+    // Optimized for real-time: 720p @ 20fps is much better for latency than 1080p @ 30fps
     _localStream = await mediaDevices.getDisplayMedia({
       'audio': true,
-      'video': {'width': 1920, 'height': 1080, 'frameRate': 30},
+      'video': {
+        'width': {'ideal': 1280},
+        'height': {'ideal': 720},
+        'frameRate': {'ideal': 20, 'max': 30},
+      },
     });
 
     // Add local tracks to the peer connection
@@ -76,7 +81,8 @@ class Screensharewebsocket extends GetxController {
 
     // Set source for local video renderer
     localRTCVideoRenderer.srcObject = _localStream;
-
+    websocket.remoteRTCVideoRenderer.srcObject = _localStream;
+    websocket.isMeSharing = true;
     // Handle ICE candidate generation
     peerConnection!.onIceCandidate = (RTCIceCandidate candidate) {
       rtcIceCandidates.add(candidate);
@@ -117,7 +123,16 @@ class Screensharewebsocket extends GetxController {
   void receiveStart() {}
 
   void sendCandidate(Map<String, dynamic> candidate) {
-    // Implement your signaling logic to send candidate to server
+    // Implementing signaling for ICE candidates to speed up connection
+    if (channel != null && isWebsocketRunning) {
+      var payload = {
+        "id": "onIceCandidate",
+        "type": "screenshare",
+        "role": "send",
+        "candidate": candidate,
+      };
+      websocketsub(payload);
+    }
   }
 
   void videoStream(String sdp) {
@@ -137,7 +152,7 @@ class Screensharewebsocket extends GetxController {
       "sdpOffer": sdp,
       "hasAudio": false,
       "contentType": "screenshare",
-      "bitrate": 1500,
+      "bitrate": 1000, // Reduced bitrate from 1500 to 1000 to reduce congestion/latency
     };
 
     websocketsub(payload);

@@ -7,24 +7,24 @@ String meetingResponseToJson(MeetingResponse data) =>
     json.encode(data.toJson());
 
 class MeetingResponse {
-  final String msg;
-  final String collection;
-  final String id;
-  final MeetingFields fields;
+  final String? msg;
+  final String? collection;
+  final String? id;
+  final MeetingFields? fields;
 
   MeetingResponse({
-    required this.msg,
-    required this.collection,
-    required this.id,
-    required this.fields,
+    this.msg,
+    this.collection,
+    this.id,
+    this.fields,
   });
 
   factory MeetingResponse.fromJson(Map<String, dynamic> json) {
     return MeetingResponse(
-      msg: json['msg'],
-      collection: json['collection'],
-      id: json['id'],
-      fields: MeetingFields.fromJson(json['fields']),
+      msg: json['msg']?.toString(),
+      collection: json['collection']?.toString(),
+      id: json['id']?.toString(),
+      fields: json['fields'] != null ? MeetingFields.fromJson(json['fields']) : null,
     );
   }
 
@@ -32,125 +32,125 @@ class MeetingResponse {
         'msg': msg,
         'collection': collection,
         'id': id,
-        'fields': fields.toJson(),
+        'fields': fields?.toJson(),
       };
 }
 
 class MeetingFields {
-  final String meetingId;
-  final BreakoutProps breakoutProps;
-  final DurationProps durationProps;
-  final List<dynamic> groups;
-  final String guestLobbyMessage;
-  final String layout;
-  final LockSettingsProps lockSettingsProps;
-  final bool meetingEnded;
-  final MeetingProp meetingProp;
-  final MetadataProp metadataProp;
-  final bool publishedPoll;
-  final List<dynamic> randomlySelectedUser;
-  final SystemProps systemProps;
-  final UsersProp usersProp;
-  final VoiceProp voiceProp;
-  final WelcomeProp welcomeProp;
+  final String? meetingId;
+  final BreakoutProps? breakoutProps;
+  final DurationProps? durationProps;
+  final List<dynamic>? groups;
+  final String? guestLobbyMessage;
+  final String? layout;
+  final LockSettingsProps? lockSettingsProps;
+  final bool? meetingEnded;
+  final MeetingProp? meetingProp;
+  final MetadataProp? metadataProp;
+  final bool? publishedPoll;
+  final List<dynamic>? randomlySelectedUser;
+  final SystemProps? systemProps;
+  final UsersProp? usersProp;
+  final VoiceProp? voiceProp;
+  final WelcomeProp? welcomeProp;
 
   MeetingFields({
-    required this.meetingId,
-    required this.breakoutProps,
-    required this.durationProps,
-    required this.groups,
-    required this.guestLobbyMessage,
-    required this.layout,
-    required this.lockSettingsProps,
-    required this.meetingEnded,
-    required this.meetingProp,
-    required this.metadataProp,
-    required this.publishedPoll,
-    required this.randomlySelectedUser,
-    required this.systemProps,
-    required this.usersProp,
-    required this.voiceProp,
-    required this.welcomeProp,
+    this.meetingId,
+    this.breakoutProps,
+    this.durationProps,
+    this.groups,
+    this.guestLobbyMessage,
+    this.layout,
+    this.lockSettingsProps,
+    this.meetingEnded,
+    this.meetingProp,
+    this.metadataProp,
+    this.publishedPoll,
+    this.randomlySelectedUser,
+    this.systemProps,
+    this.usersProp,
+    this.voiceProp,
+    this.welcomeProp,
   });
 
   factory MeetingFields.fromJson(Map<String, dynamic> json) {
     return MeetingFields(
-      meetingId: json['meetingId'],
-      breakoutProps: BreakoutProps.fromJson(json['breakoutProps']),
-      durationProps: DurationProps.fromJson(json['durationProps']),
-      groups: json['groups'],
-      guestLobbyMessage: json['guestLobbyMessage'],
-      layout: json['layout'],
-      lockSettingsProps: LockSettingsProps.fromJson(json['lockSettingsProps']),
-      meetingEnded: json['meetingEnded'],
-      meetingProp: MeetingProp.fromJson(json['meetingProp']),
-      metadataProp: MetadataProp.fromJson(json['metadataProp']),
-      publishedPoll: json['publishedPoll'],
-      randomlySelectedUser: json['randomlySelectedUser'],
-      systemProps: SystemProps.fromJson(json['systemProps']),
-      usersProp: UsersProp.fromJson(json['usersProp']),
-      voiceProp: VoiceProp.fromJson(json['voiceProp']),
-      welcomeProp: WelcomeProp.fromJson(json['welcomeProp']),
+      meetingId: json['meetingId']?.toString(),
+      breakoutProps: json['breakoutProps'] != null ? BreakoutProps.fromJson(json['breakoutProps']) : null,
+      durationProps: json['durationProps'] != null ? DurationProps.fromJson(json['durationProps']) : null,
+      groups: json['groups'] as List<dynamic>?,
+      guestLobbyMessage: json['guestLobbyMessage']?.toString(),
+      layout: json['layout']?.toString(),
+      lockSettingsProps: json['lockSettingsProps'] != null ? LockSettingsProps.fromJson(json['lockSettingsProps']) : null,
+      meetingEnded: json['meetingEnded'] as bool?,
+      meetingProp: json['meetingProp'] != null ? MeetingProp.fromJson(json['meetingProp']) : null,
+      metadataProp: json['metadataProp'] != null ? MetadataProp.fromJson(json['metadataProp']) : null,
+      publishedPoll: json['publishedPoll'] as bool?,
+      randomlySelectedUser: json['randomlySelectedUser'] as List<dynamic>?,
+      systemProps: json['systemProps'] != null ? SystemProps.fromJson(json['systemProps']) : null,
+      usersProp: json['usersProp'] != null ? UsersProp.fromJson(json['usersProp']) : null,
+      voiceProp: json['voiceProp'] != null ? VoiceProp.fromJson(json['voiceProp']) : null,
+      welcomeProp: json['welcomeProp'] != null ? WelcomeProp.fromJson(json['welcomeProp']) : null,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'meetingId': meetingId,
-        'breakoutProps': breakoutProps.toJson(),
-        'durationProps': durationProps.toJson(),
+        'breakoutProps': breakoutProps?.toJson(),
+        'durationProps': durationProps?.toJson(),
         'groups': groups,
         'guestLobbyMessage': guestLobbyMessage,
         'layout': layout,
-        'lockSettingsProps': lockSettingsProps.toJson(),
+        'lockSettingsProps': lockSettingsProps?.toJson(),
         'meetingEnded': meetingEnded,
-        'meetingProp': meetingProp.toJson(),
-        'metadataProp': metadataProp.toJson(),
+        'meetingProp': meetingProp?.toJson(),
+        'metadataProp': metadataProp?.toJson(),
         'publishedPoll': publishedPoll,
         'randomlySelectedUser': randomlySelectedUser,
-        'systemProps': systemProps.toJson(),
-        'usersProp': usersProp.toJson(),
-        'voiceProp': voiceProp.toJson(),
-        'welcomeProp': welcomeProp.toJson(),
+        'systemProps': systemProps?.toJson(),
+        'usersProp': usersProp?.toJson(),
+        'voiceProp': voiceProp?.toJson(),
+        'welcomeProp': welcomeProp?.toJson(),
       };
 }
 
 class BreakoutProps {
-  final List<dynamic> breakoutRooms;
-  final bool captureNotes;
-  final String captureNotesFilename;
-  final bool captureSlides;
-  final String captureSlidesFilename;
-  final bool freeJoin;
-  final String parentId;
-  final bool privateChatEnabled;
-  final bool record;
-  final int sequence;
+  final List<dynamic>? breakoutRooms;
+  final bool? captureNotes;
+  final String? captureNotesFilename;
+  final bool? captureSlides;
+  final String? captureSlidesFilename;
+  final bool? freeJoin;
+  final String? parentId;
+  final bool? privateChatEnabled;
+  final bool? record;
+  final int? sequence;
 
   BreakoutProps({
-    required this.breakoutRooms,
-    required this.captureNotes,
-    required this.captureNotesFilename,
-    required this.captureSlides,
-    required this.captureSlidesFilename,
-    required this.freeJoin,
-    required this.parentId,
-    required this.privateChatEnabled,
-    required this.record,
-    required this.sequence,
+    this.breakoutRooms,
+    this.captureNotes,
+    this.captureNotesFilename,
+    this.captureSlides,
+    this.captureSlidesFilename,
+    this.freeJoin,
+    this.parentId,
+    this.privateChatEnabled,
+    this.record,
+    this.sequence,
   });
 
   factory BreakoutProps.fromJson(Map<String, dynamic> json) {
     return BreakoutProps(
-      breakoutRooms: json['breakoutRooms'],
-      captureNotes: json['captureNotes'],
-      captureNotesFilename: json['captureNotesFilename'],
-      captureSlides: json['captureSlides'],
-      captureSlidesFilename: json['captureSlidesFilename'],
-      freeJoin: json['freeJoin'],
-      parentId: json['parentId'],
-      privateChatEnabled: json['privateChatEnabled'],
-      record: json['record'],
-      sequence: json['sequence'],
+      breakoutRooms: json['breakoutRooms'] as List<dynamic>?,
+      captureNotes: json['captureNotes'] as bool?,
+      captureNotesFilename: json['captureNotesFilename']?.toString(),
+      captureSlides: json['captureSlides'] as bool?,
+      captureSlidesFilename: json['captureSlidesFilename']?.toString(),
+      freeJoin: json['freeJoin'] as bool?,
+      parentId: json['parentId']?.toString(),
+      privateChatEnabled: json['privateChatEnabled'] as bool?,
+      record: json['record'] as bool?,
+      sequence: json['sequence'] as int?,
     );
   }
 
@@ -169,51 +169,51 @@ class BreakoutProps {
 }
 
 class DurationProps {
-  final String createdDate;
-  final int createdTime;
-  final int duration;
-  final bool endWhenNoModerator;
-  final int endWhenNoModeratorDelayInMinutes;
-  final int meetingExpireIfNoUserJoinedInMinutes;
-  final int meetingExpireWhenLastUserLeftInMinutes;
-  final int timeRemaining;
-  final int userActivitySignResponseDelayInMinutes;
-  final int userInactivityInspectTimerInMinutes;
-  final int userInactivityThresholdInMinutes;
+  final String? createdDate;
+  final int? createdTime;
+  final int? duration;
+  final bool? endWhenNoModerator;
+  final int? endWhenNoModeratorDelayInMinutes;
+  final int? meetingExpireIfNoUserJoinedInMinutes;
+  final int? meetingExpireWhenLastUserLeftInMinutes;
+  final int? timeRemaining;
+  final int? userActivitySignResponseDelayInMinutes;
+  final int? userInactivityInspectTimerInMinutes;
+  final int? userInactivityThresholdInMinutes;
 
   DurationProps({
-    required this.createdDate,
-    required this.createdTime,
-    required this.duration,
-    required this.endWhenNoModerator,
-    required this.endWhenNoModeratorDelayInMinutes,
-    required this.meetingExpireIfNoUserJoinedInMinutes,
-    required this.meetingExpireWhenLastUserLeftInMinutes,
-    required this.timeRemaining,
-    required this.userActivitySignResponseDelayInMinutes,
-    required this.userInactivityInspectTimerInMinutes,
-    required this.userInactivityThresholdInMinutes,
+    this.createdDate,
+    this.createdTime,
+    this.duration,
+    this.endWhenNoModerator,
+    this.endWhenNoModeratorDelayInMinutes,
+    this.meetingExpireIfNoUserJoinedInMinutes,
+    this.meetingExpireWhenLastUserLeftInMinutes,
+    this.timeRemaining,
+    this.userActivitySignResponseDelayInMinutes,
+    this.userInactivityInspectTimerInMinutes,
+    this.userInactivityThresholdInMinutes,
   });
 
   factory DurationProps.fromJson(Map<String, dynamic> json) {
     return DurationProps(
-      createdDate: json['createdDate'],
-      createdTime: json['createdTime'],
-      duration: json['duration'],
-      endWhenNoModerator: json['endWhenNoModerator'],
+      createdDate: json['createdDate']?.toString(),
+      createdTime: json['createdTime'] as int?,
+      duration: json['duration'] as int?,
+      endWhenNoModerator: json['endWhenNoModerator'] as bool?,
       endWhenNoModeratorDelayInMinutes:
-          json['endWhenNoModeratorDelayInMinutes'],
+          json['endWhenNoModeratorDelayInMinutes'] as int?,
       meetingExpireIfNoUserJoinedInMinutes:
-          json['meetingExpireIfNoUserJoinedInMinutes'],
+          json['meetingExpireIfNoUserJoinedInMinutes'] as int?,
       meetingExpireWhenLastUserLeftInMinutes:
-          json['meetingExpireWhenLastUserLeftInMinutes'],
-      timeRemaining: json['timeRemaining'],
+          json['meetingExpireWhenLastUserLeftInMinutes'] as int?,
+      timeRemaining: json['timeRemaining'] as int?,
       userActivitySignResponseDelayInMinutes:
-          json['userActivitySignResponseDelayInMinutes'],
+          json['userActivitySignResponseDelayInMinutes'] as int?,
       userInactivityInspectTimerInMinutes:
-          json['userInactivityInspectTimerInMinutes'],
+          json['userInactivityInspectTimerInMinutes'] as int?,
       userInactivityThresholdInMinutes:
-          json['userInactivityThresholdInMinutes'],
+          json['userInactivityThresholdInMinutes'] as int?,
     );
   }
 
@@ -237,45 +237,45 @@ class DurationProps {
 }
 
 class LockSettingsProps {
-  final bool disableCam;
-  final bool disableMic;
-  final bool disablePrivateChat;
-  final bool disablePublicChat;
-  final bool disableNotes;
-  final bool hideUserList;
-  final bool lockOnJoin;
-  final bool lockOnJoinConfigurable;
-  final bool hideViewersCursor;
-  final bool hideViewersAnnotation;
-  final String setBy;
+  final bool? disableCam;
+  final bool? disableMic;
+  final bool? disablePrivateChat;
+  final bool? disablePublicChat;
+  final bool? disableNotes;
+  final bool? hideUserList;
+  final bool? lockOnJoin;
+  final bool? lockOnJoinConfigurable;
+  final bool? hideViewersCursor;
+  final bool? hideViewersAnnotation;
+  final String? setBy;
 
   LockSettingsProps({
-    required this.disableCam,
-    required this.disableMic,
-    required this.disablePrivateChat,
-    required this.disablePublicChat,
-    required this.disableNotes,
-    required this.hideUserList,
-    required this.lockOnJoin,
-    required this.lockOnJoinConfigurable,
-    required this.hideViewersCursor,
-    required this.hideViewersAnnotation,
-    required this.setBy,
+    this.disableCam,
+    this.disableMic,
+    this.disablePrivateChat,
+    this.disablePublicChat,
+    this.disableNotes,
+    this.hideUserList,
+    this.lockOnJoin,
+    this.lockOnJoinConfigurable,
+    this.hideViewersCursor,
+    this.hideViewersAnnotation,
+    this.setBy,
   });
 
   factory LockSettingsProps.fromJson(Map<String, dynamic> json) {
     return LockSettingsProps(
-      disableCam: json['disableCam'],
-      disableMic: json['disableMic'],
-      disablePrivateChat: json['disablePrivateChat'],
-      disablePublicChat: json['disablePublicChat'],
-      disableNotes: json['disableNotes'],
-      hideUserList: json['hideUserList'],
-      lockOnJoin: json['lockOnJoin'],
-      lockOnJoinConfigurable: json['lockOnJoinConfigurable'],
-      hideViewersCursor: json['hideViewersCursor'],
-      hideViewersAnnotation: json['hideViewersAnnotation'],
-      setBy: json['setBy'],
+      disableCam: json['disableCam'] as bool?,
+      disableMic: json['disableMic'] as bool?,
+      disablePrivateChat: json['disablePrivateChat'] as bool?,
+      disablePublicChat: json['disablePublicChat'] as bool?,
+      disableNotes: json['disableNotes'] as bool?,
+      hideUserList: json['hideUserList'] as bool?,
+      lockOnJoin: json['lockOnJoin'] as bool?,
+      lockOnJoinConfigurable: json['lockOnJoinConfigurable'] as bool?,
+      hideViewersCursor: json['hideViewersCursor'] as bool?,
+      hideViewersAnnotation: json['hideViewersAnnotation'] as bool?,
+      setBy: json['setBy']?.toString(),
     );
   }
 
@@ -295,43 +295,43 @@ class LockSettingsProps {
 }
 
 class MeetingProp {
-  final List<dynamic> disabledFeatures;
-  final String extId;
-  final String intId;
-  final bool isBreakout;
-  final int maxPinnedCameras;
-  final int meetingCameraCap;
-  final String name;
-  final bool notifyRecordingIsOn;
-  final String presentationUploadExternalDescription;
-  final String presentationUploadExternalUrl;
+  final List<dynamic>? disabledFeatures;
+  final String? extId;
+  final String? intId;
+  final bool? isBreakout;
+  final int? maxPinnedCameras;
+  final int? meetingCameraCap;
+  final String? name;
+  final bool? notifyRecordingIsOn;
+  final String? presentationUploadExternalDescription;
+  final String? presentationUploadExternalUrl;
 
   MeetingProp({
-    required this.disabledFeatures,
-    required this.extId,
-    required this.intId,
-    required this.isBreakout,
-    required this.maxPinnedCameras,
-    required this.meetingCameraCap,
-    required this.name,
-    required this.notifyRecordingIsOn,
-    required this.presentationUploadExternalDescription,
-    required this.presentationUploadExternalUrl,
+    this.disabledFeatures,
+    this.extId,
+    this.intId,
+    this.isBreakout,
+    this.maxPinnedCameras,
+    this.meetingCameraCap,
+    this.name,
+    this.notifyRecordingIsOn,
+    this.presentationUploadExternalDescription,
+    this.presentationUploadExternalUrl,
   });
 
   factory MeetingProp.fromJson(Map<String, dynamic> json) {
     return MeetingProp(
-      disabledFeatures: json['disabledFeatures'],
-      extId: json['extId'],
-      intId: json['intId'],
-      isBreakout: json['isBreakout'],
-      maxPinnedCameras: json['maxPinnedCameras'],
-      meetingCameraCap: json['meetingCameraCap'],
-      name: json['name'],
-      notifyRecordingIsOn: json['notifyRecordingIsOn'],
+      disabledFeatures: json['disabledFeatures'] as List<dynamic>?,
+      extId: json['extId']?.toString(),
+      intId: json['intId']?.toString(),
+      isBreakout: json['isBreakout'] as bool?,
+      maxPinnedCameras: json['maxPinnedCameras'] as int?,
+      meetingCameraCap: json['meetingCameraCap'] as int?,
+      name: json['name']?.toString(),
+      notifyRecordingIsOn: json['notifyRecordingIsOn'] as bool?,
       presentationUploadExternalDescription:
-          json['presentationUploadExternalDescription'],
-      presentationUploadExternalUrl: json['presentationUploadExternalUrl'],
+          json['presentationUploadExternalDescription']?.toString(),
+      presentationUploadExternalUrl: json['presentationUploadExternalUrl']?.toString(),
     );
   }
 
@@ -351,13 +351,13 @@ class MeetingProp {
 }
 
 class MetadataProp {
-  final Map<String, dynamic> metadata;
+  final Map<String, dynamic>? metadata;
 
-  MetadataProp({required this.metadata});
+  MetadataProp({this.metadata});
 
   factory MetadataProp.fromJson(Map<String, dynamic> json) {
     return MetadataProp(
-      metadata: json['metadata'],
+      metadata: json['metadata'] as Map<String, dynamic>?,
     );
   }
 
@@ -367,13 +367,13 @@ class MetadataProp {
 }
 
 class SystemProps {
-  final int html5InstanceId;
+  final int? html5InstanceId;
 
-  SystemProps({required this.html5InstanceId});
+  SystemProps({this.html5InstanceId});
 
   factory SystemProps.fromJson(Map<String, dynamic> json) {
     return SystemProps(
-      html5InstanceId: json['html5InstanceId'],
+      html5InstanceId: json['html5InstanceId'] as int?,
     );
   }
 
@@ -383,42 +383,42 @@ class SystemProps {
 }
 
 class UsersProp {
-  final bool allowModsToEjectCameras;
-  final bool allowModsToUnmuteUsers;
-  final bool allowPromoteGuestToModerator;
-  final bool authenticatedGuest;
-  final String guestPolicy;
-  final int maxUserConcurrentAccesses;
-  final int maxUsers;
-  final String meetingLayout;
-  final int userCameraCap;
-  final bool webcamsOnlyForModerator;
+  final bool? allowModsToEjectCameras;
+  final bool? allowModsToUnmuteUsers;
+  final bool? allowPromoteGuestToModerator;
+  final bool? authenticatedGuest;
+  final String? guestPolicy;
+  final int? maxUserConcurrentAccesses;
+  final int? maxUsers;
+  final String? meetingLayout;
+  final int? userCameraCap;
+  final bool? webcamsOnlyForModerator;
 
   UsersProp({
-    required this.allowModsToEjectCameras,
-    required this.allowModsToUnmuteUsers,
-    required this.allowPromoteGuestToModerator,
-    required this.authenticatedGuest,
-    required this.guestPolicy,
-    required this.maxUserConcurrentAccesses,
-    required this.maxUsers,
-    required this.meetingLayout,
-    required this.userCameraCap,
-    required this.webcamsOnlyForModerator,
+    this.allowModsToEjectCameras,
+    this.allowModsToUnmuteUsers,
+    this.allowPromoteGuestToModerator,
+    this.authenticatedGuest,
+    this.guestPolicy,
+    this.maxUserConcurrentAccesses,
+    this.maxUsers,
+    this.meetingLayout,
+    this.userCameraCap,
+    this.webcamsOnlyForModerator,
   });
 
   factory UsersProp.fromJson(Map<String, dynamic> json) {
     return UsersProp(
-      allowModsToEjectCameras: json['allowModsToEjectCameras'],
-      allowModsToUnmuteUsers: json['allowModsToUnmuteUsers'],
-      allowPromoteGuestToModerator: json['allowPromoteGuestToModerator'],
-      authenticatedGuest: json['authenticatedGuest'],
-      guestPolicy: json['guestPolicy'],
-      maxUserConcurrentAccesses: json['maxUserConcurrentAccesses'],
-      maxUsers: json['maxUsers'],
-      meetingLayout: json['meetingLayout'],
-      userCameraCap: json['userCameraCap'],
-      webcamsOnlyForModerator: json['webcamsOnlyForModerator'],
+      allowModsToEjectCameras: json['allowModsToEjectCameras'] as bool?,
+      allowModsToUnmuteUsers: json['allowModsToUnmuteUsers'] as bool?,
+      allowPromoteGuestToModerator: json['allowPromoteGuestToModerator'] as bool?,
+      authenticatedGuest: json['authenticatedGuest'] as bool?,
+      guestPolicy: json['guestPolicy']?.toString(),
+      maxUserConcurrentAccesses: json['maxUserConcurrentAccesses'] as int?,
+      maxUsers: json['maxUsers'] as int?,
+      meetingLayout: json['meetingLayout']?.toString(),
+      userCameraCap: json['userCameraCap'] as int?,
+      webcamsOnlyForModerator: json['webcamsOnlyForModerator'] as bool?,
     );
   }
 
@@ -437,24 +437,24 @@ class UsersProp {
 }
 
 class VoiceProp {
-  final String dialNumber;
-  final bool muteOnStart;
-  final String telVoice;
-  final String voiceConf;
+  final String? dialNumber;
+  final bool? muteOnStart;
+  final String? telVoice;
+  final String? voiceConf;
 
   VoiceProp({
-    required this.dialNumber,
-    required this.muteOnStart,
-    required this.telVoice,
-    required this.voiceConf,
+    this.dialNumber,
+    this.muteOnStart,
+    this.telVoice,
+    this.voiceConf,
   });
 
   factory VoiceProp.fromJson(Map<String, dynamic> json) {
     return VoiceProp(
-      dialNumber: json['dialNumber'],
-      muteOnStart: json['muteOnStart'],
-      telVoice: json['telVoice'],
-      voiceConf: json['voiceConf'],
+      dialNumber: json['dialNumber']?.toString(),
+      muteOnStart: json['muteOnStart'] as bool?,
+      telVoice: json['telVoice']?.toString(),
+      voiceConf: json['voiceConf']?.toString(),
     );
   }
 
@@ -467,18 +467,18 @@ class VoiceProp {
 }
 
 class WelcomeProp {
-  final String welcomeMsg;
-  final String welcomeMsgTemplate;
+  final String? welcomeMsg;
+  final String? welcomeMsgTemplate;
 
   WelcomeProp({
-    required this.welcomeMsg,
-    required this.welcomeMsgTemplate,
+    this.welcomeMsg,
+    this.welcomeMsgTemplate,
   });
 
   factory WelcomeProp.fromJson(Map<String, dynamic> json) {
     return WelcomeProp(
-      welcomeMsg: json['welcomeMsg'],
-      welcomeMsgTemplate: json['welcomeMsgTemplate'],
+      welcomeMsg: json['welcomeMsg']?.toString(),
+      welcomeMsgTemplate: json['welcomeMsgTemplate']?.toString(),
     );
   }
 
@@ -521,19 +521,19 @@ class NotificationSettingsProps {
 
   factory NotificationSettingsProps.fromJson(Map<String, dynamic> json) {
     return NotificationSettingsProps(
-      joined: json['joined'],
-      leave: json['leave'],
-      newMessage: json['newMessage'],
-      handRaise: json['handRaise'],
-      error: json['error'],
+      joined: json['joined'] as bool?,
+      leave: json['leave'] as bool?,
+      newMessage: json['newMessage'] as bool?,
+      handRaise: json['handRaise'] as bool?,
+      error: json['error'] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'joined': joined,
-    'leave': leave,
-    'newMessage': newMessage,
-    'handRaise': handRaise,
-    'error': error,
-  };
+        'joined': joined,
+        'leave': leave,
+        'newMessage': newMessage,
+        'handRaise': handRaise,
+        'error': error,
+      };
 }
