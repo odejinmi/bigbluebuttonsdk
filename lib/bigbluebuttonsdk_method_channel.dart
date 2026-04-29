@@ -7,7 +7,6 @@ import 'package:bigbluebuttonsdk/provider/whiteboardcontroller.dart';
 import 'package:bigbluebuttonsdk/utils/call_notification_service.dart';
 import 'package:bigbluebuttonsdk/utils/strings.dart';
 import 'package:bigbluebuttonsdk/view/whiteboard.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -446,15 +445,6 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
     //     gravity: Toast.bottom,
     //   );
     // }
-  }
-
-  Future<bool> isAndroidBelow13() async {
-    final deviceInfo = DeviceInfoPlugin();
-    if (Platform.isAndroid) {
-      final androidInfo = await deviceInfo.androidInfo;
-      return androidInfo.version.sdkInt < 33; // 33 is Android 13
-    }
-    return false; // Not Android
   }
 
   @override

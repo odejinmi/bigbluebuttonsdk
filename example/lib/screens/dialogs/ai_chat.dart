@@ -1,6 +1,7 @@
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../controller/ChatController.dart';
 import '../../utils/diorequest.dart';
@@ -136,8 +137,8 @@ class AiChat extends GetView<ChatController> {
                 const SizedBox(
                   width: 10,
                 ),
-                const Text(
-                  '2:12 PM',
+                Text(
+                  DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp)),
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w300),
                 ),

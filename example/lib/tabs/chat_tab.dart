@@ -3,6 +3,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../controller/ChatController.dart';
 
@@ -214,7 +215,7 @@ class ChatTab extends GetView<ChatController> {
                 width: screenWidth * 0.78,
                 child: Column(
                   children: [
-                    const Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
@@ -222,7 +223,7 @@ class ChatTab extends GetView<ChatController> {
                           style: TextStyle(color: Colors.black54),
                         ),
                         Text(
-                          '2:12 PM',
+                          DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp)),
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
@@ -272,7 +273,7 @@ class ChatTab extends GetView<ChatController> {
                           style: TextStyle(color: Colors.black54),
                         ),
                         Text(
-                          '2:12 PM',
+                          DateFormat('hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(message.timestamp)),
                           style: TextStyle(color: Colors.black),
                         ),
                       ],
