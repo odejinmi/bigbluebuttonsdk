@@ -16,7 +16,7 @@ class ShowManageUserSettingsDialog extends GetView<postjoinController> {
     return GetBuilder<Websocket>(
       builder: (logic) {
         LockSettingsProps? lockSettingsProps = logic.meetingResponse?.fields
-            .lockSettingsProps;
+            ?.lockSettingsProps;
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: Align(

@@ -28,6 +28,7 @@ class Websocket extends GetxController implements WebSocketService {
   final _breakoutRoom = <dynamic>[].obs;
   final _pollAnalyseParser = Pollanalyseparser().obs;
   final _isTyping = false.obs;
+  final ecinemaEvent = <String, dynamic>{}.obs;
   final _isMeSharing = false.obs;
   final _platformFile = PlatformFile(name: '', size: 0).obs;
   final _presentationModel = <Presentationmodel>[].obs;

@@ -74,7 +74,7 @@ class Waitingroom extends GetView<postjoinController> {
                                     left: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: logic.meetingResponse?.fields.usersProp.guestPolicy ==
+                                    color: logic.meetingResponse?.fields?.usersProp?.guestPolicy ==
                                             "ASK_MODERATOR"
                                         ? Colors.white.withOpacity(0.2)
                                         : Colors.transparent,
@@ -108,7 +108,7 @@ class Waitingroom extends GetView<postjoinController> {
                                     left: 16,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: logic.meetingResponse?.fields.usersProp.guestPolicy ==
+                                    color: logic.meetingResponse?.fields?.usersProp?.guestPolicy ==
                                             "ALWAYS_ACCEPT"
                                         ? Colors.white.withOpacity(0.2)
                                         : Colors.transparent,
@@ -132,7 +132,7 @@ class Waitingroom extends GetView<postjoinController> {
                           const SizedBox(height: 20),
                           const Divider(),
                           const SizedBox(height: 20),
-                          if(logic.meetingResponse?.fields.usersProp.guestPolicy != "ALWAYS_ACCEPT")
+                          if(logic.meetingResponse?.fields?.usersProp?.guestPolicy != "ALWAYS_ACCEPT")
                           Column(
                             children: [
                               Row(

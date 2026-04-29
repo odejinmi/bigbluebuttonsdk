@@ -199,6 +199,8 @@ class Screensharewebsocket extends GetxController {
   }
 
   void stopScreenSharing() async {
+    // Clear local and remote video renderers
+    localRTCVideoRenderer.srcObject = null;
     if (isWebsocketRunning) {
       // Send stop signal to server if needed
     }

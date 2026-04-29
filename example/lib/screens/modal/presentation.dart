@@ -207,7 +207,7 @@ class Presentation extends GetView<PresentationController> {
                 InkWell(
                   onTap: () async {
                     FilePickerResult? result =
-                        await FilePicker.platform.pickFiles(
+                        await FilePicker.pickFiles(
                       allowMultiple: true,
                       type: FileType.custom,
                       allowedExtensions: ["doc", "pdf", "ppt", "text", "docx"],

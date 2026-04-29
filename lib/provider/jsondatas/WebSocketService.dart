@@ -5,6 +5,7 @@ import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:bigbluebuttonsdk/utils/meetingresponse.dart';
 import 'package:bigbluebuttonsdk/utils/presentationmodel.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 abstract class WebSocketService {
   // Properties
@@ -117,6 +118,8 @@ abstract class WebSocketService {
   void stopWebsocket();
 
   Future<Map<String, dynamic>> callMethod(String method, List<dynamic> params);
+
+  final ecinemaEvent = <String, dynamic>{}.obs;
 
   var _externalvideomeetings;
   set externalvideomeetings (value) => _externalvideomeetings = value;

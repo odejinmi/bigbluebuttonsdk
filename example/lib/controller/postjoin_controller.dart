@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:bigbluebuttonsdk/utils/diorequest.dart';
+import 'package:bigbluebuttonsdk/view/advanced_you_tube_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
@@ -193,9 +194,8 @@ class postjoinController extends GetxController
           showDialog(
             barrierDismissible: false,
             context: Get.context!,
-            builder: (BuildContext context) => ShowVideoScreen(
-              videoLink: value,
-              ishowecinema: bigbluebuttonsdkPlugin.ishowecinema,
+            builder: (BuildContext context) => AdvancedYouTubePlayer(
+              videoId: value,
             ),
           );
         },

@@ -67,8 +67,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                       if (controller.scaffoldKey.currentState!.isDrawerOpen) {
                         controller.scaffoldKey.currentState!.closeEndDrawer();
                       } else {
-                        if (logic.meetingResponse?.fields.lockSettingsProps
-                            .hideUserList ??
+                        if (logic.meetingResponse?.fields?.lockSettingsProps
+                            ?.hideUserList ??
                             false) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
@@ -127,8 +127,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                         if (controller.scaffoldKey.currentState!.isDrawerOpen) {
                           // controller.scaffoldKey.currentState!.closeEndDrawer();
                         } else {
-                          if (logic.meetingResponse?.fields.lockSettingsProps
-                              .disablePublicChat ??
+                          if (logic.meetingResponse?.fields?.lockSettingsProps
+                              ?.disablePublicChat ??
                               false) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -493,8 +493,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                       InkWell(
                         onTap: () {
                           if (websocket.meetingResponse?.fields
-                              .lockSettingsProps
-                              .disableCam ??
+                              ?.lockSettingsProps
+                              ?.disableCam ??
                               false) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
@@ -545,8 +545,8 @@ class Fullmeetingscreen extends GetView<postjoinController> {
                   ),
                   InkWell(
                     onTap: () {
-                      if (websocket.meetingResponse?.fields.lockSettingsProps
-                          .disableMic ??
+                      if (websocket.meetingResponse?.fields?.lockSettingsProps
+                          ?.disableMic ??
                           false) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

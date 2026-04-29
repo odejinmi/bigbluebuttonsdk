@@ -20,8 +20,8 @@ class ChatTab extends GetView<ChatController> {
 
     return Scaffold(
       body: GetBuilder<Websocket>(builder: (logic) {
-        return logic.meetingResponse?.fields.lockSettingsProps
-                    .disablePublicChat ??
+        return logic.meetingResponse?.fields?.lockSettingsProps
+                    ?.disablePublicChat ??
                 false
             ? Text('Your Public Chat has been disabled by the Moderator')
             : Column(

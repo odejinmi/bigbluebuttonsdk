@@ -27,8 +27,8 @@ class PeopleTab extends GetView<postjoinController> {
       return Scaffold(body: GetBuilder<Websocket>(builder: (logic) {
         return Padding(
             padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
-            child: logic.meetingResponse?.fields.lockSettingsProps
-                        .hideUserList ??
+            child: logic.meetingResponse?.fields?.lockSettingsProps
+                        ?.hideUserList ??
                     false
                 ? Text(
                     "Your Participants List has been disabled by the Moderator")
@@ -287,7 +287,7 @@ class PeopleTab extends GetView<postjoinController> {
                                                     ],
                                                   ),
                                                 ),
-                                                if (logic.myDetails!.fields!.userId != participant.fields!.userId && logic.meetingResponse?.fields.lockSettingsProps.disablePrivateChat == false)
+                                                if (logic.myDetails!.fields!.userId != participant.fields!.userId && logic.meetingResponse?.fields?.lockSettingsProps?.disablePrivateChat == false)
                                                 PopupMenuItem(
                                                   value: 3,
                                                   onTap: () {},
@@ -344,8 +344,8 @@ class PeopleTab extends GetView<postjoinController> {
                                             if (logic
                                                     .meetingResponse
                                                     ?.fields
-                                                    .lockSettingsProps
-                                                    .disablePrivateChat ??
+                                                    ?.lockSettingsProps
+                                                    ?.disablePrivateChat ??
                                                 false) {
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
