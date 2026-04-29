@@ -428,7 +428,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
   @override
   startscreenshare(bool audio) async {
     // if (await isAndroidBelow13()) {
-    var result = await startScreenCapture();
+    // var result = await startScreenCapture();
     // var result = await startForegroundService();
     // Get.back();
     //   if (result) {

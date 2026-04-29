@@ -10,25 +10,30 @@ import android.media.projection.MediaProjectionManager
 import android.os.Build
 import android.os.IBinder
 
+import android.util.Log
+
 class ScreenCaptureService : Service() {
 
     override fun onCreate() {
         super.onCreate()
-        createNotification()
+        Log.d("ScreenCaptureService", "onCreate called")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val resultCode = intent?.getIntExtra("resultCode", -1) ?: return START_NOT_STICKY
-        val data = intent.getParcelableExtra<Intent>("data") ?: return START_NOT_STICKY
+        Log.d("ScreenCaptureService", "onStartCommand called")
+        val resultCode = intent?.getIntExtra("resultCode", 0) ?: 0
+        val data = intent?.getParcelableExtra<Intent>("data")
 
-//        val projectionManager =
-//            getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
-//        val mediaProjection: MediaProjection =
-//            projectionManager.getMediaProjection(resultCode, data)
+        Log.d("ScreenCaptureService", "resultCode: $resultCode, data: $data")
 
-        // Start screen capture logic here (can be integrated with WebRTC, etc.)
-        // For now, just keep foreground notification alive.
+        if (resultCode != android.app.Activity.RESULT_OK || data == null) {
+            Log.e("ScreenCaptureService", "Invalid result code or data, stopping service")
+            stopSelf()
+            return START_NOT_STICKY
+        }
 
+        Log.d("ScreenCaptureService", "Starting foreground service with type MEDIA_PROJECTION")
+        createNotification()
         return START_STICKY
     }
 
@@ -46,7 +51,11 @@ class ScreenCaptureService : Service() {
                 .setSmallIcon(android.R.drawable.ic_media_play)
                 .build()
 
-            startForeground(1, notification)
+            if (Build.VERSION.SDK_INT >= 29) {
+                startForeground(1, notification, android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION)
+            } else {
+                startForeground(1, notification)
+            }
         }
     }
 

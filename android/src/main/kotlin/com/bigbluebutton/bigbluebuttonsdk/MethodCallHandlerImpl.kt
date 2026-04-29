@@ -106,24 +106,12 @@ class MethodCallHandlerImpl(
                     result.error("NO_ACTIVITY", "Activity is null", null)
                     return
                 }
+
                 val projectionManager =
                     binding.activity.getSystemService(Context.MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
                 val captureIntent = projectionManager.createScreenCaptureIntent()
                 pendingResult = result
                 binding.activity.startActivityForResult(captureIntent, REQUEST_MEDIA_PROJECTION)
-//
-//                val serviceIntent = Intent(binding.activity, ScreenCaptureService::class.java).apply {
-//                    putExtra("resultCode", REQUEST_MEDIA_PROJECTION)
-//                    putExtra("data", captureIntent)
-//                }
-//
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                    binding.activity.startForegroundService(serviceIntent)
-//                } else {
-//                    binding.activity.startService(serviceIntent)
-//                }
-//                result.success(pendingResult)
-
             }
 
             else -> result.notImplemented()
@@ -157,7 +145,7 @@ class MethodCallHandlerImpl(
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         if (requestCode == REQUEST_MEDIA_PROJECTION) {
-            if (resultCode == RESULT_OK && data != null) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 val serviceIntent = Intent(binding.activity, ScreenCaptureService::class.java).apply {
                     putExtra("resultCode", resultCode)
                     putExtra("data", data)
@@ -168,13 +156,11 @@ class MethodCallHandlerImpl(
                 } else {
                     binding.activity.startService(serviceIntent)
                 }
-
                 pendingResult?.success("Permission granted and service started")
-                pendingResult = null
             } else {
-                pendingResult?.error("PERMISSION_DENIED", "User denied screen capture", null)
-                pendingResult = null
+                pendingResult?.error("PERMISSION_DENIED", "Screen capture permission denied", null)
             }
+            pendingResult = null
             return true
         }
         return false

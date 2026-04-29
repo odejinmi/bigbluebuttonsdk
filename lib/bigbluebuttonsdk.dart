@@ -120,6 +120,14 @@ class Bigbluebuttonsdk {
     return BigbluebuttonsdkPlatform.instance.changeGuestPolicy(policy);
   }
 
+  Future<void> startScreenCapture() {
+    return BigbluebuttonsdkPlatform.instance.startScreenCapture();
+  }
+
+  Future<void> stopScreenCapture() {
+    return BigbluebuttonsdkPlatform.instance.stopScreenCapture();
+  }
+
   Widget whiteboard() {
     return BigbluebuttonsdkPlatform.instance.whiteboard();
   }

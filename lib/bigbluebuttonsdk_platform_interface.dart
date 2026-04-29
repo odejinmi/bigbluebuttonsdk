@@ -98,6 +98,14 @@ abstract class BigbluebuttonsdkPlatform extends PlatformInterface {
     throw UnimplementedError('initialize() has not been implemented.');
   }
 
+  Future<void> startScreenCapture() {
+    throw UnimplementedError('startScreenCapture() has not been implemented.');
+  }
+
+  Future<void> stopScreenCapture() {
+    throw UnimplementedError('stopScreenCapture() has not been implemented.');
+  }
+
   Widget whiteboard() {
     throw UnimplementedError('whiteboard() has not been implemented.');
   }

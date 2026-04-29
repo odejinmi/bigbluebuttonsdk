@@ -60,6 +60,14 @@ class Screensharewebsocket extends GetxController {
   }
 
   Future<void> createPeerConnections(bool audio) async {
+    // Start native screen capture service on Android
+    // This MUST be called BEFORE getDisplayMedia to satisfy the foreground service requirement
+    if (GetPlatform.isAndroid) {
+      await Bigbluebuttonsdk.instance.startScreenCapture();
+      // Wait for the service to be fully started and registered
+      await Future.delayed(const Duration(milliseconds: 1000));
+    }
+
     // Create the peer connection
     peerConnection = await createPeerConnection(websocket.stunServer);
 
@@ -216,6 +224,11 @@ class Screensharewebsocket extends GetxController {
     if (peerConnection != null) {
       await peerConnection?.close();
       peerConnection = null;
+    }
+
+    // Stop native screen capture service on Android
+    if (GetPlatform.isAndroid) {
+      await Bigbluebuttonsdk.instance.stopScreenCapture();
     }
 
     // Stop local media stream
