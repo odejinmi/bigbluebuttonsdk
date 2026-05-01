@@ -188,7 +188,8 @@ class _DrawerCompState extends State<DrawerComp> {
                     .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
                     "MODERATOR")
               ListTile(
-                leading: const Icon(Icons.mic_off_outlined, size: 20),
+                leading: const Icon(postjoincontroller.muteAll
+                    ? Icons.mic_none_outlined : Icons.mic_off_outlined, size: 20),
                 title: Text(
                   postjoincontroller.muteAll
                       ? "Unmute New Users"
@@ -202,6 +203,7 @@ class _DrawerCompState extends State<DrawerComp> {
                   var result = await postjoincontroller.bigbluebuttonsdkPlugin
                       .muteallusers();
                   postjoincontroller.muteAll = !postjoincontroller.muteAll;
+                  Navigator.pop(context);
                 },
               ),
 
