@@ -131,10 +131,10 @@ class loginController extends GetxController {
       try {
         authenticated = await auth.authenticate(
           localizedReason: "Place your finger on the censor to login".tr,
-          options: const AuthenticationOptions(
-            useErrorDialogs: true,
-            stickyAuth: true,
-          ),
+          // options: const AuthenticationOptions(
+          //   useErrorDialogs: true,
+          //   stickyAuth: true,
+          // ),
         );
       } catch (e) {}
       if (authenticated) {

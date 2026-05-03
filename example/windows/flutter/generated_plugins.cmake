@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
-  audioplayers_windows
   bigbluebuttonsdk
   emoji_picker_flutter
   flutter_inappwebview_windows

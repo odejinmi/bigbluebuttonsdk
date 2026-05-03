@@ -80,8 +80,7 @@ class CallNotificationService {
     );
 
     await _notificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: _onNotificationResponse,
+      onDidReceiveNotificationResponse: _onNotificationResponse, settings: initializationSettings,
     );
   }
 
@@ -280,10 +279,10 @@ class CallNotificationService {
     );
 
     await _notificationsPlugin.show(
-      0,
-      title,
-      status,
-      notificationDetails,
+      id: 0,
+      title: title,
+      body: status,
+      notificationDetails: notificationDetails,
       payload: 'call_tap',
     );
 
@@ -375,7 +374,7 @@ class CallNotificationService {
   static Future<void> dismissCallNotification() async {
     isNotificationActive = false;
 
-    await _notificationsPlugin.cancel(0);
+    await _notificationsPlugin.cancel(id: 0);
     await _stopBackgroundExecution();
   }
 
