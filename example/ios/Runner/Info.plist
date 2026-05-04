@@ -49,6 +49,21 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs camera access to allow you to join video meetings.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access to allow you to speak during meetings.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>This app needs bluetooth access to connect to wireless headsets.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs photo library access to allow you to upload files and presentations.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+		<string>voip</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

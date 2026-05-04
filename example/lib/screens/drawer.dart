@@ -188,7 +188,7 @@ class _DrawerCompState extends State<DrawerComp> {
                     .bigbluebuttonsdkPlugin.mydetails!.fields!.role ==
                     "MODERATOR")
               ListTile(
-                leading: const Icon(postjoincontroller.muteAll
+                leading: Icon(postjoincontroller.muteAll
                     ? Icons.mic_none_outlined : Icons.mic_off_outlined, size: 20),
                 title: Text(
                   postjoincontroller.muteAll

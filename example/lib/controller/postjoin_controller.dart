@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:bigbluebuttonsdk/bigbluebuttonsdk.dart';
 import 'package:bigbluebuttonsdk/utils/diorequest.dart';
 import 'package:bigbluebuttonsdk/view/advanced_you_tube_player.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -132,11 +132,11 @@ class postjoinController extends GetxController
 
   void _initPip() async {
     if (GetPlatform.isAndroid) {
-      final deviceInfo = DeviceInfoPlugin();
-      final androidInfo = await deviceInfo.androidInfo;
-      if (androidInfo.version.sdkInt >= 31) {
-        enablePip(autoEnable: true);
-      }
+      // final deviceInfo = DeviceInfoPlugin();
+      // final androidInfo = await deviceInfo.androidInfo;
+      // if (androidInfo.version.sdkInt >= 31) {
+      //   enablePip(autoEnable: true);
+      // }
     }
   }
 
