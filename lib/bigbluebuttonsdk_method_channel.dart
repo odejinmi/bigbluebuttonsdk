@@ -208,7 +208,7 @@ class MethodChannelBigbluebuttonsdk extends BigbluebuttonsdkPlatform {
 
   @override
   Future<Map<String, dynamic>> sendmessage({required String message, required String chatid}) {
-   return websocket.callMethod("sendGroupChatMsg", [chatid,{"correlationId":"${websocket.meetingDetails!.internalUserId}-${DateTime.now()}","sender":{"id":websocket.meetingDetails!.internalUserId,"name":"","role":""},"chatEmphasizedText":true,"message":message}]);
+   return websocket.callMethod("sendGroupChatMsg", [chatid,{"correlationId":"${websocket.meetingDetails!.internalUserId}-${DateTime.now().millisecondsSinceEpoch}","sender":{"id":websocket.meetingDetails!.internalUserId,"name":"","role":""},"chatEmphasizedText":true,"message":message}]);
 
   }
 

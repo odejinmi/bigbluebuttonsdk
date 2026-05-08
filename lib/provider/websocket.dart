@@ -19,6 +19,8 @@ class Websocket extends GetxController implements WebSocketService {
   // Private reactive variables with proper getters/setters
   final _meetingDetails = Rx<Meetingdetails?>(null);
   final _isWebsocketRunning = false.obs;
+  RxBool get isWebsocketRunningRx => _isWebsocketRunning;
+
   final _participant = <Participant>[].obs;
   final _meetingResponse = Rx<MeetingResponse?>(null);
   final _waitingParticipant = <dynamic>[].obs;

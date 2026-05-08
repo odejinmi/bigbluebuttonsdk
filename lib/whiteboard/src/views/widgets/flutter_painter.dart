@@ -161,25 +161,44 @@ class _FlutterPainterWidget extends StatelessWidget {
                   panEnabled: controller.settings.scale.enabled &&
                       (controller.freeStyleSettings.mode == FreeStyleMode.none),
                   scaleEnabled: controller.settings.scale.enabled,
-                  child: _FreeStyleWidget(
-                      // controller: controller,
-                      child: _TextWidget(
-                    // controller: controller,
-                    child: _ShapeWidget(
-                      // controller: controller,
-                      child: _ObjectWidget(
+                  child: ValueListenableBuilder<PainterControllerValue>(
+                    valueListenable: controller,
+                    builder: (context, value, child) {
+                      final virtualSize = controller.virtualCanvasSize;
+                      Widget painter = _FreeStyleWidget(
+                          // controller: controller,
+                          child: _TextWidget(
                         // controller: controller,
-                        interactionEnabled: true,
-                        child: CustomPaint(
-                          painter: Painter(
-                            drawables: controller.value.drawables,
-                            background: controller.value.background,
-                            scale: controller.virtualCanvasSize,
+                        child: _ShapeWidget(
+                          // controller: controller,
+                          child: _ObjectWidget(
+                            // controller: controller,
+                            interactionEnabled: true,
+                            child: CustomPaint(
+                              painter: Painter(
+                                drawables: controller.value.drawables,
+                                background: controller.value.background,
+                                scale: controller.virtualCanvasSize,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )),
+                      ));
+
+                      if (virtualSize != null) {
+                        return Center(
+                          child: FittedBox(
+                            fit: BoxFit.contain,
+                            child: SizedBox.fromSize(
+                              size: virtualSize,
+                              child: painter,
+                            ),
+                          ),
+                        );
+                      }
+                      return painter;
+                    },
+                  ),
                 ),
               );
             }));

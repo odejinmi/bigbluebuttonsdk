@@ -254,6 +254,9 @@ class Audiowebsocket extends GetxController {
     // Add audio track to the peer connection
     _localStream!.getTracks().forEach((track) {
       _peerConnection?.addTrack(track, _localStream!);
+      if (track.kind == 'audio' && (websocket.myDetails?.fields?.muted == true)) {
+        track.enabled = false;
+      }
     });
 
     negotiate();
@@ -343,5 +346,13 @@ class Audiowebsocket extends GetxController {
     if (channel != null) {
       channel!.sink.add(jsonEncode(json));
     } else {}
+  }
+
+  void muteLocalTrack(bool mute) {
+    if (_localStream != null) {
+      for (var track in _localStream!.getAudioTracks()) {
+        track.enabled = !mute;
+      }
+    }
   }
 }

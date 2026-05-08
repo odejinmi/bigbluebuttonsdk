@@ -189,6 +189,9 @@ class Users {
           _service.myDetails = Participant.fromJson(
             _service.mergeData(json, myDetails!.toJson()),
           );
+          if (_service.myDetails?.fields?.muted != null) {
+            Get.find<Audiowebsocket>().muteLocalTrack(_service.myDetails!.fields!.muted!);
+          }
         }
       } else {
         // Assign voiceid to the first participant without a voiceid

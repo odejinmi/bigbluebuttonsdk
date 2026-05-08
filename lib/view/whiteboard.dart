@@ -13,8 +13,15 @@ class Whiteboard extends StatefulWidget {
 
 class _WhiteboardState extends State<Whiteboard> {
   final Whiteboardcontroller controller = Get.find<Whiteboardcontroller>();
+  final ScrollController _pagesScrollController = ScrollController();
 
   bool showShapesPanel = false;
+
+  @override
+  void dispose() {
+    _pagesScrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +66,14 @@ class _WhiteboardState extends State<Whiteboard> {
             child: Row(
               children: [
                 const Text("100%", style: TextStyle(color: Colors.black54)),
-                const Spacer(),
-                _Toolbar(
-                  controller: controller,
-                  onToggleShapes: () =>
-                      setState(() => showShapesPanel = !showShapesPanel),
-                  onOpenMore: () => _openMoreMenu(context),
+                const SizedBox(width: 10),
+                Flexible(
+                  child: _Toolbar(
+                    controller: controller,
+                    onToggleShapes: () =>
+                        setState(() => showShapesPanel = !showShapesPanel),
+                    onOpenMore: () => _openMoreMenu(context),
+                  ),
                 ),
                 const SizedBox(width: 10),
                 _SquareButton(
@@ -109,35 +118,44 @@ class _WhiteboardState extends State<Whiteboard> {
                         child: Obx(() {
                           final pages = controller.pages;
                           final selected = controller.currentPage.value;
-                          return SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                for (final p in pages)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: OutlinedButton(
-                                      style: OutlinedButton.styleFrom(
-                                        foregroundColor: selected == p
-                                            ? Colors.white
-                                            : const Color(0xFFFF7A00),
-                                        backgroundColor: selected == p
-                                            ? const Color(0xFFFF7A00)
-                                            : Colors.white,
-                                        side: const BorderSide(
-                                          color: Color(0xFFFF7A00),
-                                        ),
-                                        shape: const StadiumBorder(),
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 10,
+                          return Scrollbar(
+                            controller: _pagesScrollController,
+                            thumbVisibility: true,
+                            thickness: 3,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: SingleChildScrollView(
+                                controller: _pagesScrollController,
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: [
+                                    for (final p in pages)
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 8),
+                                        child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            foregroundColor: selected == p
+                                                ? Colors.white
+                                                : const Color(0xFFFF7A00),
+                                            backgroundColor: selected == p
+                                                ? const Color(0xFFFF7A00)
+                                                : Colors.white,
+                                            side: const BorderSide(
+                                              color: Color(0xFFFF7A00),
+                                            ),
+                                            shape: const StadiumBorder(),
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 14,
+                                              vertical: 10,
+                                            ),
+                                          ),
+                                          onPressed: () => controller.selectPage(p),
+                                          child: Text("page:$p"),
                                         ),
                                       ),
-                                      onPressed: () => controller.selectPage(p),
-                                      child: Text("page:$p"),
-                                    ),
-                                  ),
-                              ],
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         }),
@@ -195,7 +213,7 @@ class _WhiteboardState extends State<Whiteboard> {
         controller.redo();
         break;
       case "penSettings":
-        _openPenSettings(context);
+        if (mounted) _openPenSettings(context);
         break;
       case "clear":
         controller.controller.clearDrawables(newAction: true);
@@ -237,7 +255,7 @@ class _WhiteboardState extends State<Whiteboard> {
                       _ColorDot(
                         color: c,
                         selected:
-                            controller.controller.freeStyleColor.value == c.value,
+                            controller.controller.freeStyleColor == c,
                         onTap: () {
                           controller.controller.freeStyleColor = c;
                           controller.selectToolPen();
@@ -302,7 +320,7 @@ class _WhiteboardState extends State<Whiteboard> {
   }
 }
 
-class _Toolbar extends StatelessWidget {
+class _Toolbar extends StatefulWidget {
   final Whiteboardcontroller controller;
   final VoidCallback onToggleShapes;
   final VoidCallback onOpenMore;
@@ -312,6 +330,33 @@ class _Toolbar extends StatelessWidget {
     required this.onToggleShapes,
     required this.onOpenMore,
   });
+
+  @override
+  State<_Toolbar> createState() => _ToolbarState();
+}
+
+class _ToolbarState extends State<_Toolbar> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to controller changes to update tool selection state
+    widget.controller.controller.addListener(_rebuild);
+    widget.controller.textFocusNode.addListener(_rebuild);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.controller.removeListener(_rebuild);
+    widget.controller.textFocusNode.removeListener(_rebuild);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _rebuild() {
+    if (mounted) setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -330,74 +375,87 @@ class _Toolbar extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _ToolButton(
-              icon: Icons.near_me_outlined,
-              selected: controller.controller.freeStyleMode == FreeStyleMode.none &&
-                  controller.controller.shapeFactory == null,
-              onPressed: controller.selectToolSelect,
+        child: Scrollbar(
+          controller: _scrollController,
+          thumbVisibility: true,
+          thickness: 3,
+          radius: const Radius.circular(10),
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 6), // Space for scrollbar
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                _ToolButton(
+                  icon: Icons.near_me_outlined,
+                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.none &&
+                      widget.controller.controller.shapeFactory == null,
+                  onPressed: widget.controller.selectToolSelect,
+                ),
+                _ToolButton(
+                  icon: Icons.pan_tool_alt_outlined,
+                  selected: false,
+                  onPressed: widget.controller.selectToolHand,
+                ),
+                _ToolButton(
+                  icon: Icons.edit_outlined,
+                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.draw &&
+                      widget.controller.controller.freeStyleColor !=
+                          const Color(0xFFFFD400),
+                  onPressed: widget.controller.selectToolPen,
+                ),
+                _ToolButton(
+                  icon: Icons.brush_outlined,
+                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.draw &&
+                      widget.controller.controller.freeStyleColor ==
+                          const Color(0xFFFFD400),
+                  onPressed: widget.controller.selectToolHighlighter,
+                ),
+                _ToolButton(
+                  icon: Icons.auto_fix_off_outlined,
+                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.erase,
+                  onPressed: widget.controller.selectToolEraser,
+                ),
+                _ToolButton(
+                  icon: Icons.arrow_outward,
+                  selected: widget.controller.controller.shapeFactory is ArrowFactory,
+                  onPressed: () => widget.controller.selectToolShape(ArrowFactory()),
+                ),
+                _ToolButton(
+                  icon: Icons.text_fields,
+                  selected: widget.controller.textFocusNode.hasFocus,
+                  onPressed: widget.controller.addText,
+                ),
+                _ToolButton(
+                  icon: Icons.edit_note_outlined,
+                  selected: false,
+                  onPressed: () => widget.controller.addSticker(context),
+                ),
+                _ToolButton(
+                  icon: Icons.crop_square,
+                  selected: widget.controller.controller.shapeFactory is RectangleFactory,
+                  onPressed: () => widget.controller.selectToolShape(RectangleFactory()),
+                ),
+                _ToolButton(
+                  icon: Icons.keyboard_arrow_up,
+                  selected: false,
+                  onPressed: widget.onToggleShapes,
+                ),
+                _ToolButton(
+                  icon: Icons.more_vert,
+                  selected: false,
+                  onPressed: widget.onOpenMore,
+                ),
+              ],
             ),
-            _ToolButton(
-              icon: Icons.pan_tool_alt_outlined,
-              selected: false,
-              onPressed: controller.selectToolHand,
-            ),
-            _ToolButton(
-              icon: Icons.edit_outlined,
-              selected: controller.controller.freeStyleMode == FreeStyleMode.draw &&
-                  controller.controller.freeStyleColor.value !=
-                      const Color(0xFFFFD400).value,
-              onPressed: controller.selectToolPen,
-            ),
-            _ToolButton(
-              icon: Icons.brush_outlined,
-              selected: controller.controller.freeStyleMode == FreeStyleMode.draw &&
-                  controller.controller.freeStyleColor.value ==
-                      const Color(0xFFFFD400).value,
-              onPressed: controller.selectToolHighlighter,
-            ),
-            _ToolButton(
-              icon: Icons.auto_fix_off_outlined,
-              selected: controller.controller.freeStyleMode == FreeStyleMode.erase,
-              onPressed: controller.selectToolEraser,
-            ),
-            _ToolButton(
-              icon: Icons.arrow_outward,
-              selected: controller.controller.shapeFactory is ArrowFactory,
-              onPressed: () => controller.selectToolShape(ArrowFactory()),
-            ),
-            _ToolButton(
-              icon: Icons.text_fields,
-              selected: controller.textFocusNode.hasFocus,
-              onPressed: controller.addText,
-            ),
-            _ToolButton(
-              icon: Icons.edit_note_outlined,
-              selected: false,
-              onPressed: () => controller.addSticker(context),
-            ),
-            _ToolButton(
-              icon: Icons.crop_square,
-              selected: controller.controller.shapeFactory is RectangleFactory,
-              onPressed: () => controller.selectToolShape(RectangleFactory()),
-            ),
-            _ToolButton(
-              icon: Icons.keyboard_arrow_up,
-              selected: false,
-              onPressed: onToggleShapes,
-            ),
-            _ToolButton(
-              icon: Icons.more_vert,
-              selected: false,
-              onPressed: onOpenMore,
-            ),
-          ],
+          ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _ToolButton extends StatelessWidget {
