@@ -152,6 +152,7 @@ class _FlutterPainterWidget extends StatelessWidget {
                 onNotification: onNotification,
                 child: InteractiveViewer(
                   transformationController: controller.transformationController,
+                  boundaryMargin: const EdgeInsets.all(1000),
                   minScale: controller.settings.scale.enabled
                       ? controller.settings.scale.minScale
                       : 1,

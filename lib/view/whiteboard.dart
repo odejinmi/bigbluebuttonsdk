@@ -16,9 +16,27 @@ class _WhiteboardState extends State<Whiteboard> {
   final ScrollController _pagesScrollController = ScrollController();
 
   bool showShapesPanel = false;
+  double _zoomLevel = 1.0;
+
+  @override
+  void initState() {
+    super.initState();
+    controller.controller.transformationController.addListener(_handleZoomChange);
+  }
+
+  void _handleZoomChange() {
+    final matrix = controller.controller.transformationController.value;
+    final scale = matrix.getMaxScaleOnAxis();
+    if (mounted && (scale - _zoomLevel).abs() > 0.01) {
+      setState(() {
+        _zoomLevel = scale;
+      });
+    }
+  }
 
   @override
   void dispose() {
+    controller.controller.transformationController.removeListener(_handleZoomChange);
     _pagesScrollController.dispose();
     super.dispose();
   }
@@ -65,32 +83,61 @@ class _WhiteboardState extends State<Whiteboard> {
                   ),
                 ),
               ),
-            if (isPresenter)
               Positioned(
                 bottom: 14,
                 left: 12,
                 right: 12,
                 child: Row(
                   children: [
-                    const Text("100%", style: TextStyle(color: Colors.black54)),
-                    const SizedBox(width: 10),
-                    Flexible(
-                      child: _Toolbar(
-                        controller: controller,
-                        onToggleShapes: () =>
-                            setState(() => showShapesPanel = !showShapesPanel),
-                        onOpenMore: () => _openMoreMenu(context),
-                      ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text("${(_zoomLevel * 100).round()}%",
+                            style: const TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold)),
+                        Row(
+                          children: [
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(Icons.zoom_in, size: 20),
+                              onPressed: controller.zoomIn,
+                            ),
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(Icons.zoom_out, size: 20),
+                              onPressed: controller.zoomOut,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    _SquareButton(
-                      icon: Icons.draw,
-                      onPressed: controller.selectToolHighlighter,
-                    ),
-                    const SizedBox(width: 10),
-                    _SquareButton(
-                      icon: Icons.help_outline,
-                      onPressed: () {},
+                    if (isPresenter)
+                    Column(
+                      children: [
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: _Toolbar(
+                            controller: controller,
+                            onToggleShapes: () =>
+                                setState(() => showShapesPanel = !showShapesPanel),
+                            onOpenMore: () => _openMoreMenu(context),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        _SquareButton(
+                          icon: Icons.draw,
+                          onPressed: controller.selectToolHighlighter,
+                        ),
+                        const SizedBox(width: 10),
+                        _SquareButton(
+                          icon: Icons.help_outline,
+                          onPressed: () {},
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -395,77 +442,77 @@ class _ToolbarState extends State<_Toolbar> {
             child: SingleChildScrollView(
               controller: _scrollController,
               scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                _ToolButton(
-                  icon: Icons.near_me_outlined,
-                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.none &&
-                      widget.controller.controller.shapeFactory == null,
-                  onPressed: widget.controller.selectToolSelect,
-                ),
-                _ToolButton(
-                  icon: Icons.pan_tool_alt_outlined,
-                  selected: false,
-                  onPressed: widget.controller.selectToolHand,
-                ),
-                _ToolButton(
-                  icon: Icons.edit_outlined,
-                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.draw &&
-                      widget.controller.controller.freeStyleColor !=
-                          const Color(0xFFFFD400),
-                  onPressed: widget.controller.selectToolPen,
-                ),
-                _ToolButton(
-                  icon: Icons.brush_outlined,
-                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.draw &&
-                      widget.controller.controller.freeStyleColor ==
-                          const Color(0xFFFFD400),
-                  onPressed: widget.controller.selectToolHighlighter,
-                ),
-                _ToolButton(
-                  icon: Icons.auto_fix_off_outlined,
-                  selected: widget.controller.controller.freeStyleMode == FreeStyleMode.erase,
-                  onPressed: widget.controller.selectToolEraser,
-                ),
-                _ToolButton(
-                  icon: Icons.arrow_outward,
-                  selected: widget.controller.controller.shapeFactory is ArrowFactory,
-                  onPressed: () => widget.controller.selectToolShape(ArrowFactory()),
-                ),
-                _ToolButton(
-                  icon: Icons.text_fields,
-                  selected: widget.controller.textFocusNode.hasFocus,
-                  onPressed: widget.controller.addText,
-                ),
-                _ToolButton(
-                  icon: Icons.edit_note_outlined,
-                  selected: false,
-                  onPressed: () => widget.controller.addSticker(context),
-                ),
-                _ToolButton(
-                  icon: Icons.crop_square,
-                  selected: widget.controller.controller.shapeFactory is RectangleFactory,
-                  onPressed: () => widget.controller.selectToolShape(RectangleFactory()),
-                ),
-                _ToolButton(
-                  icon: Icons.keyboard_arrow_up,
-                  selected: false,
-                  onPressed: widget.onToggleShapes,
-                ),
-                _ToolButton(
-                  icon: Icons.more_vert,
-                  selected: false,
-                  onPressed: widget.onOpenMore,
-                ),
-              ],
+              child: Obx(() {
+                final selectedTool = widget.controller.selectedTool.value;
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _ToolButton(
+                      icon: Icons.near_me_outlined,
+                      selected: selectedTool == "select",
+                      onPressed: widget.controller.selectToolSelect,
+                    ),
+                    _ToolButton(
+                      icon: Icons.pan_tool_alt_outlined,
+                      selected: selectedTool == "hand",
+                      onPressed: widget.controller.selectToolHand,
+                    ),
+                    _ToolButton(
+                      icon: Icons.edit_outlined,
+                      selected: selectedTool == "pen",
+                      onPressed: widget.controller.selectToolPen,
+                    ),
+                    _ToolButton(
+                      icon: Icons.brush_outlined,
+                      selected: selectedTool == "highlighter",
+                      onPressed: widget.controller.selectToolHighlighter,
+                    ),
+                    _ToolButton(
+                      icon: Icons.auto_fix_off_outlined,
+                      selected: selectedTool == "eraser",
+                      onPressed: widget.controller.selectToolEraser,
+                    ),
+                    _ToolButton(
+                      icon: Icons.arrow_outward,
+                      selected: selectedTool == "arrow",
+                      onPressed: () =>
+                          widget.controller.selectToolShape(ArrowFactory()),
+                    ),
+                    _ToolButton(
+                      icon: Icons.text_fields,
+                      selected: selectedTool == "text",
+                      onPressed: widget.controller.addText,
+                    ),
+                    _ToolButton(
+                      icon: Icons.edit_note_outlined,
+                      selected: false,
+                      onPressed: () => widget.controller.addSticker(context),
+                    ),
+                    _ToolButton(
+                      icon: Icons.crop_square,
+                      selected: selectedTool == "rectangle",
+                      onPressed: () =>
+                          widget.controller.selectToolShape(RectangleFactory()),
+                    ),
+                    _ToolButton(
+                      icon: Icons.keyboard_arrow_up,
+                      selected: false,
+                      onPressed: widget.onToggleShapes,
+                    ),
+                    _ToolButton(
+                      icon: Icons.more_vert,
+                      selected: false,
+                      onPressed: widget.onOpenMore,
+                    ),
+                  ],
+                );
+              }),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }
 
 class _ToolButton extends StatelessWidget {

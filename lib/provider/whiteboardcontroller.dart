@@ -20,6 +20,7 @@ class Whiteboardcontroller extends GetxController {
   final Map<String, Drawable> _localDrawablesById = {};
   final RxInt currentPage = 1.obs;
   final _pageDrawables = <int, List<Drawable>>{1: <Drawable>[]}.obs;
+  final RxString selectedTool = "select".obs;
 
   static const List<String> imageLinks = [
     "https://i.imgur.com/btoI5OX.png",
@@ -97,7 +98,7 @@ class Whiteboardcontroller extends GetxController {
         scale: const ScaleSettings(
           enabled: true,
           minScale: 1,
-          maxScale: 5,
+          maxScale: 10,
         ),
       ),
     );
@@ -2046,24 +2047,28 @@ class Whiteboardcontroller extends GetxController {
   }
 
   void selectToolSelect() {
+    selectedTool.value = "select";
     controller.shapeFactory = null;
     controller.freeStyleMode = FreeStyleMode.none;
     controller.deselectObjectDrawable();
   }
 
   void selectToolHand() {
+    selectedTool.value = "hand";
     controller.shapeFactory = null;
     controller.freeStyleMode = FreeStyleMode.none;
     controller.deselectObjectDrawable();
   }
 
   void selectToolPen() {
+    selectedTool.value = "pen";
     controller.shapeFactory = null;
     controller.freeStyleMode = FreeStyleMode.draw;
     controller.deselectObjectDrawable();
   }
 
   void selectToolHighlighter() {
+    selectedTool.value = "highlighter";
     controller.shapeFactory = null;
     controller.freeStyleMode = FreeStyleMode.draw;
     controller.freeStyleColor = const Color(0xFFFFD400);
@@ -2072,18 +2077,27 @@ class Whiteboardcontroller extends GetxController {
   }
 
   void selectToolEraser() {
+    selectedTool.value = "eraser";
     controller.shapeFactory = null;
     controller.freeStyleMode = FreeStyleMode.erase;
     controller.deselectObjectDrawable();
   }
 
   void selectToolShape(ShapeFactory? factory) {
+    if (factory is ArrowFactory) {
+      selectedTool.value = "arrow";
+    } else if (factory is RectangleFactory) {
+      selectedTool.value = "rectangle";
+    } else {
+      selectedTool.value = "shape";
+    }
     controller.deselectObjectDrawable();
     controller.freeStyleMode = FreeStyleMode.none;
     controller.shapeFactory = factory;
   }
 
   void addText() {
+    selectedTool.value = "text";
     if (controller.freeStyleMode != FreeStyleMode.none) {
       controller.freeStyleMode = FreeStyleMode.none;
     }
@@ -2130,6 +2144,13 @@ class Whiteboardcontroller extends GetxController {
   }
 
   void selectShape(ShapeFactory? factory) {
+    if (factory is ArrowFactory) {
+      selectedTool.value = "arrow";
+    } else if (factory is RectangleFactory) {
+      selectedTool.value = "rectangle";
+    } else {
+      selectedTool.value = "shape";
+    }
     controller.shapeFactory = factory;
   }
 
@@ -2145,6 +2166,37 @@ class Whiteboardcontroller extends GetxController {
       imageDrawable,
       imageDrawable.copyWith(flipped: !imageDrawable.flipped),
     );
+  }
+
+  void zoomIn() {
+    final matrix = controller.transformationController.value.clone();
+    final double currentScale = matrix.getMaxScaleOnAxis();
+    if (currentScale >= 10) return;
+    
+    // Zoom in by 20%
+    matrix.scale(1.2);
+    controller.transformationController.value = matrix;
+  }
+
+  void zoomOut() {
+    final matrix = controller.transformationController.value.clone();
+    final double currentScale = matrix.getMaxScaleOnAxis();
+    if (currentScale <= 1) {
+      controller.transformationController.value = Matrix4.identity();
+      return;
+    }
+    
+    // Zoom out by 20%
+    matrix.scale(1 / 1.2);
+    if (matrix.getMaxScaleOnAxis() < 1) {
+      controller.transformationController.value = Matrix4.identity();
+    } else {
+      controller.transformationController.value = matrix;
+    }
+  }
+
+  void resetZoom() {
+    controller.transformationController.value = Matrix4.identity();
   }
 }
 
