@@ -19,7 +19,7 @@ class Whiteboardcontroller extends GetxController {
   final Map<String, Drawable> _annotationDrawablesById = {};
   final Map<String, Drawable> _localDrawablesById = {};
   final RxInt currentPage = 1.obs;
-  final Map<int, List<Drawable>> _pageDrawables = {1: <Drawable>[]};
+  final _pageDrawables = <int, List<Drawable>>{1: <Drawable>[]}.obs;
 
   static const List<String> imageLinks = [
     "https://i.imgur.com/btoI5OX.png",
@@ -55,6 +55,7 @@ class Whiteboardcontroller extends GetxController {
     super.onInit();
     controller = _createPainterController();
     textFocusNode.addListener(_onFocusChanged);
+    ever(websocket.slidesRx, (_) => _syncVirtualCanvasToSlideIfAvailable());
   }
 
   void _onFocusChanged() {
@@ -308,6 +309,8 @@ class Whiteboardcontroller extends GetxController {
     final isModerator = role == "MODERATOR";
 
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final toolName = _toolNameForDrawable(drawable);
     final styleColor =
@@ -322,7 +325,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "draw",
         "name": toolName,
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(origin.dx), _round2(origin.dy)],
         "rotation": 0,
@@ -341,7 +344,7 @@ class Whiteboardcontroller extends GetxController {
         "userId": userId,
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -373,6 +376,8 @@ class Whiteboardcontroller extends GetxController {
 
     final colorName = _bbbColorName(drawable.style.color ?? Colors.black);
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     return {
       "id": id,
@@ -380,7 +385,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "text",
         "name": "Text",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(drawable.rotationAngle),
@@ -398,7 +403,7 @@ class Whiteboardcontroller extends GetxController {
         "size": [_round2(size.width), _round2(size.height)],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -420,6 +425,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -436,7 +443,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Rectangle",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -454,7 +461,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -476,6 +483,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final angle = drawable.rotationAngle;
     final unit = Offset.fromDirection(angle, 1);
@@ -496,7 +505,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "arrow",
         "name": "Arrow",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(start.dx), _round2(start.dy)],
         "rotation": 0,
@@ -531,7 +540,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -554,6 +563,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -570,7 +581,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "triangle",
         "name": "Triangle",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -588,7 +599,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -610,6 +621,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -626,7 +639,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "ellipse",
         "name": "Ellipse",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -644,7 +657,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -667,6 +680,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -683,7 +698,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Rhombus",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -701,7 +716,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -724,6 +739,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -740,7 +757,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Trapezoid",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -758,7 +775,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -780,6 +797,8 @@ class Whiteboardcontroller extends GetxController {
     final role = websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -796,7 +815,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Hexagon",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -814,7 +833,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -837,6 +856,8 @@ class Whiteboardcontroller extends GetxController {
         websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -853,7 +874,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Cloud",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -871,7 +892,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -894,6 +915,8 @@ class Whiteboardcontroller extends GetxController {
         websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -910,7 +933,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "Star",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -928,7 +951,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -951,6 +974,8 @@ class Whiteboardcontroller extends GetxController {
         websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -966,7 +991,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "XBox",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -984,7 +1009,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -1008,6 +1033,8 @@ class Whiteboardcontroller extends GetxController {
         websocket.myDetails?.fields?.role ?? websocket.meetingDetails?.role;
     final isModerator = role == "MODERATOR";
     final pageIndex = currentPage.value;
+    final pageId = pageIndex == 1 ? "page:page" : "page:$pageIndex";
+    final parentId = pageIndex.toString();
 
     final width = (drawable.size.width * drawable.scale).abs();
     final height = (drawable.size.height * drawable.scale).abs();
@@ -1023,7 +1050,7 @@ class Whiteboardcontroller extends GetxController {
         "id": id,
         "type": "rectangle",
         "name": "CheckBox",
-        "parentId": "1",
+        "parentId": parentId,
         "childIndex": 0,
         "point": [_round2(topLeft.dx), _round2(topLeft.dy)],
         "rotation": _round2(_rotationFromRadians(drawable.rotationAngle)),
@@ -1041,7 +1068,7 @@ class Whiteboardcontroller extends GetxController {
         "labelPoint": [0.5, 0.5],
         "isModerator": isModerator,
         "meta": {
-          "pageId": "page:page",
+          "pageId": pageId,
           "pageIndex": pageIndex,
           "whiteboardId": "unknown-wb",
           "ownerUserId": userId
@@ -1167,6 +1194,25 @@ class Whiteboardcontroller extends GetxController {
     final drawable = _annotationDrawablesById.remove(id);
     if (drawable == null) return;
     controller.removeDrawable(drawable);
+    for (final page in _pageDrawables.keys) {
+      _pageDrawables[page]?.removeWhere((d) => identical(d, drawable));
+    }
+  }
+
+  void _addDrawableToPage(int? pageIndex, Drawable drawable, Set<String> ids) {
+    final targetPage = pageIndex ?? currentPage.value;
+
+    for (final id in ids) {
+      _removeAnnotationDrawable(id);
+      _annotationDrawablesById[id] = drawable;
+    }
+
+    if (targetPage == currentPage.value) {
+      controller.addDrawables([drawable], newAction: true);
+    } else {
+      final list = _pageDrawables.putIfAbsent(targetPage, () => <Drawable>[]);
+      list.add(drawable);
+    }
   }
 
   void _upsertAnnotationDrawable(Annotations annotation) {
@@ -1200,12 +1246,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
-
-    controller.addDrawables([drawable], newAction: true);
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
     _ensureVirtualCanvasSize(path, drawable.strokeWidth);
   }
 
@@ -1248,10 +1290,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1262,8 +1302,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertRectangleAnnotationDrawable(Annotations annotation) {
@@ -1303,10 +1341,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1317,8 +1353,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertArrowAnnotationDrawable(Annotations annotation) {
@@ -1375,10 +1409,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1389,8 +1421,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertTriangleAnnotationDrawable(Annotations annotation) {
@@ -1430,10 +1460,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1444,8 +1472,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertEllipseAnnotationDrawable(Annotations annotation) {
@@ -1485,10 +1511,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1499,8 +1523,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertRhombusAnnotationDrawable(Annotations annotation) {
@@ -1540,10 +1562,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1554,8 +1574,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertTrapezoidAnnotationDrawable(Annotations annotation) {
@@ -1595,10 +1613,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1609,8 +1625,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertHexagonAnnotationDrawable(Annotations annotation) {
@@ -1650,10 +1664,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1664,8 +1676,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertCloudAnnotationDrawable(Annotations annotation) {
@@ -1706,10 +1716,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1720,8 +1728,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertStarAnnotationDrawable(Annotations annotation) {
@@ -1762,10 +1768,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1776,8 +1780,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   void _upsertXBoxAnnotationDrawable(Annotations annotation) {
@@ -1897,10 +1899,8 @@ class Whiteboardcontroller extends GetxController {
       if (info.id != null) info.id!,
     };
 
-    for (final id in ids) {
-      _removeAnnotationDrawable(id);
-      _annotationDrawablesById[id] = drawable;
-    }
+    final pageIndex = info.meta?.pageIndex;
+    _addDrawableToPage(pageIndex, drawable, ids);
 
     final outerId = annotation.id;
     final innerId = info.id;
@@ -1911,8 +1911,6 @@ class Whiteboardcontroller extends GetxController {
       final localDrawable = _localDrawablesById.remove(innerId);
       if (localDrawable != null) _localDrawablesById[outerId] = localDrawable;
     }
-
-    controller.addDrawables([drawable], newAction: true);
   }
 
   double _strokeWidthFromStyle(Style? style) {

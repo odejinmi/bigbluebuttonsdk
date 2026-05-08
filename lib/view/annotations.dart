@@ -87,6 +87,7 @@ class AnnotationInfo {
   String? id;
   String? userId;
   String? type;
+  Meta? meta;
 
   AnnotationInfo({
     this.size,
@@ -107,6 +108,7 @@ class AnnotationInfo {
     this.id,
     this.userId,
     this.type,
+    this.meta,
   });
 
   factory AnnotationInfo.fromJson(Map<String, dynamic> json) => AnnotationInfo(
@@ -136,6 +138,7 @@ class AnnotationInfo {
     id: json["id"],
     userId: json["userId"],
     type: json["type"],
+    meta: json["meta"] == null ? null : Meta.fromJson(json["meta"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -161,7 +164,36 @@ class AnnotationInfo {
     "id": id,
     "userId": userId,
     "type": type,
+    "meta": meta?.toJson(),
   };
+}
+
+class Meta {
+  String? pageId;
+  int? pageIndex;
+  String? whiteboardId;
+  String? ownerUserId;
+
+  Meta({
+    this.pageId,
+    this.pageIndex,
+    this.whiteboardId,
+    this.ownerUserId,
+  });
+
+  factory Meta.fromJson(Map<String, dynamic> json) => Meta(
+        pageId: json["pageId"],
+        pageIndex: json["pageIndex"],
+        whiteboardId: json["whiteboardId"],
+        ownerUserId: json["ownerUserId"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "pageId": pageId,
+        "pageIndex": pageIndex,
+        "whiteboardId": whiteboardId,
+        "ownerUserId": ownerUserId,
+      };
 }
 
 class Style {

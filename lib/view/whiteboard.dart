@@ -25,70 +25,76 @@ class _WhiteboardState extends State<Whiteboard> {
 
   @override
   Widget build(BuildContext context) {
-    final isPresenter = controller.websocket.myDetails?.fields?.presenter == true;
+    return Obx(() {
+      final isPresenter =
+          controller.websocket.myDetails?.fields?.presenter == true;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Center(
-              child: AspectRatio(
-                aspectRatio:
-                    (controller.controller.virtualCanvasSize?.width ?? 4) /
-                        (controller.controller.virtualCanvasSize?.height ?? 3),
-                child: FlutterPainter(
-                  controller: controller.controller,
-                  onDrawableCreated: controller.onDrawableCreated,
-                  onDrawableDeleted: controller.onDrawableDeleted,
-                ),
-              ),
-            ),
-          ),
-          if (showShapesPanel)
-            Positioned(
-              bottom: 84,
-              left: 0,
-              right: 0,
+      return Scaffold(
+        body: Stack(
+          children: [
+            Positioned.fill(
               child: Center(
-                child: _ShapesPanel(
-                  onSelect: (factory) {
-                    setState(() => showShapesPanel = false);
-                    controller.selectToolShape(factory);
+                child: ValueListenableBuilder<PainterControllerValue>(
+                  valueListenable: controller.controller,
+                  builder: (context, value, child) {
+                    return AspectRatio(
+                      aspectRatio: (controller.controller.virtualCanvasSize?.width ?? 4) /
+                          (controller.controller.virtualCanvasSize?.height ?? 3),
+                      child: child!,
+                    );
                   },
-                ),
-              ),
-            ),
-          if (isPresenter)
-          Positioned(
-            bottom: 14,
-            left: 12,
-            right: 12,
-            child: Row(
-              children: [
-                const Text("100%", style: TextStyle(color: Colors.black54)),
-                const SizedBox(width: 10),
-                Flexible(
-                  child: _Toolbar(
-                    controller: controller,
-                    onToggleShapes: () =>
-                        setState(() => showShapesPanel = !showShapesPanel),
-                    onOpenMore: () => _openMoreMenu(context),
+                  child: FlutterPainter(
+                    controller: controller.controller,
+                    onDrawableCreated: controller.onDrawableCreated,
+                    onDrawableDeleted: controller.onDrawableDeleted,
                   ),
                 ),
-                const SizedBox(width: 10),
-                _SquareButton(
-                  icon: Icons.draw,
-                  onPressed: controller.selectToolHighlighter,
-                ),
-                const SizedBox(width: 10),
-                _SquareButton(
-                  icon: Icons.help_outline,
-                  onPressed: () {},
-                ),
-              ],
+              ),
             ),
-          ),
-          if (isPresenter)
+            if (showShapesPanel)
+              Positioned(
+                bottom: 84,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: _ShapesPanel(
+                    onSelect: (factory) {
+                      setState(() => showShapesPanel = false);
+                      controller.selectToolShape(factory);
+                    },
+                  ),
+                ),
+              ),
+            if (isPresenter)
+              Positioned(
+                bottom: 14,
+                left: 12,
+                right: 12,
+                child: Row(
+                  children: [
+                    const Text("100%", style: TextStyle(color: Colors.black54)),
+                    const SizedBox(width: 10),
+                    Flexible(
+                      child: _Toolbar(
+                        controller: controller,
+                        onToggleShapes: () =>
+                            setState(() => showShapesPanel = !showShapesPanel),
+                        onOpenMore: () => _openMoreMenu(context),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    _SquareButton(
+                      icon: Icons.draw,
+                      onPressed: controller.selectToolHighlighter,
+                    ),
+                    const SizedBox(width: 10),
+                    _SquareButton(
+                      icon: Icons.help_outline,
+                      onPressed: () {},
+                    ),
+                  ],
+                ),
+              ),
             Positioned(
               top: 0,
               left: 0,
@@ -97,22 +103,23 @@ class _WhiteboardState extends State<Whiteboard> {
                 bottom: false,
                 child: Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   child: Row(
                     children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFFF7A00),
-                          foregroundColor: Colors.white,
-                          shape: const StadiumBorder(),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 18,
-                            vertical: 12,
+                      if (isPresenter)
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFFFF7A00),
+                            foregroundColor: Colors.white,
+                            shape: const StadiumBorder(),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18,
+                              vertical: 12,
+                            ),
                           ),
+                          onPressed: controller.addNewPage,
+                          child: const Text("+ New Page"),
                         ),
-                        onPressed: controller.addNewPage,
-                        child: const Text("+ New Page"),
-                      ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Obx(() {
@@ -131,7 +138,8 @@ class _WhiteboardState extends State<Whiteboard> {
                                   children: [
                                     for (final p in pages)
                                       Padding(
-                                        padding: const EdgeInsets.only(right: 8),
+                                        padding:
+                                            const EdgeInsets.only(right: 8),
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                             foregroundColor: selected == p
@@ -149,7 +157,8 @@ class _WhiteboardState extends State<Whiteboard> {
                                               vertical: 10,
                                             ),
                                           ),
-                                          onPressed: () => controller.selectPage(p),
+                                          onPressed: () =>
+                                              controller.selectPage(p),
                                           child: Text("page:$p"),
                                         ),
                                       ),
@@ -165,9 +174,10 @@ class _WhiteboardState extends State<Whiteboard> {
                 ),
               ),
             ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   void _openMoreMenu(BuildContext context) async {

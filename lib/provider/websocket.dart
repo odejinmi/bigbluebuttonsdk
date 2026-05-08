@@ -147,6 +147,8 @@ class Websocket extends GetxController implements WebSocketService {
   @override
   set slides(List<dynamic> value) => _slides.value = value;
 
+  RxList<dynamic> get slidesRx => _slides;
+
   @override
   Timer? get timer => _timer.value;
   @override
